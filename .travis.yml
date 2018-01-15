@@ -1,0 +1,21 @@
+language: python
+sudo: false
+python:
+  - '3.5'
+  - '3.6'
+install:
+  - python setup.py install
+  - pip install pycodestyle
+script:
+  - pycodestyle --first confluence
+  - python setup.py test --addopts '--cov confluence tests'
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: davetcode
+  password:
+    secure: Rk4Ud2qNcMgHzzaipCLel89Ed5nA3HSzc9mHFakq5O50/gCAki1QQEn/DTbfEoxwFrJLPi6hubPAsZga07KyQMVJfESJvjW3BpMo78v8PUXWUopVHTGhIQLQvvYlgA1yDWFe36HDlKPXIhu6Ec2wr9oUFF3Ah+uVtmiZlmOkVG8fYXkMDap5Ofx5JKwoi6V1CfQhfdfG8CQDWjRJgh6KWmma4au0SRlNTCzBVbL0xEM7XBGuyQQ2iNR+i1qsLUknE7zFX5Qyb62Z7aUOQlLzbDgNpvG/sMzNbgRlDWnDr9Pc6l6tksC1tUOaMqjDz7zXZ7042snVzwHBUIvAp6+nSIX+J5A2IGO/kLNNsCxD7iYdGLxuOE2EJ/z+oKvV354k8woFk5bgQY2v9SgsmKORSgQkTqIF5yoLA+ZfuEuNet5cSme82NiYSiUgcYhvYUO4r1sERqtfHRgWtPHlO+Q3olryTnJRHTBsHGPRLwQCGLEOo0H5wwZ8LgseF5ftJ58wuYjRjHBhbZ3r1qcihx6ohG0CjaVxAiVQv/ohtzCCn8OUnyZkY4nxQJ//UrSTlrMHbtZUqRYp0jYiNKo87UiM/4NcWDdPjrd5zrfYGY0Qi+deTJk1gxMPVSFr/f9b6QePfSgbpHhrbjHEvGVh3tu3ceg7qCkaRmoc2o2GJqPzDgc=
+  on:
+    tags: true
+    repo: DaveTCode/confluence-python-lib
+    condition: "$TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
