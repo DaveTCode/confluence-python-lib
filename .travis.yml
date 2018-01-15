@@ -5,10 +5,11 @@ python:
   - '3.6'
 install:
   - python setup.py install
-  - pip install pycodestyle
+  - pip install pycodestyle mypy
 script:
   - pycodestyle --first confluence
-  - python setup.py test --addopts '--cov confluence tests'
+  - mypy confluence
+  - python setup.py test --addopts "--cov confluence tests"
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel

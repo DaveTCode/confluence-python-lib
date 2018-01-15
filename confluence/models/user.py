@@ -25,4 +25,4 @@ class User:
             self.type = json['type']
 
     def __str__(self):
-        return f'{self.username} - {self.display_name}'
+        return f'{self.username}'

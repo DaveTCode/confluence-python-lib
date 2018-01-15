@@ -185,3 +185,6 @@ GitHub.sublime-settings
 .idea/modules.xml
 .idea/vcs.xml
 .idea/*.iml
+
+# Mypy cache doesnt need including
+.mypy_cache
