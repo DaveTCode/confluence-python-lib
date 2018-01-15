@@ -7,7 +7,7 @@ This is a simple wrapper around the REST API which the Confluence provides.
 ## Installation
 
 ~~~~
-pip install confluence-rest
+pip install confluence-rest-library
 ~~~~
 
 ## Usage
