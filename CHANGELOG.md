@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing
 
+## [0.2.2] - 2017-01-18
+
+### Added
+- Nothing
+
+### Changed
+- requests.get isn't a context manager...
+
 ## [0.2.1] - 2017-01-18
 
 ### Added
@@ -29,6 +37,7 @@ First public release of the library
 ### Changed
 - Nothing
 
-[Unreleased]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.2...HEAD
+[0.2.1]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/DaveTCode/confluence-python-lib/compare/0.0.1...0.2.0

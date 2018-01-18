@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='confluence-rest-library',
     packages=find_packages(),
-    version='0.2.1',
+    version='0.2.2',
     description='A simple wrapper around the Confluence REST API.',
     author='David Tyler',
     author_email='davet.code@gmail.com',

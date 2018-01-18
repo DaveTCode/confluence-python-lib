@@ -28,17 +28,18 @@ class Confluence:
 
     def _get_paged_results(self, item_type: Callable, url: str, params: Dict[str, str],):
         while url is not None:
-            with requests.get(url, params=params, auth=self._basic_auth).json() as search_results:
-                if 'next' in search_results['_links']:
-                    # We have another page of results
-                    url = f"{self._base_url}{search_results['_links']['next']}"
-                    params.clear()
-                else:
-                    # No more pages of results
-                    url = None
+            search_results = requests.get(url, params=params, auth=self._basic_auth).json()
 
-                for result in search_results['results']:
-                    yield item_type(result)
+            if 'next' in search_results['_links']:
+                # We have another page of results
+                url = f"{self._base_url}{search_results['_links']['next']}"
+                params.clear()
+            else:
+                # No more pages of results
+                url = None
+
+            for result in search_results['results']:
+                yield item_type(result)
 
     def get_content(self, content_type: str = 'page', space_key: Optional[str] = None,
                     title: Optional[str] = None, status: Optional[str] = None, posting_day: Optional[date] = None,
