@@ -17,8 +17,9 @@ class Confluence:
     def __init__(self, base_url: str, basic_auth: Tuple[str, str]) -> None:
         """
 
-        :param base_url:
-        :param basic_auth:
+        :param base_url: The URL where the confluence web app is located. e.g. https://mysite.mydomain/confluence
+        :param basic_auth: A tuple containing a username/password pair that
+        can log into confluence.
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
@@ -26,11 +27,8 @@ class Confluence:
         self._api_base = f'{self._base_url}/rest/api'
 
     def _get_paged_results(self, item_type: Callable, url: str, params: Dict[str, str],):
-        with requests.session() as session:
-            session.auth = self._basic_auth
-            while url is not None:
-                search_results = session.get(url, params=params).json()
-
+        while url is not None:
+            with requests.get(url, params=params, auth=self._basic_auth).json() as search_results:
                 if 'next' in search_results['_links']:
                     # We have another page of results
                     url = f"{self._base_url}{search_results['_links']['next']}"
