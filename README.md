@@ -14,8 +14,8 @@ pip install confluence-rest-library
 
 ```python
 from confluence.client import Confluence
-c = Confluence('https://site:8080/confluence', ('user', 'pass'))
-pages = c.search('ID=1')
+with Confluence('https://site:8080/confluence', ('user', 'pass')) as c:
+    pages = c.search('ID=1')
 ```
 
 ## Development and Deployment

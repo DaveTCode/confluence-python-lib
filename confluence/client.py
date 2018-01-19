@@ -12,23 +12,38 @@ class Confluence:
     """
     External interface into this library, all calls should be made through
     an instance of this class.
+
+    Note: This class should be used in a context manager (e.g.
+    ```with Confluence(...) as c:```
     """
 
     def __init__(self, base_url: str, basic_auth: Tuple[str, str]) -> None:
         """
-
         :param base_url: The URL where the confluence web app is located. e.g. https://mysite.mydomain/confluence
         :param basic_auth: A tuple containing a username/password pair that
         can log into confluence.
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
-
         self._api_base = f'{self._base_url}/rest/api'
+        self._client: requests.Session = None
+
+    def __enter__(self):
+        self._client = requests.session()
+        self._client.auth = self._basic_auth
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self._client:
+            self._client.close()
 
     def _get_paged_results(self, item_type: Callable, url: str, params: Dict[str, str],):
         while url is not None:
-            search_results = requests.get(url, params=params, auth=self._basic_auth).json()
+            # Allow the class to be used without being inside a with block if
+            # required.
+            if self._client:
+                search_results = self._client.get(url, params=params).json()
+            else:
+                search_results = requests.get(url, params=params, auth=self._basic_auth).json()
 
             if 'next' in search_results['_links']:
                 # We have another page of results
