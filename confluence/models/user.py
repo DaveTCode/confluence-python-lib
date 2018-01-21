@@ -1,3 +1,4 @@
+from confluence.models.icon import Icon
 import logging
 from typing import Any, Dict
 
@@ -23,6 +24,8 @@ class User:
             self.user_key = json['userKey']
         if 'type' in json:
             self.type = json['type']
+        if 'profilePicture' in json:
+            self.profile_picture = Icon(json['profilePicture'])
 
     def __str__(self):
         return f'{self.username}'
