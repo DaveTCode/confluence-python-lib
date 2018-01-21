@@ -1,5 +1,6 @@
 from confluence.models.page import ContentType, Page
 from confluence.models.space import Space, SpaceType, SpaceStatus
+from confluence.models.user import User
 from datetime import date
 import logging
 import requests
@@ -244,6 +245,35 @@ class Confluence:
             params['expand'] = ','.join(expand)
 
         return self._get_paged_results(Page, url, params)
+
+    def get_user(self, username: Optional[str] = None, user_key: Optional[str] = None,
+                 expand: Optional[List[str]] = None) -> User:
+        """
+        Return a single user object matching either the username of the key
+        passed in.
+
+        Note: You must pass exactly one of username or user_key to this
+        function.
+
+        :param username: The username as seen in Confluence.
+        :param user_key: The unique user id.
+        :param expand: A list of sections of the user object to expand.
+        :return:
+        """
+        if (not username and not user_key) or (username and user_key):
+            raise ValueError('Exactly one of username or user_key must be set')
+
+        url = f'{self._api_base}/user'
+
+        params = {}
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+        if expand:
+            params['expand'] = ','.join(expand)
+
+        return self._get_single_result(User, url, params)
 
     def __str__(self):
         return self._api_base
