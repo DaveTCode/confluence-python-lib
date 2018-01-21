@@ -1,4 +1,4 @@
-from confluence.models.page import Page
+from confluence.models.page import ContentType, Page
 from confluence.models.space import Space, SpaceType, SpaceStatus
 from datetime import date
 import logging
@@ -218,7 +218,7 @@ class Confluence:
 
         return self._get_paged_results(Page, url, params)
 
-    def get_space_content_with_type(self, space_key, space_type: SpaceType, just_root: bool = False,
+    def get_space_content_with_type(self, space_key, content_type: ContentType, just_root: bool = False,
                                     expand: Optional[List[str]] = None) -> Iterable[Page]:
         """
         Get all of the content underneath a particular space of a given type
@@ -226,12 +226,13 @@ class Confluence:
         TODO - Does this handle blogs ok? Returning everything as pages.
 
         :param space_key: The unique identifier for the space.
+        :param content_type: What sort of content to return. Blogs or pages.
         :param just_root: Set to true if you only want the top level pages.
         :param expand: A list of page properties which can be expanded.
 
         :return: A generator containing all pages matching the search criteria.
         """
-        url = f'{self._api_base}/space/{space_key}/content/{space_type}'
+        url = f'{self._api_base}/space/{space_key}/content/{content_type}'
         params = {}
 
         if just_root:

@@ -1,11 +1,17 @@
 from confluence.models.pageupdate import PageUpdate
 from confluence.models.space import Space
 from confluence.models.user import User
+from enum import Enum
 import logging
 from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+
+class ContentType(Enum):
+    PAGE = "page"
+    BLOG = "blog"
 
 
 class Page:
