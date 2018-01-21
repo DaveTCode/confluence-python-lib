@@ -1,3 +1,4 @@
+from confluence.models.group import Group
 from confluence.models.page import ContentType, Page
 from confluence.models.space import Space, SpaceType, SpaceStatus
 from confluence.models.user import User
@@ -258,7 +259,8 @@ class Confluence:
         :param username: The username as seen in Confluence.
         :param user_key: The unique user id.
         :param expand: A list of sections of the user object to expand.
-        :return:
+
+        :return: A full user object.
         """
         if (not username and not user_key) or (username and user_key):
             raise ValueError('Exactly one of username or user_key must be set')
@@ -274,6 +276,50 @@ class Confluence:
             params['expand'] = ','.join(expand)
 
         return self._get_single_result(User, url, params)
+
+    def get_anonymous_user(self) -> User:
+        """
+        Returns the user object which represents anonymous users on Confluence.
+
+        :return: A full user object.
+        """
+        return self._get_single_result(User, f'{self._api_base}/user/anonymous', {})
+
+    def get_current_user(self) -> User:
+        """
+        Returns the user object for the current logged in user.
+
+        :return: A full user object.
+        """
+        return self._get_single_result(User, f'{self._api_base}/user/current', {})
+
+    def get_user_groups(self, username: Optional[str] = None, user_key: Optional[str] = None,
+                        expand: Optional[List[str]] = None) -> Iterable[Group]:
+        """
+        Get a list of the groups that a user is a member of. Either the
+        username or key must be set and not both.
+
+        :param username: The username as seen in confluence.
+        :param user_key: The users unique key in confluence.
+        :param expand: An optional list of fields to expand on the returned
+        group objects. None currently known.
+
+        :return: The list of groups as an iterator.
+        """
+        if (not username and not user_key) or (username and user_key):
+            raise ValueError('Exactly one of username or user_key must be set')
+
+        url = f'{self._api_base}/user/memberof'
+        params = {}
+
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+        if expand:
+            params['expand'] = ','.join(expand)
+
+        return self._get_paged_results(Group, url, params)
 
     def __str__(self):
         return self._api_base
