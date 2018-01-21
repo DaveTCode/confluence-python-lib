@@ -1,14 +1,17 @@
 language: python
 sudo: false
+addons:
+  apt_packages:
+    - pandoc
 python:
-- '3.6'
+  - '3.6'
 install:
-- python setup.py install
-- pip install pycodestyle mypy pypandoc
+  - python setup.py install
+  - pip install pycodestyle mypy pypandoc
 script:
-- pycodestyle --first confluence
-- mypy confluence
-- python setup.py test --addopts "--cov confluence tests"
+  - pycodestyle --first confluence
+  - mypy confluence
+  - python setup.py test --addopts "--cov confluence tests"
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
