@@ -170,7 +170,7 @@ class Confluence:
         if label:
             params['label'] = label
         if favourite:
-            params['favourite'] = favourite
+            params['favourite'] = str(favourite)  # TODO - Can't figure out if this really works. The REST API docs don't explain it and no queries re: favourite seem to make any difference
         if expand:
             params['expand'] = ','.join(expand)
 
