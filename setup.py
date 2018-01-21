@@ -6,8 +6,7 @@ readme = path.join(path.abspath(path.dirname(__file__)), 'README.md')
 
 try:
     import pypandoc
-    with open(readme, encoding='utf-8') as f:
-        long_description = pypandoc.convert_text(f.read(), 'md', format='rst')
+    long_description = pypandoc.convert(readme, 'rst')
 except ImportError:
     print("warning: pypandoc module not found, could not convert Markdown to RST")
     with open(readme, encoding='utf-8') as f:
