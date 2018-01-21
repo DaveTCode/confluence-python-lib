@@ -21,3 +21,10 @@ with Confluence('https://site:8080/confluence', ('user', 'pass')) as c:
 ## Development and Deployment
 
 See the [Contribution guidelines for this project](CONTRIBUTING.md) for details on how to make changes to this library.
+
+### Testing Locally
+
+For now there are only some basic unit tests included. These can be run using
+```
+python setup.py test
+```
