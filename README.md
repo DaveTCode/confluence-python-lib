@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/DaveTCode/confluence-python-lib.svg?branch=master)](https://travis-ci.org/DaveTCode/confluence-python-lib)
+[![PyPI version](https://badge.fury.io/py/confluence-rest-library.svg)](https://badge.fury.io/py/confluence-rest-library)
 
-# Comala Workflow Python Library
+# Confluence Python Library
 
 This is a simple wrapper around the REST API which the Confluence provides.
 
