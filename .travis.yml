@@ -12,7 +12,7 @@ install:
   - pip install pycodestyle mypy pypandoc typing
 script:
   - pycodestyle --first confluence
-  - mypy confluence
+  - mypy --py2 confluence
   - python setup.py test --addopts "--cov confluence tests"
 deploy:
   provider: pypi
@@ -23,4 +23,4 @@ deploy:
   on:
     tags: true
     repo: DaveTCode/confluence-python-lib
-    condition: "$TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
+    condition: "$TRAVIS_PYTHON_VERSION == 3.6 && $TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"

@@ -28,8 +28,8 @@ class Confluence:
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
-        self._api_base = f'{self._base_url}/rest/api'
-        self._client: requests.Session = None
+        self._api_base = '{}/rest/api'.format(self._base_url)
+        self._client = None  # type: requests.Session
 
     def __enter__(self):
         self._client = requests.session()
@@ -60,7 +60,7 @@ class Confluence:
 
             if 'next' in search_results['_links']:
                 # We have another page of results
-                url = f"{self._base_url}{search_results['_links']['next']}"
+                url = '{}{}'.format(self._base_url, search_results['_links']['next'])
                 params.clear()
             else:
                 # No more pages of results
@@ -98,7 +98,7 @@ class Confluence:
 
         :return: An iterable of pages/blogposts which match the parameters.
         """
-        content_url = f'{self._api_base}/content'
+        content_url = '{}/content'.format(self._api_base)
         params = {}
         if content_type and content_type in ('page', 'blogpost'):
             params['type'] = content_type
@@ -132,7 +132,7 @@ class Confluence:
 
         :return: An iterable of pages which match the parameters.
         """
-        search_url = f'{self._api_base}/content/search'
+        search_url = '{}/content/search'.format(self._api_base)
         params = {'cql': cql}
         if cql_context:
             params['cqlcontext'] = cql_context
@@ -160,7 +160,7 @@ class Confluence:
         description, metadata & homepage.
         :return:
         """
-        url = f'{self._api_base}/space'
+        url = '{}/space'.format(self._api_base)
         params = {}
         if space_keys:
             params['spaceKey'] = ','.join(space_keys)
@@ -189,7 +189,7 @@ class Confluence:
 
         :return: The space matching the given key.
         """
-        url = f'{self._api_base}/space/{space_key}'
+        url = '{}/space/{}'.format(self._api_base, space_key)
         params = {}
 
         if expand:
@@ -210,7 +210,7 @@ class Confluence:
 
         :return: A generator containing all pages matching the search criteria.
         """
-        url = f'{self._api_base}/space/{space_key}/content'
+        url = '{}/space/{}/content'.format(self._api_base, space_key)
         params = {}
 
         if just_root:
@@ -235,7 +235,7 @@ class Confluence:
 
         :return: A generator containing all pages matching the search criteria.
         """
-        url = f'{self._api_base}/space/{space_key}/content/{content_type}'
+        url = '{}/space/{}/content/{}'.format(self._api_base, space_key, content_type)
         params = {}
 
         if just_root:
@@ -264,7 +264,7 @@ class Confluence:
         if (not username and not user_key) or (username and user_key):
             raise ValueError('Exactly one of username or user_key must be set')
 
-        url = f'{self._api_base}/user'
+        url = '{}/user'.format(self._api_base)
 
         params = {}
         if username:
@@ -282,7 +282,7 @@ class Confluence:
 
         :return: A full user object.
         """
-        return self._get_single_result(User, f'{self._api_base}/user/anonymous', {})
+        return self._get_single_result(User, '{}/user/anonymous'.format(self._api_base), {})
 
     def get_current_user(self):  # type: () -> User
         """
@@ -290,7 +290,7 @@ class Confluence:
 
         :return: A full user object.
         """
-        return self._get_single_result(User, f'{self._api_base}/user/current', {})
+        return self._get_single_result(User, '{}/user/current'.format(self._api_base), {})
 
     def get_user_groups(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> Iterable[Group]
@@ -308,7 +308,7 @@ class Confluence:
         if (not username and not user_key) or (username and user_key):
             raise ValueError('Exactly one of username or user_key must be set')
 
-        url = f'{self._api_base}/user/memberof'
+        url = '{}/user/memberof'.format(self._api_base)
         params = {}
 
         if username:
