@@ -10,7 +10,7 @@ def test_create_with_valid_json():
         'path': 'https://a.com',
         'width': 200,
         'height': 201,
-        'is_default': False
+        'isDefault': False
     })
 
     assert str(i) == 'https://a.com [200x201]'

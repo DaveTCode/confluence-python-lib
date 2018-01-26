@@ -38,7 +38,7 @@ def test_create_space_all():
             'path': 'https://a.com',
             'width': 200,
             'height': 201,
-            'is_default': False
+            'isDefault': False
         },
         'metadata': {
 

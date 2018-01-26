@@ -235,7 +235,7 @@ class Confluence:
 
         :return: A generator containing all pages matching the search criteria.
         """
-        url = '{}/space/{}/content/{}'.format(self._api_base, space_key, content_type)
+        url = '{}/space/{}/content/{}'.format(self._api_base, space_key, content_type.value)
         params = {}
 
         if just_root:

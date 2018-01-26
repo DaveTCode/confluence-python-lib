@@ -15,7 +15,7 @@ def test_creation_valid_json():
             'path': 'https://a.com',
             'width': 200,
             'height': 201,
-            'is_default': False
+            'isDefault': False
         }
     })
     assert u.username == '1'

@@ -13,7 +13,7 @@ class Icon:
         self.path = json['path']
         self.width = json['width']
         self.height = json['height']
-        self.is_default = json['is_default']
+        self.is_default = json['isDefault']
 
     def __str__(self):
         return '{} [{}x{}]'.format(self.path, self.width, self.height)
