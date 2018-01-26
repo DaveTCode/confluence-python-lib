@@ -1,0 +1,156 @@
+# Endpoints
+
+This document details the list of endpoints exposed by the REST API and their current 
+state in this library.
+
+It was pulled from https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/ so 
+is current as of v6.6.0
+
+## audit
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/audit                                              |       |
+|POST       |/rest/audit                                              |       |
+|GET        |/rest/audit/export                                       |       |
+|GET        |/rest/audit/retention                                    |       |
+|PUT        |/rest/audit/retention                                    |       |
+|GET        |/rest/audit/since                                        |       |
+
+## content
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|POST       |/rest/content                                            |       |
+|GET        |/rest/content                                            |       |
+|PUT        |/rest/content/{contentId}                                |       |
+|GET        |/rest/content/{id}                                       |       |
+|DELETE     |/rest/content/{id}                                       |       |
+|GET        |/rest/content/{id}/history                               |       |
+|GET        |/rest/content/{id}/history/{version}/macro/hash/{hash}   |       |
+|GET        |/rest/content/{id}/history/{version}/macro/id/{macroId}  |       |
+|GET        |/rest/content/search                                     |       |
+
+### content/{id}/child
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/content/{id}/child                                 |       |
+|GET        |/rest/content/{id}/child/{type}                          |       |
+|GET        |/rest/content/{id}/child/comment                         |       |
+
+### content/{id}/child/attachment
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/content/{id}/child/attachment                      |       |
+|POST       |/rest/content/{id}/child/attachment                      |       |
+|PUT        |/rest/content/{id}/child/attachment/{attachmentId}       |       |
+|POST       |/rest/content/{id}/child/attachment/{attachmentId}/data  |       |
+
+### content/{id}/descendant
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/content/{id}/descendant                            |       |
+|GET        |/rest/content/{id}/descendant/{type}                     |       |
+
+### content/{id}/label
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/content/{id}/label                                 |       |
+|POST       |/rest/content/{id}/label                                 |       |
+|DELETE     |/rest/content/{id}/label                                 |       |
+|DELETE     |/rest/content/{id}/label/{label}                         |       |
+
+### content/{id}/property
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/content/{id}/property                              |       |
+|POST       |/rest/content/{id}/property                              |       |
+|GET        |/rest/content/{id}/property/{key}                        |       |
+|PUT        |/rest/content/{id}/property/{key}                        |       |
+|DELETE     |/rest/content/{id}/property/{key}                        |       |
+|POST       |/rest/content/{id}/property/{key}                        |       |
+
+### content/{id}/restriction
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/content/{id}/restriction/byOperation               |       |
+|GET        |/rest/content/{id}/restriction/byOperation/{operationKey}|       |
+|POST       |/rest/content/blueprint/instance/{draftId}               |       |
+|PUT        |/rest/content/blueprint/instance/{draftId}               |       |
+
+### contentbody/convert/{to}
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|POST       |/rest/contentbody/convert/{to}                           |       |
+
+## group
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |groups                                                   |       |
+|GET        |group                                                    |       |
+|GET        |members                                                  |       |
+
+## longtask
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/longtask                                           |       |
+|GET        |/rest/longtask/{id}                                      |       |
+
+## search
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/search                                             |       |
+
+## space
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/space                                              | 1     |
+|POST       |/rest/space                                              |       |
+|POST       |/rest/space/_private                                     |       |
+|PUT        |/rest/space/{spaceKey}                                   |       |
+|DELETE     |/rest/space/{spaceKey}                                   |       |
+|GET        |/rest/space/{spaceKey}                                   | 1     |
+|GET        |/rest/space/{spaceKey}/content                           | 1     |
+|GET        |/rest/space/{spaceKey}/content/{type}                    | 1     |
+
+### space/{spaceKey}/property
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/space/{spaceKey}/property                          |       |
+|POST       |/rest/space/{spaceKey}/property                          |       |
+|GET        |/rest/space/{spaceKey}/property/{key}                    |       |
+|PUT        |/rest/space/{spaceKey}/property/{key}                    |       |
+|DELETE     |/rest/space/{spaceKey}/property/{key}                    |       |
+|POST       |/rest/space/{spaceKey}/property/{key}                    |       |
+
+## user
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|GET        |/rest/user                                               | 1     |
+|GET        |/rest/user/anonymous                                     | 1     |
+|GET        |/rest/user/current                                       | 1     |
+|GET        |/rest/user/memberof                                      | 1     |
+
+### user/watch
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
+|POST       |/rest/user/watch/content/{contentId}                     |       |
+|DELETE     |/rest/user/watch/content/{contentId}                     |       |
+|GET        |/rest/user/watch/content/{contentId}                     |       |
+|POST       |/rest/user/watch/space/{spaceKey}                        |       |
+|DELETE     |/rest/user/watch/space/{spaceKey}                        |       |
+|GET        |/rest/user/watch/space/{spaceKey}                        |       |
