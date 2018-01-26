@@ -10,7 +10,7 @@ class PageUpdate:
     """
     Represents the information stored in confluence about a single page update.
     """
-    def __init__(self, json: Dict[str, Any]) -> None:
+    def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.updater = User(json['by'])
         self.when = json['when']
         self.message = json['message']
@@ -19,4 +19,4 @@ class PageUpdate:
         self.hidden = json['hidden']
 
     def __str__(self):
-        return f'{self.updater} - {self.when}'
+        return '{} - {}'.format(self.updater, self.when)

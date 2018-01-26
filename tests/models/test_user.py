@@ -10,7 +10,13 @@ def test_creation_valid_json():
         'username': '1',
         'displayName': '2',
         'userKey': '3',
-        'type': '4'
+        'type': '4',
+        'profilePicture': {
+            'path': 'https://a.com',
+            'width': 200,
+            'height': 201,
+            'is_default': False
+        }
     })
     assert u.username == '1'
     assert u.display_name == '2'

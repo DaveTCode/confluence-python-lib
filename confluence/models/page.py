@@ -1,5 +1,4 @@
 from confluence.models.pageupdate import PageUpdate
-from confluence.models.space import Space
 from confluence.models.user import User
 from enum import Enum
 import logging
@@ -22,7 +21,7 @@ class Page:
     for more details.
     """
 
-    def __init__(self, json: Dict[str, Any]) -> None:
+    def __init__(self, json):  # type: (Dict[str, Any]) -> None
         # Fields that must exist on the json object
         self.id = json['id']
         self.title = json['title']
@@ -30,6 +29,7 @@ class Page:
 
         # Fields that only exist if the space is expanded
         if 'space' in json:
+            from confluence.models.space import Space  # Avoid circular dependency caused by space having a page
             self.space = Space(json['space'])
 
         # Fields that only exist if a part of the body is expanded
@@ -54,7 +54,8 @@ class Page:
             self.author = User(json['history']['createdBy'])
 
             # Fields only returned if the history.lastUpdated is expanded
-            self.last_updated = PageUpdate(json['history']['lastUpdated'])
+            if 'lastUpdated' in json['history']:
+                self.last_updated = PageUpdate(json['history']['lastUpdated'])
 
     def __str__(self):
-        return f'{self.id} - {self.title}'
+        return '{} - {}'.format(self.id, self.title)

@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing
 
+## [0.5.0] - 2017-01-26
+
+### Added
+- Added support for python 2.7 & 3.5
+- Added unit tests to verify the models are basically created how you'd expect 
+
+### Changed
+- Nothing
+
 ## [0.3.0] - 2017-01-18
 
 ### Added
@@ -47,7 +56,8 @@ First public release of the library
 ### Changed
 - Nothing
 
-[Unreleased]: https://github.com/DaveTCode/confluence-python-lib/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/DaveTCode/confluence-python-lib/compare/0.5.0...HEAD
+[0.3.0]: https://github.com/DaveTCode/confluence-python-lib/compare/0.3.0...0.5.0
 [0.3.0]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.2...0.3.0
 [0.2.1]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.0...0.2.1

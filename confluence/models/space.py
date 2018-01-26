@@ -29,7 +29,7 @@ class Space:
     Represents a single space in Confluence.
     """
 
-    def __init__(self, json: Dict[str, Any]) -> None:
+    def __init__(self, json):  # type: (Dict[str, Any]) -> None
         # All fields always exist on the json object
         self.id = json['id']
         self.key = json['key']
@@ -53,4 +53,4 @@ class Space:
             pass  # TODO - Labels not implemented
 
     def __str__(self):
-        return f'{self.id} - {self.key} | {self.name}'
+        return '{} - {} | {}'.format(self.id, self.key, self.name)

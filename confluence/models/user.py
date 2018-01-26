@@ -15,7 +15,7 @@ class User:
     not contain standard fields (e.g. when it's anonymous)
     """
 
-    def __init__(self, json: Dict[str, Any]) -> None:
+    def __init__(self, json):  # type: (Dict[str, Any]) -> None
         # Fields are not always present when requesting a user.
         self.username = json['username'] if 'username' in json else None
         if 'displayName' in json:
@@ -28,4 +28,4 @@ class User:
             self.profile_picture = Icon(json['profilePicture'])
 
     def __str__(self):
-        return f'{self.username}'
+        return str(self.username)

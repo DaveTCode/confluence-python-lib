@@ -5,7 +5,7 @@ from confluence.models.user import User
 from datetime import date
 import logging
 import requests
-from typing import Callable, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -20,7 +20,7 @@ class Confluence:
     ```with Confluence(...) as c:```
     """
 
-    def __init__(self, base_url: str, basic_auth: Tuple[str, str]) -> None:
+    def __init__(self, base_url, basic_auth):  # type: (str, Tuple[str, str]) -> None
         """
         :param base_url: The URL where the confluence web app is located. e.g. https://mysite.mydomain/confluence
         :param basic_auth: A tuple containing a username/password pair that
@@ -39,7 +39,7 @@ class Confluence:
         if self._client:
             self._client.close()
 
-    def _get_single_result(self, item_type: Callable, url: str, params: Dict[str, str]):
+    def _get_single_result(self, item_type, url, params):  # type: (Callable, str, Dict[str, str]) -> Any
         # Allow the class to be used without being inside a with block if
         # required.
         if self._client:
@@ -49,7 +49,7 @@ class Confluence:
 
         return item_type(result)
 
-    def _get_paged_results(self, item_type: Callable, url: str, params: Dict[str, str]):
+    def _get_paged_results(self, item_type, url, params):  # type: (Callable, str, Dict[str, str]) -> Iterable[Any]
         while url is not None:
             # Allow the class to be used without being inside a with block if
             # required.
@@ -69,9 +69,8 @@ class Confluence:
             for result in search_results['results']:
                 yield item_type(result)
 
-    def get_content(self, content_type: str = 'page', space_key: Optional[str] = None,
-                    title: Optional[str] = None, status: Optional[str] = None, posting_day: Optional[date] = None,
-                    expand: Optional[List[str]] = None) -> Iterable[Page]:
+    def get_content(self, content_type='page', space_key=None, title=None, status=None, posting_day=None, expand=None):
+        # type: (str, Optional[str], Optional[str], Optional[str], Optional[date], Optional[List[str]]) -> Iterable[Page]
         """
         Matches the REST API call https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/#content-getContent
         which returns an iterable of either pages or blogposts depending on
@@ -116,7 +115,8 @@ class Confluence:
 
         return self._get_paged_results(Page, content_url, params)
 
-    def search(self, cql: str, cql_context: Optional[str] = None, expand: Optional[List[str]] = None) -> Iterable[Page]:
+    def search(self, cql, cql_context=None, expand=None):
+        # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Page]
         """
         Perform a CQL search on the confluence instance and return an iterable
         of the pages which match the query.
@@ -141,9 +141,8 @@ class Confluence:
 
         return self._get_paged_results(Page, search_url, params)
 
-    def spaces(self, space_keys: Optional[List[str]] = None, space_type: Optional[SpaceType] = None,
-               status: Optional[SpaceStatus] = None, label: Optional[str] = None, favourite: Optional[bool] = None,
-               expand: Optional[List[str]] = None) -> Iterable[Space]:
+    def spaces(self, space_keys=None, space_type=None, status=None, label=None, favourite=None, expand=None):
+        # type: (Optional[List[str]], Optional[SpaceType], Optional[SpaceStatus], Optional[str], Optional[bool], Optional[List[str]]) -> Iterable[Space]
         """
         Queries the list of spaces, providing several ways to further filter
         that query.
@@ -180,7 +179,7 @@ class Confluence:
 
         return self._get_paged_results(Space, url, params)
 
-    def get_space(self, space_key: str, expand: Optional[List[str]] = None) -> Space:
+    def get_space(self, space_key, expand=None):  # type: (str, Optional[List[str]]) -> Space
         """
         Retrieve information on a single space.
 
@@ -198,8 +197,8 @@ class Confluence:
 
         return self._get_single_result(Space, url, params)
 
-    def get_space_content(self, space_key: str, just_root: bool = False,
-                          expand: Optional[List[str]] = None) -> Iterable[Page]:
+    def get_space_content(self, space_key, just_root=False, expand=None):
+        # type: (str, bool, Optional[List[str]]) -> Iterable[Page]
         """
         Get all of the content underneath a particular space.
 
@@ -222,8 +221,8 @@ class Confluence:
 
         return self._get_paged_results(Page, url, params)
 
-    def get_space_content_with_type(self, space_key, content_type: ContentType, just_root: bool = False,
-                                    expand: Optional[List[str]] = None) -> Iterable[Page]:
+    def get_space_content_with_type(self, space_key, content_type, just_root=False, expand=None):
+        # type: (str, ContentType, bool, Optional[List[str]]) -> Iterable[Page]
         """
         Get all of the content underneath a particular space of a given type
 
@@ -247,8 +246,8 @@ class Confluence:
 
         return self._get_paged_results(Page, url, params)
 
-    def get_user(self, username: Optional[str] = None, user_key: Optional[str] = None,
-                 expand: Optional[List[str]] = None) -> User:
+    def get_user(self, username=None, user_key=None, expand=None):
+        # type: (Optional[str], Optional[str], Optional[List[str]]) -> User
         """
         Return a single user object matching either the username of the key
         passed in.
@@ -277,7 +276,7 @@ class Confluence:
 
         return self._get_single_result(User, url, params)
 
-    def get_anonymous_user(self) -> User:
+    def get_anonymous_user(self):  # type: () -> User
         """
         Returns the user object which represents anonymous users on Confluence.
 
@@ -285,7 +284,7 @@ class Confluence:
         """
         return self._get_single_result(User, f'{self._api_base}/user/anonymous', {})
 
-    def get_current_user(self) -> User:
+    def get_current_user(self):  # type: () -> User
         """
         Returns the user object for the current logged in user.
 
@@ -293,8 +292,8 @@ class Confluence:
         """
         return self._get_single_result(User, f'{self._api_base}/user/current', {})
 
-    def get_user_groups(self, username: Optional[str] = None, user_key: Optional[str] = None,
-                        expand: Optional[List[str]] = None) -> Iterable[Group]:
+    def get_user_groups(self, username=None, user_key=None, expand=None):
+        # type: (Optional[str], Optional[str], Optional[List[str]]) -> Iterable[Group]
         """
         Get a list of the groups that a user is a member of. Either the
         username or key must be set and not both.
