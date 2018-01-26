@@ -343,6 +343,7 @@ class Confluence:
         return self._get_paged_results(User, 'group/{}/member'.format(name), {}, expand)
 
     def get_long_tasks(self, expand):
+        # type: (Optional[List[str]]) -> Iterable[LongTask]
         """
         Get the full list of long running tasks from the confluence instance.
 
@@ -352,7 +353,6 @@ class Confluence:
         :return: The list of long running tasks including recently completed
         ones.
         """
-        # type: (Optional[List[str]]) -> Iterable[LongTask]
         return self._get_paged_results(LongTask, 'longtask', {}, expand)
 
     def get_long_task(self, task_id, expand):
