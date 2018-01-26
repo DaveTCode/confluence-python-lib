@@ -4,7 +4,15 @@ This document details the list of endpoints exposed by the REST API and their cu
 state in this library.
 
 It was pulled from https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/ so 
-is current as of v6.6.0
+is current as of v6.6.0.
+
+State key:
+- empty => Not written
+- 1 => written but not tested
+- 2 => written and tested
+
+Note that there are also TODOs scattered through the code where particular parts of
+objects have not yet been expanded.
 
 ## audit
 
@@ -94,16 +102,16 @@ is current as of v6.6.0
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|GET        |groups                                                   |       |
-|GET        |group                                                    |       |
-|GET        |members                                                  |       |
+|GET        |groups                                                   | 1     |
+|GET        |group                                                    | 1     |
+|GET        |members                                                  | 1     |
 
 ## longtask
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|GET        |/rest/longtask                                           |       |
-|GET        |/rest/longtask/{id}                                      |       |
+|GET        |/rest/longtask                                           | 1     |
+|GET        |/rest/longtask/{id}                                      | 1     |
 
 ## search
 

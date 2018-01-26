@@ -1,4 +1,5 @@
 from confluence.models.group import Group
+from confluence.models.longtask import LongTask
 from confluence.models.page import ContentType, Page
 from confluence.models.space import Space, SpaceType, SpaceStatus
 from confluence.models.user import User
@@ -39,7 +40,13 @@ class Confluence:
         if self._client:
             self._client.close()
 
-    def _get_single_result(self, item_type, url, params):  # type: (Callable, str, Dict[str, str]) -> Any
+    def _get_single_result(self, item_type, path, params, expand):
+        # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Any
+        url = '{}/{}'.format(self._api_base, path)
+
+        if expand:
+            params['expand'] = ','.join(expand)
+
         # Allow the class to be used without being inside a with block if
         # required.
         if self._client:
@@ -49,7 +56,13 @@ class Confluence:
 
         return item_type(result)
 
-    def _get_paged_results(self, item_type, url, params):  # type: (Callable, str, Dict[str, str]) -> Iterable[Any]
+    def _get_paged_results(self, item_type, path, params, expand):
+        # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Iterable[Any]
+        url = '{}/{}'.format(self._api_base, path)
+
+        if expand:
+            params['expand'] = ','.join(expand)
+
         while url is not None:
             # Allow the class to be used without being inside a with block if
             # required.
@@ -98,7 +111,6 @@ class Confluence:
 
         :return: An iterable of pages/blogposts which match the parameters.
         """
-        content_url = '{}/content'.format(self._api_base)
         params = {}
         if content_type and content_type in ('page', 'blogpost'):
             params['type'] = content_type
@@ -110,10 +122,8 @@ class Confluence:
             params['status'] = status
         if posting_day and content_type == 'blogpost':
             params['postingDay'] = posting_day.strftime('%Y-%m-%d')
-        if expand:
-            params['expand'] = ','.join(expand)
 
-        return self._get_paged_results(Page, content_url, params)
+        return self._get_paged_results(Page, 'content', params, expand)
 
     def search(self, cql, cql_context=None, expand=None):
         # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Page]
@@ -132,16 +142,13 @@ class Confluence:
 
         :return: An iterable of pages which match the parameters.
         """
-        search_url = '{}/content/search'.format(self._api_base)
         params = {'cql': cql}
         if cql_context:
             params['cqlcontext'] = cql_context
-        if expand:
-            params['expand'] = ','.join(expand)
 
-        return self._get_paged_results(Page, search_url, params)
+        return self._get_paged_results(Page, 'content/search', params, expand)
 
-    def spaces(self, space_keys=None, space_type=None, status=None, label=None, favourite=None, expand=None):
+    def get_spaces(self, space_keys=None, space_type=None, status=None, label=None, favourite=None, expand=None):
         # type: (Optional[List[str]], Optional[SpaceType], Optional[SpaceStatus], Optional[str], Optional[bool], Optional[List[str]]) -> Iterable[Space]
         """
         Queries the list of spaces, providing several ways to further filter
@@ -160,7 +167,6 @@ class Confluence:
         description, metadata & homepage.
         :return:
         """
-        url = '{}/space'.format(self._api_base)
         params = {}
         if space_keys:
             params['spaceKey'] = ','.join(space_keys)
@@ -174,10 +180,8 @@ class Confluence:
             # TODO - Can't figure out if this really works. The REST API docs don't explain it and no
             # queries re: favourite seem to make any difference
             params['favourite'] = str(favourite)
-        if expand:
-            params['expand'] = ','.join(expand)
 
-        return self._get_paged_results(Space, url, params)
+        return self._get_paged_results(Space, 'space', params, expand)
 
     def get_space(self, space_key, expand=None):  # type: (str, Optional[List[str]]) -> Space
         """
@@ -189,13 +193,7 @@ class Confluence:
 
         :return: The space matching the given key.
         """
-        url = '{}/space/{}'.format(self._api_base, space_key)
-        params = {}
-
-        if expand:
-            params['expand'] = ','.join(expand)
-
-        return self._get_single_result(Space, url, params)
+        return self._get_single_result(Space, 'space/{}'.format(space_key), {}, expand)
 
     def get_space_content(self, space_key, just_root=False, expand=None):
         # type: (str, bool, Optional[List[str]]) -> Iterable[Page]
@@ -210,16 +208,12 @@ class Confluence:
 
         :return: A generator containing all pages matching the search criteria.
         """
-        url = '{}/space/{}/content'.format(self._api_base, space_key)
         params = {}
 
         if just_root:
             params['depth'] = 'root'
 
-        if expand:
-            params['expand'] = ','.join(expand)
-
-        return self._get_paged_results(Page, url, params)
+        return self._get_paged_results(Page, 'space/{}/content'.format(space_key), params, expand)
 
     def get_space_content_with_type(self, space_key, content_type, just_root=False, expand=None):
         # type: (str, ContentType, bool, Optional[List[str]]) -> Iterable[Page]
@@ -235,16 +229,13 @@ class Confluence:
 
         :return: A generator containing all pages matching the search criteria.
         """
-        url = '{}/space/{}/content/{}'.format(self._api_base, space_key, content_type.value)
+        path = 'space/{}/content/{}'.format(space_key, content_type.value)
         params = {}
 
         if just_root:
             params['depth'] = 'root'
 
-        if expand:
-            params['expand'] = ','.join(expand)
-
-        return self._get_paged_results(Page, url, params)
+        return self._get_paged_results(Page, path, params, expand)
 
     def get_user(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> User
@@ -264,17 +255,13 @@ class Confluence:
         if (not username and not user_key) or (username and user_key):
             raise ValueError('Exactly one of username or user_key must be set')
 
-        url = '{}/user'.format(self._api_base)
-
         params = {}
         if username:
             params['username'] = username
         if user_key:
             params['key'] = user_key
-        if expand:
-            params['expand'] = ','.join(expand)
 
-        return self._get_single_result(User, url, params)
+        return self._get_single_result(User, 'user', params, expand)
 
     def get_anonymous_user(self):  # type: () -> User
         """
@@ -282,7 +269,7 @@ class Confluence:
 
         :return: A full user object.
         """
-        return self._get_single_result(User, '{}/user/anonymous'.format(self._api_base), {})
+        return self._get_single_result(User, 'user/anonymous', {}, None)
 
     def get_current_user(self):  # type: () -> User
         """
@@ -290,7 +277,7 @@ class Confluence:
 
         :return: A full user object.
         """
-        return self._get_single_result(User, '{}/user/current'.format(self._api_base), {})
+        return self._get_single_result(User, 'user/current', {}, None)
 
     def get_user_groups(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> Iterable[Group]
@@ -308,17 +295,78 @@ class Confluence:
         if (not username and not user_key) or (username and user_key):
             raise ValueError('Exactly one of username or user_key must be set')
 
-        url = '{}/user/memberof'.format(self._api_base)
         params = {}
 
         if username:
             params['username'] = username
         if user_key:
             params['key'] = user_key
-        if expand:
-            params['expand'] = ','.join(expand)
 
-        return self._get_paged_results(Group, url, params)
+        return self._get_paged_results(Group, 'user/memberof', params, expand)
+
+    def get_groups(self, expand):
+        # type: (Optional[List[str]]) -> Iterable[Group]
+        """
+        Get the entire collection of groups on this instance.
+
+        :param expand: An optional list of fields to expand on the returned
+        group objects. None currently known.
+
+        :return: The list of groups as an iterator.
+        """
+        return self._get_paged_results(Group, 'group', {}, expand)
+
+    def get_group(self, name, expand):
+        # type: (str, Optional[List[str]]) -> Group
+        """
+        Get a single group instance.
+
+        :param name: The name of the group to search for.
+        :param expand: An optional list of fields to expand on the returned
+        group objects. None currently known.
+
+        :return: The group object.
+        """
+        return self._get_single_result(Group, 'group/{}'.format(name), {}, expand)
+
+    def get_group_members(self, name, expand):
+        # type: (str, Optional[List[str]]) -> Iterable[User]
+        """
+        Get the entire collection of users in this group.
+
+        :param name: The name of the group to search for.
+        :param expand: An optional list of fields to expand on the returned
+        user objects. None currently known.
+
+        :return: The list of groups as an iterator.
+        """
+        return self._get_paged_results(User, 'group/{}/member'.format(name), {}, expand)
+
+    def get_long_tasks(self, expand):
+        """
+        Get the full list of long running tasks from the confluence instance.
+
+        :param expand: An optional list of fields to expand on the returned
+        user objects. None currently known.
+
+        :return: The list of long running tasks including recently completed
+        ones.
+        """
+        # type: (Optional[List[str]]) -> Iterable[LongTask]
+        return self._get_paged_results(LongTask, 'longtask', {}, expand)
+
+    def get_long_task(self, task_id, expand):
+        # type: (str, Optional[List[str]]) -> Iterable[LongTask]
+        """
+        Get the details about a single long running task.
+
+        :param task_id: The task id as a GUID.
+        :param expand: An optional list of fields to expand on the returned
+        user objects. None currently known.
+
+        :return: The full task information.
+        """
+        return self._get_paged_results(LongTask, 'longtask/{}'.format(task_id), {}, expand)
 
     def __str__(self):
         return self._api_base
