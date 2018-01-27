@@ -171,9 +171,9 @@ class Confluence:
         if space_keys:
             params['spaceKey'] = ','.join(space_keys)
         if space_type:
-            params['type'] = space_type.value()
+            params['type'] = space_type.value
         if status:
-            params['status'] = status.value()
+            params['status'] = status.value
         if label:
             params['label'] = label
         if favourite:
