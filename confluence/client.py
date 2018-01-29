@@ -1,3 +1,5 @@
+from confluence.models.attachment import Attachment
+from confluence.models.comment import Comment, CommentDepth, CommentLocation
 from confluence.models.group import Group
 from confluence.models.longtask import LongTask
 from confluence.models.page import ContentType, Page
@@ -124,6 +126,68 @@ class Confluence:
             params['postingDay'] = posting_day.strftime('%Y-%m-%d')
 
         return self._get_paged_results(Page, 'content', params, expand)
+
+    def get_comments(self, content_id, depth=None, parent_version=None, location=None, expand=None):
+        # type: (int, Optional[CommentDepth], Optional[int], Optional[List[CommentLocation]], Optional[List[str]]) -> Iterable[Comment]
+        """
+        Retrieve comments on a piece of content.
+
+        :param content_id: The ID of the content in confluence.
+        :param depth: Either ROOT or ALL to indicate whether to see all
+        comments at all depths.
+        :param parent_version: The version of the content which we want
+        comments on. Default is to use current version.
+        :param location: List of inline, resolved and footer.
+        :param expand: The confluence REST API utilised expansion to avoid
+        returning all fields on all requests. This optional parameter allows
+        the user to select which fields that they want to expand as a list.
+
+        :return: A list of 0-n comments from the document.
+        """
+        params = {}
+
+        if depth:
+            params['depth'] = depth.value
+
+        if parent_version:
+            params['parent_version'] = parent_version
+
+        if location:
+            # Note, this is really correct. The confluence API wants to have location=A&location=B not location=A,B
+            params['location'] = [l.value for l in location]
+
+        return self._get_paged_results(Comment,
+                                       'content/{}/child/comment'.format(content_id),
+                                       params=params,
+                                       expand=expand)
+
+    def get_attachments(self, content_id, filename, media_type, expand=None):
+        # type: (int, Optional[str], Optional[str], Optional[List[str]]) -> Iterable[Attachment]
+        """
+        Retrieve attachments on a piece of content.
+
+        :param content_id: The ID of the content in confluence.
+        :param filename: Optionally the filename to search by exact filename.
+        :param media_type: Optionally the media type of attachments to search
+        for.
+        :param expand: The confluence REST API utilised expansion to avoid
+        returning all fields on all requests. This optional parameter allows
+        the user to select which fields that they want to expand as a list.
+
+        :return: A list of 0-n attachments from the document.
+        """
+        params = {}
+
+        if filename:
+            params['filename'] = filename
+
+        if media_type:
+            params['media_type'] = media_type
+
+        return self._get_paged_results(Comment,
+                                       'content/{}/child/attachmnet'.format(content_id),
+                                       params=params,
+                                       expand=expand)
 
     def search(self, cql, cql_context=None, expand=None):
         # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Page]
