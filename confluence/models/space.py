@@ -1,7 +1,7 @@
 from enum import Enum
 import logging
 from confluence.models.icon import Icon
-from confluence.models.page import Page
+#from confluence.models.page import Page
 from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
@@ -41,8 +41,8 @@ class Space:
             pass  # TODO - Description comes back with `view` & `plain` expandable, not clear whether that's a common object so not handling for now
 
         # Homepage is an expandable full page object
-        if 'homepage' in json:
-            self.homepage = Page(json['homepage'])
+        #if 'homepage' in json:
+        #    self.homepage = Page(json['homepage'])
 
         # icon is expandable
         if 'icon' in json:
