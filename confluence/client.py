@@ -82,6 +82,12 @@ class Confluence:
             for result in search_results['results']:
                 yield item_type(result)
 
+    def put_content(self, content, content_type = 'page'):
+        # type: (Page, str) -> None
+        url = f'{self._api_base}/content/{content.id}'
+        requests.put(url, auth=self._basic_auth, json=content.for_page_update())
+
+
     def get_content(self, content_type='page', space_key=None, title=None, status=None, posting_day=None, expand=None):
         # type: (str, Optional[str], Optional[str], Optional[str], Optional[date], Optional[List[str]]) -> Iterable[Page]
         """
