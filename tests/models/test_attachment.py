@@ -1,4 +1,4 @@
-from confluence.models.attachment import Attachment
+from confluence.models.content import Content
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,7 +6,7 @@ logger.addHandler(logging.NullHandler())
 
 
 def test_create_group_with_valid_json():
-    a = Attachment({
+    a = Content({
         "id": "att35459744",
         "type": "attachment",
         "status": "current",

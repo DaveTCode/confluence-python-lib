@@ -5,6 +5,9 @@
 
 This is a simple wrapper around the REST API which the Confluence provides.
 
+Note that the library is undergoing major work so don't expect the API to 
+be stable until this notice is removed!
+
 c.f. [endpoints.md](endpoints.md) for a list of endpoints and whether this library 
 supports them yet. Please do send pull requests if you want an endpoint that isn't covered!
 

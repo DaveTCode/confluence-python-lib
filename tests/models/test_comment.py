@@ -1,4 +1,4 @@
-from confluence.models.comment import Comment
+from confluence.models.content import Content
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,7 +6,7 @@ logger.addHandler(logging.NullHandler())
 
 
 def test_create_group_with_valid_json():
-    c = Comment({
+    c = Content({
         "id": "39128239",
         "type": "comment",
         "status": "current",

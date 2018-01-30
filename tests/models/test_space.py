@@ -26,7 +26,8 @@ def test_create_space_all():
         'homepage': {
             'id': 1,
             'title': 'Hello',
-            'status': 'Archived',
+            'status': 'current',
+            'type': 'page',
             'space': {
                 'id': 1,
                 'key': 'TEST',

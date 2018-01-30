@@ -1,8 +1,6 @@
-from confluence.models.attachment import Attachment
-from confluence.models.comment import Comment, CommentDepth, CommentLocation
+from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType
 from confluence.models.group import Group
 from confluence.models.longtask import LongTask
-from confluence.models.page import ContentType, Page
 from confluence.models.space import Space, SpaceType, SpaceStatus
 from confluence.models.user import User
 from datetime import date
@@ -84,14 +82,53 @@ class Confluence:
             for result in search_results['results']:
                 yield item_type(result)
 
-    def put_content(self, content, content_type = 'page'):
-        # type: (Page, str) -> None
-        url = '{}/content/{}'.format(self._api_base, content.id)
-        requests.put(url, auth=self._basic_auth, json=content.for_page_update())
+    def _put(self, item_type, path, params, data):
+        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        url = '{}/{}'.format(self._api_base, path)
 
+        if self._client:
+            result = self._client.put(url, data=data, params=params).json()
+        else:
+            result = requests.put(url, data=data, params=params).json()
 
-    def get_content(self, content_type='page', space_key=None, title=None, status=None, posting_day=None, expand=None):
-        # type: (str, Optional[str], Optional[str], Optional[str], Optional[date], Optional[List[str]]) -> Iterable[Page]
+        return item_type(result)
+
+    def put_content(self, content_id, content_type, new_version, status,
+                    new_content, new_title, new_parent, new_status):
+        # type: (int, str, int, Optional[ContentStatus], Optional[str], Optional[str], Optional[int], Optional[ContentStatus]) -> Content
+        content = {
+            'version': {
+                'number': new_version
+            },
+            'type': content_type,
+            'body': {
+                'storage': {
+                    'value': new_content,
+                    'representation': 'storage'
+                }
+            }
+        }
+
+        if new_title:
+            content['title'] = new_title
+
+        if new_parent:
+            content['ancestors'] = [{
+              'id': new_parent
+            }]
+
+        if new_status:
+            content['status'] = new_status.value
+
+        params = {}
+        if status:
+            params['status'] = status.value
+
+        return self._put(ContentType, 'content/{}'.format(content_id), params=params, data=content)
+
+    def get_content(self, content_type=ContentType.PAGE, space_key=None,
+                    title=None, status=None, posting_day=None, expand=None):
+        # type: (ContentType, Optional[str], Optional[str], Optional[str], Optional[date], Optional[List[str]]) -> Iterable[Content]
         """
         Matches the REST API call https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/#content-getContent
         which returns an iterable of either pages or blogposts depending on
@@ -120,21 +157,25 @@ class Confluence:
         :return: An iterable of pages/blogposts which match the parameters.
         """
         params = {}
-        if content_type and content_type in ('page', 'blogpost'):
+
+        if content_type and content_type not in (ContentType.PAGE, ContentType.BLOG_POST):
+            raise ValueError('Cannot GET comments/attachments, only blogposts available on this API call')
+        elif content_type:
             params['type'] = content_type
+
         if space_key:
             params['spaceKey'] = space_key
         if title:
             params['title'] = title
         if status:
             params['status'] = status
-        if posting_day and content_type == 'blogpost':
+        if posting_day and content_type == ContentType.BLOG_POST:
             params['postingDay'] = posting_day.strftime('%Y-%m-%d')
 
-        return self._get_paged_results(Page, 'content', params, expand)
+        return self._get_paged_results(Content, 'content', params, expand)
 
     def get_comments(self, content_id, depth=None, parent_version=None, location=None, expand=None):
-        # type: (int, Optional[CommentDepth], Optional[int], Optional[List[CommentLocation]], Optional[List[str]]) -> Iterable[Comment]
+        # type: (int, Optional[CommentDepth], Optional[int], Optional[List[CommentLocation]], Optional[List[str]]) -> Iterable[Content]
         """
         Retrieve comments on a piece of content.
 
@@ -162,13 +203,13 @@ class Confluence:
             # Note, this is really correct. The confluence API wants to have location=A&location=B not location=A,B
             params['location'] = [l.value for l in location]
 
-        return self._get_paged_results(Comment,
+        return self._get_paged_results(Content,
                                        'content/{}/child/comment'.format(content_id),
                                        params=params,
                                        expand=expand)
 
     def get_attachments(self, content_id, filename, media_type, expand=None):
-        # type: (int, Optional[str], Optional[str], Optional[List[str]]) -> Iterable[Attachment]
+        # type: (int, Optional[str], Optional[str], Optional[List[str]]) -> Iterable[Content]
         """
         Retrieve attachments on a piece of content.
 
@@ -190,13 +231,13 @@ class Confluence:
         if media_type:
             params['media_type'] = media_type
 
-        return self._get_paged_results(Comment,
+        return self._get_paged_results(Content,
                                        'content/{}/child/attachmnet'.format(content_id),
                                        params=params,
                                        expand=expand)
 
     def search(self, cql, cql_context=None, expand=None):
-        # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Page]
+        # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Content]
         """
         Perform a CQL search on the confluence instance and return an iterable
         of the pages which match the query.
@@ -216,7 +257,7 @@ class Confluence:
         if cql_context:
             params['cqlcontext'] = cql_context
 
-        return self._get_paged_results(Page, 'content/search', params, expand)
+        return self._get_paged_results(Content, 'content/search', params, expand)
 
     def get_spaces(self, space_keys=None, space_type=None, status=None, label=None, favourite=None, expand=None):
         # type: (Optional[List[str]], Optional[SpaceType], Optional[SpaceStatus], Optional[str], Optional[bool], Optional[List[str]]) -> Iterable[Space]
@@ -266,7 +307,7 @@ class Confluence:
         return self._get_single_result(Space, 'space/{}'.format(space_key), {}, expand)
 
     def get_space_content(self, space_key, just_root=False, expand=None):
-        # type: (str, bool, Optional[List[str]]) -> Iterable[Page]
+        # type: (str, bool, Optional[List[str]]) -> Iterable[Content]
         """
         Get all of the content underneath a particular space.
 
@@ -283,10 +324,10 @@ class Confluence:
         if just_root:
             params['depth'] = 'root'
 
-        return self._get_paged_results(Page, 'space/{}/content'.format(space_key), params, expand)
+        return self._get_paged_results(Content, 'space/{}/content'.format(space_key), params, expand)
 
     def get_space_content_with_type(self, space_key, content_type, just_root=False, expand=None):
-        # type: (str, ContentType, bool, Optional[List[str]]) -> Iterable[Page]
+        # type: (str, ContentType, bool, Optional[List[str]]) -> Iterable[Content]
         """
         Get all of the content underneath a particular space of a given type
 
@@ -305,7 +346,7 @@ class Confluence:
         if just_root:
             params['depth'] = 'root'
 
-        return self._get_paged_results(Page, path, params, expand)
+        return self._get_paged_results(Content, path, params, expand)
 
     def get_user(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> User

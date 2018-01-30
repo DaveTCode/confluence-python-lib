@@ -1,4 +1,4 @@
-from confluence.models.pageupdate import PageUpdate
+from confluence.models.contentversion import ContentVersion
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,7 +6,7 @@ logger.addHandler(logging.NullHandler())
 
 
 def test_page_update_creation():
-    p = PageUpdate({
+    cv = ContentVersion({
         'by': {
             'username': '1',
             'displayName': '2',
@@ -20,4 +20,4 @@ def test_page_update_creation():
         'hidden': False
     })
 
-    assert str(p) == '1 - 2017-02-01'
+    assert str(cv) == '1 - 2017-02-01'

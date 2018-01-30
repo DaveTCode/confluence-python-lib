@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing
 
+## [0.7.0] - 2017-01-30
+
+### Added
+- Added basic support for updating content
+- Many more of the fields on content objects are now stored when they're expanded
+
+### Changed
+- Major overhaul of the content based objects to better match the API provided
+
 ## [0.6.0] - 2017-01-26
 
 ### Added
@@ -65,7 +74,8 @@ First public release of the library
 ### Changed
 - Nothing
 
-[Unreleased]: https://github.com/DaveTCode/confluence-python-lib/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/DaveTCode/confluence-python-lib/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/DaveTCode/confluence-python-lib/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/DaveTCode/confluence-python-lib/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/DaveTCode/confluence-python-lib/compare/0.3.0...0.5.0
 [0.3.0]: https://github.com/DaveTCode/confluence-python-lib/compare/0.2.2...0.3.0

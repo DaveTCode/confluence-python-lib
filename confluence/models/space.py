@@ -10,6 +10,8 @@ logger.addHandler(logging.NullHandler())
 class SpaceType(Enum):
     """
     By default only a specified set of types are valid.
+
+    https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/SpaceType.html
     """
     GLOBAL = "global"
     PERSONAL = "personal"
@@ -18,6 +20,8 @@ class SpaceType(Enum):
 class SpaceStatus(Enum):
     """
     By default only a specific set of statuses are valid.
+
+    https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/SpaceStatus.html
     """
     CURRENT = "current"
     ARCHIVED = "archived"
@@ -30,10 +34,10 @@ class Space:
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         # All fields always exist on the json object
-        self.id = json['id']
-        self.key = json['key']
-        self.name = json['name']
-        self.type = json['type']
+        self.id = json['id']  # type: int
+        self.key = json['key']  # type: str
+        self.name = json['name']  # type: str
+        self.type = SpaceType(json['type'])  # type: SpaceType
 
         # Description is expandable
         if 'description' in json:
@@ -41,8 +45,8 @@ class Space:
 
         # Homepage is an expandable full page object
         if 'homepage' in json:
-            from confluence.models.page import Page
-            self.homepage = Page(json['homepage'])
+            from confluence.models.content import Content
+            self.homepage = Content(json['homepage'])
 
         # icon is expandable
         if 'icon' in json:
@@ -50,7 +54,7 @@ class Space:
 
         # metadata (inc labels) is expandable
         if 'metadata' in json:
-            pass  # TODO - Labels not implemented
+            self.metadata = json['metadata']  # type: Dict[str, Any]
 
     def __str__(self):
         return '{} - {} | {}'.format(self.id, self.key, self.name)

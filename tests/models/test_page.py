@@ -1,4 +1,4 @@
-from confluence.models.page import Page
+from confluence.models.content import Content
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,80 +6,81 @@ logger.addHandler(logging.NullHandler())
 
 
 def test_create_with_minimal_json():
-    p = Page({
+    p = Content({
         'id': 1,
         'title': 'Hello',
-        'status': 'Archived'
+        'status': 'current',
+        'type': 'page'
     })
 
     assert str(p) == '1 - Hello'
 
 
-def test_create_with_space():
-    p = Page({
-        'id': 1,
-        'title': 'Hello',
-        'status': 'Archived',
-        'space': {
-            'id': 1,
-            'key': 'TEST',
-            'name': 'Test',
-            'type': 'personal'
-        }
-    })
-
-    assert str(p.space) == '1 - TEST | Test'
-
-
-def test_create_with_body():
-    p = Page({
-        'id': 1,
-        'title': 'Hello',
-        'status': 'Archived',
-        'body': {
-            'storage': 1,
-            'editor': 'TEST',
-            'view': 'Test',
-            'export_view': 'personal',
-            'styled_view': 'personal',
-            'anonymous_export_view': 'body storage'
-        }
-    })
-
-    assert str(p.body_storage) == 'body storage'  # TODO - Needs fixing when we better implement the storage element on a page
-
-
-def test_create_with_history():
-    p = Page({
-        'id': 1,
-        'title': 'Hello',
-        'status': 'Archived',
-        'history': {
-            'latest': 1,
-            'createdDate': '2017-01-01',
-            'createdBy': {
-                'username': '1',
-                'displayName': '2',
-                'userKey': '3',
-                'type': '4'
-            },
-            'lastUpdated': {
-                'by': {
-                    'username': '1',
-                    'displayName': '2',
-                    'userKey': '3',
-                    'type': '4'
+def test_create_complete():
+    p = Content({
+        "id": "65577",
+        "type": "page",
+        "status": "current",
+        "title": "SandBox",
+        "space": {
+            "id": 98306,
+            "key": "SAN",
+            "name": "SandBox",
+            "type": "global"
+        },
+        "history": {
+            "latest": True,
+            "createdBy": {
+                "type": "anonymous",
+                "profilePicture": {
+                    "path": "anonymous.png",
+                    "width": 48,
+                    "height": 48,
+                    "isDefault": True
                 },
-                'when': '2017-02-01',
-                'message': 'Hello',
-                'number': 1,
-                'minorEdit': False,
-                'hidden': False
+                "displayName": "Anonymous"
+            },
+            "createdDate": "2017-09-22T11:03:07.420+01:00"
+        },
+        "version": {
+            "by": {
+                "type": "known",
+                "username": "user",
+                "userKey": "12345",
+                "profilePicture": {
+                    "path": "default.png",
+                    "width": 48,
+                    "height": 48,
+                    "isDefault": True
+                },
+                "displayName": "user"
+            },
+            "when": "2017-10-28T17:05:56.026+01:00",
+            "message": "",
+            "number": 8,
+            "minorEdit": False,
+            "hidden": False
+        },
+        "body": {
+            "storage": {
+                "value": "",
+                "representation": "storage",
+                "_expandable": {
+                    "content": "/rest/api/content/65577"
+                }
             }
+        },
+        "metadata": {
+        },
+        "extensions": {
+            "position": "none"
         }
     })
 
-    assert p.latest == 1
-    assert p.created_date == '2017-01-01'
-    assert str(p.author) == '1'
-    assert str(p.last_updated) == '1 - 2017-02-01'
+    assert p.body.storage == ''
+    assert p.body.storage_representation == 'storage'
+    assert not hasattr(p.body, 'edit')
+
+    assert p.history.latest
+
+    assert p.space.id == 98306
