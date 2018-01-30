@@ -15,7 +15,7 @@ class Attachment:
     def __init__(self, json):
         # type: (Dict[str, Any]) -> None
         self.id = json['id']  # type: str
-        self.type = json['attachment']  # type: str
+        self.type = json['type']  # type: str
         self.status = json['status']  # type: str
         self.title = json['title']  # type: str
         self.metadata = json['metadata']  # type: Dict[str, Any]
