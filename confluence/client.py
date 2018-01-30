@@ -86,7 +86,7 @@ class Confluence:
 
     def put_content(self, content, content_type = 'page'):
         # type: (Page, str) -> None
-        url = f'{self._api_base}/content/{content.id}'
+        url = '{}/content/{}'.format(self._api_base, content.id)
         requests.put(url, auth=self._basic_auth, json=content.for_page_update())
 
 
