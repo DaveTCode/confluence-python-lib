@@ -95,12 +95,12 @@ class Confluence:
 
     def put_content(self, content_id, content_type, new_version, status,
                     new_content, new_title, new_parent, new_status):
-        # type: (int, str, int, Optional[ContentStatus], Optional[str], Optional[str], Optional[int], Optional[ContentStatus]) -> Content
+        # type: (int, ContentType, int, Optional[ContentStatus], Optional[str], Optional[str], Optional[int], Optional[ContentStatus]) -> Content
         content = {
             'version': {
                 'number': new_version
             },
-            'type': content_type,
+            'type': content_type.value,
             'body': {
                 'storage': {
                     'value': new_content,
@@ -161,7 +161,7 @@ class Confluence:
         if content_type and content_type not in (ContentType.PAGE, ContentType.BLOG_POST):
             raise ValueError('Cannot GET comments/attachments, only blogposts available on this API call')
         elif content_type:
-            params['type'] = content_type
+            params['type'] = content_type.value
 
         if space_key:
             params['spaceKey'] = space_key
