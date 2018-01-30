@@ -57,5 +57,15 @@ class Page:
             if 'lastUpdated' in json['history']:
                 self.last_updated = PageUpdate(json['history']['lastUpdated'])
 
+        if 'version' in json:
+            if 'number' in json['version']:
+                self.version_number = json['version']['number']
+
+    def for_page_update(self) -> Dict[str, Any]:
+        json = {'id': self.id, 'title': self.title, 'type': 'page',
+                'body': {'storage': self.body_storage},
+                'version': {'number': self.version_number + 1}}
+        return json
+
     def __str__(self):
         return '{} - {}'.format(self.id, self.title)
