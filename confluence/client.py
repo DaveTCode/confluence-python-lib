@@ -83,7 +83,7 @@ class Confluence:
                 yield item_type(result)
 
     def _put(self, item_type, path, params, data):
-        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        # type: (Callable, str, Dict[str, str], Dict[str, str]) -> Any
         url = '{}/{}'.format(self._api_base, path)
 
         if self._client:
