@@ -30,14 +30,14 @@ objects have not yet been expanded.
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
 |POST       |/rest/content                                            |       |
-|GET        |/rest/content                                            |       |
-|PUT        |/rest/content/{contentId}                                |       |
-|GET        |/rest/content/{id}                                       |       |
+|GET        |/rest/content                                            | 1     |
+|PUT        |/rest/content/{contentId}                                | 1     |
+|GET        |/rest/content/{id}                                       | 1     |
 |DELETE     |/rest/content/{id}                                       |       |
 |GET        |/rest/content/{id}/history                               |       |
 |GET        |/rest/content/{id}/history/{version}/macro/hash/{hash}   |       |
 |GET        |/rest/content/{id}/history/{version}/macro/id/{macroId}  |       |
-|GET        |/rest/content/search                                     |       |
+|GET        |/rest/content/search                                     | 1     |
 
 ### content/{id}/child
 
@@ -45,13 +45,13 @@ objects have not yet been expanded.
 |-----------|--------------------------------------------------------:|-------|
 |GET        |/rest/content/{id}/child                                 |       |
 |GET        |/rest/content/{id}/child/{type}                          |       |
-|GET        |/rest/content/{id}/child/comment                         |       |
+|GET        |/rest/content/{id}/child/comment                         | 1     |
 
 ### content/{id}/child/attachment
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|GET        |/rest/content/{id}/child/attachment                      |       |
+|GET        |/rest/content/{id}/child/attachment                      | 1     |
 |POST       |/rest/content/{id}/child/attachment                      |       |
 |PUT        |/rest/content/{id}/child/attachment/{attachmentId}       |       |
 |POST       |/rest/content/{id}/child/attachment/{attachmentId}/data  |       |
