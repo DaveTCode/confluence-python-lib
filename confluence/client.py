@@ -1,3 +1,4 @@
+from confluence.models.auditrecord import AuditRecord
 from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType
 from confluence.models.group import Group
 from confluence.models.longtask import LongTask
@@ -478,6 +479,31 @@ class Confluence:
         :return: The full task information.
         """
         return self._get_paged_results(LongTask, 'longtask/{}'.format(task_id), {}, expand)
+
+    def get_audit_records(self, start_date, end_date, search_string):
+        # type: (Optional[date], Optional[date], Optional[str]) -> Iterable[AuditRecord]
+        """
+        Retrieve audit records between two dates with the given search
+        parameters.
+
+        :param start_date: Optional date to start searching.
+        :param end_date: Optional date to end searching.
+        :param search_string: Optional string which will be included in all
+        returned audit records.
+
+        :return: A list of all audit records matching the given criteria.
+        """
+        params = {}
+        if start_date:
+            params['startDate'] = start_date.strftime('%Y-%m-%d')
+
+        if end_date:
+            params['endDate'] = end_date.strftime('%Y-%m-%d')
+
+        if search_string:
+            params['searchString'] = search_string
+
+        return self._get_paged_results(AuditRecord, 'audit', params, None)
 
     def __str__(self):
         return self._api_base

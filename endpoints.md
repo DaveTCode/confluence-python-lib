@@ -18,7 +18,7 @@ objects have not yet been expanded.
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|GET        |/rest/audit                                              |       |
+|GET        |/rest/audit                                              | 1     |
 |POST       |/rest/audit                                              |       |
 |GET        |/rest/audit/export                                       |       |
 |GET        |/rest/audit/retention                                    |       |
