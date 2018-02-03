@@ -54,8 +54,7 @@ class Content:
     from calling code.
     """
 
-    def __init__(self, json):
-        # type: (Dict[str, Any]) -> None
+    def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.id = json['id']  # type: str
         self.title = json['title']  # type: str
         self.status = ContentStatus(json['status'])  # type: ContentStatus
