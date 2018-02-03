@@ -1,6 +1,7 @@
 from confluence.models.auditrecord import AuditRecord
 from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType
 from confluence.models.group import Group
+from confluence.models.label import Label
 from confluence.models.longtask import LongTask
 from confluence.models.space import Space, SpaceType, SpaceStatus
 from confluence.models.user import User
@@ -236,6 +237,22 @@ class Confluence:
                                        'content/{}/child/attachment'.format(content_id),
                                        params=params,
                                        expand=expand)
+
+    def get_labels(self, content_id, prefix):  # type: (int, Optional[str]) -> Iterable[Label]
+        """
+        Retrieve the set of labels on a piece of content.
+
+        :param content_id: The confluence unique id for this content.
+        :param prefix: Optionally specify the label prefix.
+
+        :return: A list of the labels on that document.
+        """
+        params = {}
+
+        if prefix:
+            params['prefix'] = prefix
+
+        return self._get_paged_results(Label, 'content/{}/label'.format(content_id), params, None)
 
     def search(self, cql, cql_context=None, expand=None):
         # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Content]

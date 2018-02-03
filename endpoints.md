@@ -67,7 +67,7 @@ objects have not yet been expanded.
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|GET        |/rest/content/{id}/label                                 |       |
+|GET        |/rest/content/{id}/label                                 | 1     |
 |POST       |/rest/content/{id}/label                                 |       |
 |DELETE     |/rest/content/{id}/label                                 |       |
 |DELETE     |/rest/content/{id}/label/{label}                         |       |
