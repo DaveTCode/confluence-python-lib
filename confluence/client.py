@@ -233,7 +233,7 @@ class Confluence:
             params['media_type'] = media_type
 
         return self._get_paged_results(Content,
-                                       'content/{}/child/attachmnet'.format(content_id),
+                                       'content/{}/child/attachment'.format(content_id),
                                        params=params,
                                        expand=expand)
 
