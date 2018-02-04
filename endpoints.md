@@ -44,7 +44,7 @@ objects have not yet been expanded.
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
 |GET        |/rest/content/{id}/child                                 |       |
-|GET        |/rest/content/{id}/child/{type}                          |       |
+|GET        |/rest/content/{id}/child/{type}                          | 1     |
 |GET        |/rest/content/{id}/child/comment                         | 1     |
 
 ### content/{id}/child/attachment
