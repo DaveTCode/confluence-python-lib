@@ -1,5 +1,6 @@
 from confluence.models.auditrecord import AuditRecord
 from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType
+from confluence.models.contenthistory import ContentHistory
 from confluence.models.group import Group
 from confluence.models.label import Label
 from confluence.models.longtask import LongTask
@@ -175,6 +176,21 @@ class Confluence:
             params['postingDay'] = posting_day.strftime('%Y-%m-%d')
 
         return self._get_paged_results(Content, 'content', params, expand)
+
+    def get_content_history(self, content_id, expand=None):  # type: (int, Optional[List[str]]) -> None
+        """
+        Get the full history of a confluence object. Note that in general you
+        can retrieve this by using get_content with history expanded so this
+        function is only useful when you don't need the content object as well.
+
+        :param content_id: The ID of the content in confluence.
+        :param expand: The confluence REST API utilised expansion to avoid
+        returning all fields on all requests. This optional parameter allows
+        the user to select which fields that they want to expand as a list.
+
+        :return: A content history object.
+        """
+        return self._get_single_result(ContentHistory, 'content/{}/history'.format(content_id), {}, expand)
 
     def get_comments(self, content_id, depth=None, parent_version=None, location=None, expand=None):
         # type: (int, Optional[CommentDepth], Optional[int], Optional[List[CommentLocation]], Optional[List[str]]) -> Iterable[Content]
