@@ -8,6 +8,7 @@ from confluence.models.space import Space, SpaceType, SpaceStatus
 from confluence.models.user import User
 from datetime import date
 import logging
+import os
 import requests
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
 
@@ -92,13 +93,39 @@ class Confluence:
         if self._client:
             result = self._client.put(url, json=data, params=params).json()
         else:
-            result = requests.put(url, json=data, params=params).json()
+            result = requests.put(url, json=data, params=params, auth=self._basic_auth).json()
 
         return item_type(result)
+
+    def _post_return_multiple(self, item_type, path, params, files):
+        url = '{}/{}'.format(self._api_base, path)
+        headers = {"X-Atlassian-Token": "nocheck"}
+
+        if self._client:
+            result = self._client.post(url, headers=headers, files=files, params=params).json()
+        else:
+            result = requests.put(url, headers=headers, files=files, params=params, auth=self._basic_auth).json()
+
+        return [item_type(r) for r in result['results']]
 
     def put_content(self, content_id, content_type, new_version, status,
                     new_content, new_title, new_parent, new_status):
         # type: (int, ContentType, int, Optional[ContentStatus], Optional[str], Optional[str], Optional[int], Optional[ContentStatus]) -> Content
+        """
+        Replace a piece of content in confluence. This can be used to update
+        title, content, parent or status.
+
+        :param content_id: The confluence unique ID .
+        :param content_type: The type of content to be updated.
+        :param new_version: This should be the current version + 1.
+        :param status: The current status of the object.
+        :param new_content: The new content to store, optional.
+        :param new_title: The new title, optional.
+        :param new_parent: The new parent content id, optional.
+        :param new_status: The new content status, optional.
+
+        :return: The updated content object.
+        """
         content = {
             'version': {
                 'number': new_version
@@ -274,6 +301,36 @@ class Confluence:
                                        'content/{}/child/attachment'.format(content_id),
                                        params=params,
                                        expand=expand)
+
+    def add_attachment(self, content_id, file_path, file_name=None, status=None):
+        # type: (int, str, Optional[str], Optional[ContentStatus]) -> Iterable[Content]
+        """
+        Add a single attachment to an existing piece of content.
+
+        :param content_id: the confluence content to add the attachment to.
+        :param file_path: The full location of the file on the local system.
+        :param file_name: Optionally the name to give the attachment in
+        confluence.
+        :param status: Optionally the status of the attachment after upload.
+        Must be one of current or draft, defaults to current.
+
+        :return: A list containing 0-1 attachments depending on whether this
+        succeeded or not.
+        """
+        params = {}
+        if status:
+            if status in (ContentStatus.HISTORICAL, ContentStatus.TRASHED):
+                raise ValueError('Only draft or current are valid states for a new attachment')
+            params['status'] = status.value
+
+        if not file_name:
+            file_name = os.path.basename(file_path)
+
+        with open(file_path, 'rb') as f:
+            return self._post_return_multiple(Content,
+                                              '/content/{}/child/attachment'.format(content_id),
+                                              params=params,
+                                              files={'file': (file_name, f)})
 
     def get_labels(self, content_id, prefix):  # type: (int, Optional[str]) -> Iterable[Label]
         """

@@ -52,7 +52,7 @@ objects have not yet been expanded.
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
 |GET        |/rest/content/{id}/child/attachment                      | 1     |
-|POST       |/rest/content/{id}/child/attachment                      |       |
+|POST       |/rest/content/{id}/child/attachment                      | 1     |
 |PUT        |/rest/content/{id}/child/attachment/{attachmentId}       |       |
 |POST       |/rest/content/{id}/child/attachment/{attachmentId}/data  |       |
 
