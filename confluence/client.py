@@ -209,7 +209,7 @@ class Confluence:
         """
         params = {}
         if parent_version:
-            params['parentVersion'] = parent_version
+            params['parentVersion'] = str(parent_version)
 
         return self._get_paged_results(Content, 'content/{}/page'.format(content_id), params, expand)
 
