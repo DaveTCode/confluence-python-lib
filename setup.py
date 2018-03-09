@@ -15,7 +15,7 @@ except ImportError:
 setup(
     name='confluence-rest-library',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version='0.8.0',
+    version='0.9.0',
     description='A simple wrapper around the Confluence REST API.',
     long_description=long_description,
     author='David Tyler',
