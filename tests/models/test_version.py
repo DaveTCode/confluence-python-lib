@@ -1,4 +1,4 @@
-from confluence.models.contentversion import ContentVersion
+from confluence.models.version import Version
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,7 +6,7 @@ logger.addHandler(logging.NullHandler())
 
 
 def test_page_update_creation():
-    cv = ContentVersion({
+    cv = Version({
         'by': {
             'username': '1',
             'displayName': '2',

@@ -1,6 +1,6 @@
 from confluence.models.contentbody import ContentBody
 from confluence.models.contenthistory import ContentHistory
-from confluence.models.contentversion import ContentVersion
+from confluence.models.version import Version
 from confluence.models.space import Space
 from enum import Enum
 import logging
@@ -76,7 +76,7 @@ class Content:
             self.history = ContentHistory(json['history'])
 
         if 'version' in json:
-            self.version = ContentVersion(json['version'])
+            self.version = Version(json['version'])
 
     def __str__(self):
         return '{} - {}'.format(self.id, self.title)

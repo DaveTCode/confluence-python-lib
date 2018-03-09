@@ -1,4 +1,4 @@
-from confluence.models.contentversion import ContentVersion
+from confluence.models.version import Version
 from confluence.models.user import User
 import logging
 from typing import Any, Dict
@@ -20,13 +20,13 @@ class ContentHistory:
 
         # Fields only returned if the history.lastUpdated is expanded
         if 'lastUpdated' in json:
-            self.last_updated = ContentVersion(json['lastUpdated'])
+            self.last_updated = Version(json['lastUpdated'])
 
         if 'previousVersion' in json:
-            self.previous_version = ContentVersion(json['previousVersion'])
+            self.previous_version = Version(json['previousVersion'])
 
         if 'nextVersion' in json:
-            self.next_version = ContentVersion(json['nextVersion'])
+            self.next_version = Version(json['nextVersion'])
 
         if 'contributors' in json:
             # Note: this is not properly implemented yet, we don't turn this

@@ -477,7 +477,17 @@ class Confluence:
         return self._get_paged_results(Content, path, params, expand)
 
     def get_space_properties(self, space_key, expand=None):
-        # type: (str, Optional[List[str]]) ->
+        # type: (str, Optional[List[str]]) -> Iterable[SpaceProperty]
+        """
+        Get all of the properties attached to a given space.
+
+        :param space_key: The key of the space.
+        :param expand: A list of properties which can be expanded.
+
+        :return: A generator containing all of the properties attached to the
+        space.
+        """
+        return self._get_paged_results(SpaceProperty, 'space/{}/property'.format(space_key), {}, expand)
 
     def get_user(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> User

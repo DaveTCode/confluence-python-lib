@@ -136,7 +136,7 @@ objects have not yet been expanded.
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|GET        |/rest/space/{spaceKey}/property                          |       |
+|GET        |/rest/space/{spaceKey}/property                          | 1     |
 |POST       |/rest/space/{spaceKey}/property                          |       |
 |GET        |/rest/space/{spaceKey}/property/{key}                    |       |
 |PUT        |/rest/space/{spaceKey}/property/{key}                    |       |

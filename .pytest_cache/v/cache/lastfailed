@@ -1,0 +1,5 @@
+{
+  "tests/models/test_group.py": true,
+  "tests/models/test_icon.py": true,
+  "tests/models/test_user.py": true
+}
