@@ -4,7 +4,7 @@ from confluence.models.contenthistory import ContentHistory
 from confluence.models.group import Group
 from confluence.models.label import Label
 from confluence.models.longtask import LongTask
-from confluence.models.space import Space, SpaceType, SpaceStatus
+from confluence.models.space import Space, SpaceProperty, SpaceStatus, SpaceType
 from confluence.models.user import User
 from datetime import date
 import logging

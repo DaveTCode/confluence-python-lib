@@ -188,3 +188,5 @@ GitHub.sublime-settings
 
 # Mypy cache doesnt need including
 .mypy_cache
+
+.pytest_cache

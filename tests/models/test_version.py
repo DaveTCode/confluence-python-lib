@@ -20,4 +20,4 @@ def test_page_update_creation():
         'hidden': False
     })
 
-    assert str(cv) == '1 - 2017-02-01'
+    assert str(cv) == '1'

@@ -54,8 +54,10 @@ def test_create_space_all():
 def test_create_space_property_minimal():
     s = SpaceProperty({
         'space': {
+            'id': 1,
             'key': 'TST',
             'name': 'Example space',
+            'type': 'personal',
             'description': {
                 'plain': {
                     'value': 'This is an example space',
