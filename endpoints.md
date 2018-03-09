@@ -156,9 +156,9 @@ objects have not yet been expanded.
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|POST       |/rest/user/watch/content/{contentId}                     |       |
-|DELETE     |/rest/user/watch/content/{contentId}                     |       |
-|GET        |/rest/user/watch/content/{contentId}                     |       |
-|POST       |/rest/user/watch/space/{spaceKey}                        |       |
-|DELETE     |/rest/user/watch/space/{spaceKey}                        |       |
-|GET        |/rest/user/watch/space/{spaceKey}                        |       |
+|POST       |/rest/user/watch/content/{contentId}                     | 1     |
+|DELETE     |/rest/user/watch/content/{contentId}                     | 1     |
+|GET        |/rest/user/watch/content/{contentId}                     | 1     |
+|POST       |/rest/user/watch/space/{spaceKey}                        | 1     |
+|DELETE     |/rest/user/watch/space/{spaceKey}                        | 1     |
+|GET        |/rest/user/watch/space/{spaceKey}                        | 1     |

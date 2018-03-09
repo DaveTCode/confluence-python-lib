@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing
 
+## [0.8.0] - 2017-03-09
+
+### Added
+- Added full support for manipulating watches on space and content
+
+### Changed
+- Nothing
+
 ## [0.7.0] - 2017-01-30
 
 ### Added

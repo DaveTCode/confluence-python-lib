@@ -44,8 +44,8 @@ class Confluence:
         if self._client:
             self._client.close()
 
-    def _get_single_result(self, item_type, path, params, expand):
-        # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Any
+    def _get_raw_result(self, path, params, expand):
+        # type: (str, Dict[str, str], Optional[List[str]]) -> Any
         url = '{}/{}'.format(self._api_base, path)
 
         if expand:
@@ -54,11 +54,13 @@ class Confluence:
         # Allow the class to be used without being inside a with block if
         # required.
         if self._client:
-            result = self._client.get(url, params=params).json()
+            return self._client.get(url, params=params).json()
         else:
-            result = requests.get(url, params=params, auth=self._basic_auth).json()
+            return requests.get(url, params=params, auth=self._basic_auth).json()
 
-        return item_type(result)
+    def _get_single_result(self, item_type, path, params, expand):
+        # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Any
+        return item_type(self._get_raw_result(path, params, expand))
 
     def _get_paged_results(self, item_type, path, params, expand):
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Iterable[Any]
@@ -86,6 +88,15 @@ class Confluence:
             for result in search_results['results']:
                 yield item_type(result)
 
+    def _post(self, path, params):
+        # type: (str, Dict[str, str]) -> None
+        url = '{}/{}'.format(self._api_base, path)
+
+        if self._client:
+            self._client.post(url, params=params)
+        else:
+            requests.post(url, params=params, auth=self._basic_auth)
+
     def _put(self, item_type, path, params, data):
         # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
         url = '{}/{}'.format(self._api_base, path)
@@ -96,6 +107,15 @@ class Confluence:
             result = requests.put(url, json=data, params=params, auth=self._basic_auth).json()
 
         return item_type(result)
+
+    def _delete(self, path, params):
+        # type: (str, Dict[str, str]) -> None
+        url = '{}/{}'.format(self._api_base, path)
+
+        if self._client:
+            self._client.delete(url, params=params)
+        else:
+            requests.delete(url, params=params, auth=self._basic_auth)
 
     def _post_return_multiple(self, item_type, path, params, files):
         url = '{}/{}'.format(self._api_base, path)
@@ -615,6 +635,180 @@ class Confluence:
             params['searchString'] = search_string
 
         return self._get_paged_results(AuditRecord, 'audit', params, None)
+
+    def add_content_watch(self, content_id, user_key, username):
+        # type: (str, Optional[str], Optional[str]) -> None
+        """
+        Add a watch for a given user & piece of content.
+
+        User is optional. If not specified, currently logged-in user will be
+        used. Otherwise, it can be specified by either user key or username.
+        When a user is specified and is different from the logged-in user,
+        the logged-in user needs to be a Confluence administrator.
+
+        :param content_id: The unique content id.
+        :param user_key: The users unique key. If this is set then username
+        must not be.
+        :param username: The username to check for watches. If this is set
+        then user_key must not be.
+        """
+        if username and user_key:
+            raise ValueError('Only one of username or user_key may be set')
+
+        params = {}
+
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+
+        self._post('user/watch/content/{}'.format(content_id), params)
+
+    def remove_content_watch(self, content_id, user_key, username):
+        # type: (str, Optional[str], Optional[str]) -> None
+        """
+        Stop a user watching a piece of content.
+
+        User is optional. If not specified, currently logged-in user will be
+        used. Otherwise, it can be specified by either user key or username.
+        When a user is specified and is different from the logged-in user,
+        the logged-in user needs to be a Confluence administrator.
+
+        :param content_id: The unique content id.
+        :param user_key: The users unique key. If this is set then username
+        must not be.
+        :param username: The username to check for watches. If this is set
+        then user_key must not be.
+        """
+        if username and user_key:
+            raise ValueError('Only one of username or user_key may be set')
+
+        params = {}
+
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+
+        self._delete('user/watch/content/{}'.format(content_id), params)
+
+    def is_user_watching_content(self, content_id, user_key, username):
+        # type: (str, Optional[str], Optional[str]) -> bool
+        """
+        Get information about whether a user is watching specific content.
+
+        User is optional. If not specified, currently logged-in user will be
+        used. Otherwise, it can be specified by either user key or username.
+        When a user is specified and is different from the logged-in user,
+        the logged-in user needs to be a Confluence administrator.
+
+        :param content_id: The content id to check
+        :param user_key: The users unique key. If this is set then username
+        must not be.
+        :param username: The username to check for watches. If this is set
+        then user_key must not be.
+
+        :return: True/False depending on whether the user is watching the
+        specified content.
+        """
+        if username and user_key:
+            raise ValueError('Only one of username or user_key may be set')
+
+        params = {}
+
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+
+        return self._get_raw_result('user/watch/content/{}'.format(content_id), params, None)['watching']
+
+    def add_space_watch(self, space_key, user_key, username):
+        # type: (str, Optional[str], Optional[str]) -> None
+        """
+        Add a watch for a given user & space.
+
+        User is optional. If not specified, currently logged-in user will be
+        used. Otherwise, it can be specified by either user key or username.
+        When a user is specified and is different from the logged-in user,
+        the logged-in user needs to be a Confluence administrator.
+
+        :param space_key: The key of the space to add the watch on.
+        :param user_key: The users unique key. If this is set then username
+        must not be.
+        :param username: The username to check for watches. If this is set
+        then user_key must not be.
+        """
+        if username and user_key:
+            raise ValueError('Only one of username or user_key may be set')
+
+        params = {}
+
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+
+        self._post('user/watch/space/{}'.format(space_key), params)
+
+    def remove_space_watch(self, space_key, user_key, username):
+        # type: (str, Optional[str], Optional[str]) -> None
+        """
+        Stop a user watching a space.
+
+        User is optional. If not specified, currently logged-in user will be
+        used. Otherwise, it can be specified by either user key or username.
+        When a user is specified and is different from the logged-in user,
+        the logged-in user needs to be a Confluence administrator.
+
+        :param space_key: The key of the space to remove the watch on.
+        :param user_key: The users unique key. If this is set then username
+        must not be.
+        :param username: The username to check for watches. If this is set
+        then user_key must not be.
+        """
+        if username and user_key:
+            raise ValueError('Only one of username or user_key may be set')
+
+        params = {}
+
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+
+        self._delete('user/watch/space/{}'.format(space_key), params)
+
+    def is_user_watching_space(self, space_key, user_key, username):
+        # type: (str, Optional[str], Optional[str]) -> bool
+        """
+        Get information about whether a user is watching a specific space.
+
+        User is optional. If not specified, currently logged-in user will be
+        used. Otherwise, it can be specified by either user key or username.
+        When a user is specified and is different from the logged-in user,
+        the logged-in user needs to be a Confluence administrator.
+
+        :param space_key: The key of the space to check.
+        :param user_key: The users unique key. If this is set then username
+        must not be.
+        :param username: The username to check for watches. If this is set
+        then user_key must not be.
+
+        :return: True/False depending on whether the user is watching the
+        specified space.
+        """
+        if username and user_key:
+            raise ValueError('Only one of username or user_key may be set')
+
+        params = {}
+
+        if username:
+            params['username'] = username
+        if user_key:
+            params['key'] = user_key
+
+        return self._get_raw_result('user/watch/space/{}'.format(space_key), params, None)['watching']
 
     def __str__(self):
         return self._api_base
