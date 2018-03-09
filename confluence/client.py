@@ -443,8 +443,6 @@ class Confluence:
         """
         Get all of the content underneath a particular space.
 
-        TODO - Does this handle blogs ok? Returning everything as pages.
-
         :param space_key: The unique identifier for the space.
         :param just_root: Set to true if you only want the top level pages.
         :param expand: A list of page properties which can be expanded.
@@ -463,8 +461,6 @@ class Confluence:
         """
         Get all of the content underneath a particular space of a given type
 
-        TODO - Does this handle blogs ok? Returning everything as pages.
-
         :param space_key: The unique identifier for the space.
         :param content_type: What sort of content to return. Blogs or pages.
         :param just_root: Set to true if you only want the top level pages.
@@ -479,6 +475,9 @@ class Confluence:
             params['depth'] = 'root'
 
         return self._get_paged_results(Content, path, params, expand)
+
+    def get_space_properties(self, space_key, expand=None):
+        # type: (str, Optional[List[str]]) ->
 
     def get_user(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> User
@@ -636,7 +635,7 @@ class Confluence:
 
         return self._get_paged_results(AuditRecord, 'audit', params, None)
 
-    def add_content_watch(self, content_id, user_key, username):
+    def add_content_watch(self, content_id, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> None
         """
         Add a watch for a given user & piece of content.
@@ -664,7 +663,7 @@ class Confluence:
 
         self._post('user/watch/content/{}'.format(content_id), params)
 
-    def remove_content_watch(self, content_id, user_key, username):
+    def remove_content_watch(self, content_id, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> None
         """
         Stop a user watching a piece of content.
@@ -692,7 +691,7 @@ class Confluence:
 
         self._delete('user/watch/content/{}'.format(content_id), params)
 
-    def is_user_watching_content(self, content_id, user_key, username):
+    def is_user_watching_content(self, content_id, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> bool
         """
         Get information about whether a user is watching specific content.
@@ -723,7 +722,7 @@ class Confluence:
 
         return self._get_raw_result('user/watch/content/{}'.format(content_id), params, None)['watching']
 
-    def add_space_watch(self, space_key, user_key, username):
+    def add_space_watch(self, space_key, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> None
         """
         Add a watch for a given user & space.
@@ -751,7 +750,7 @@ class Confluence:
 
         self._post('user/watch/space/{}'.format(space_key), params)
 
-    def remove_space_watch(self, space_key, user_key, username):
+    def remove_space_watch(self, space_key, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> None
         """
         Stop a user watching a space.
@@ -779,7 +778,7 @@ class Confluence:
 
         self._delete('user/watch/space/{}'.format(space_key), params)
 
-    def is_user_watching_space(self, space_key, user_key, username):
+    def is_user_watching_space(self, space_key, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> bool
         """
         Get information about whether a user is watching a specific space.
