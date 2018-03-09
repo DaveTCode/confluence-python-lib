@@ -8,7 +8,7 @@ python:
   - '3.6'
 install:
   - python setup.py install
-  - pip install bandit codecov pycodestyle mypy pypandoc requires.io typing
+  - pip install bandit codecov pycodestyle mypy pypandoc typing
 script:
   - pycodestyle --first confluence
   - bandit -r confluence
@@ -16,7 +16,6 @@ script:
   - python setup.py test --addopts "--cov confluence tests"
 after_success:
   - codecov
-  - requires.io update-site -t 2d564858026879f739baeae161de90bd83cafb87 -r
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
