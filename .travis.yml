@@ -16,6 +16,7 @@ script:
   - python setup.py test --addopts "--cov confluence tests"
 after_success:
   - codecov
+  - requires.io update-site -t 2d564858026879f739baeae161de90bd83cafb87 -r
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
