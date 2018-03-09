@@ -8,7 +8,7 @@ python:
   - '3.6'
 install:
   - python setup.py install
-  - pip install bandit codecov pycodestyle mypy pypandoc typing
+  - pip install bandit codecov pycodestyle mypy pypandoc requires.io typing
 script:
   - pycodestyle --first confluence
   - bandit -r confluence
