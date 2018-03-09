@@ -8,9 +8,10 @@ python:
   - '3.6'
 install:
   - python setup.py install
-  - pip install pycodestyle mypy pypandoc typing
+  - pip install bandit pycodestyle mypy pypandoc typing
 script:
   - pycodestyle --first confluence
+  - bandit -r confluence
   - mypy --py2 confluence
   - python setup.py test --addopts "--cov confluence tests"
 deploy:
