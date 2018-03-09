@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/DaveTCode/confluence-python-lib.svg?branch=master)](https://travis-ci.org/DaveTCode/confluence-python-lib)
 [![PyPI version](https://badge.fury.io/py/confluence-rest-library.svg)](https://badge.fury.io/py/confluence-rest-library)
+[![codecov](https://codecov.io/gh/DaveTCode/confluence-python-lib/branch/master/graph/badge.svg)](https://codecov.io/gh/DaveTCode/confluence-python-lib)
 
 # Confluence Python Library
 
