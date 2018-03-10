@@ -1,4 +1,8 @@
-from confluence.exceptions.resourcenotfound import ResourceNotFound
+from confluence.exceptions.generalerror import ConfluenceError
+from confluence.exceptions.permissionerror import ConfluencePermissionError
+from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
+from confluence.exceptions.valuetoolong import ConfluenceValueTooLong
+from confluence.exceptions.versionconflict import ConfluenceVersionConflict
 from confluence.models.auditrecord import AuditRecord
 from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType
 from confluence.models.contenthistory import ContentHistory
@@ -55,8 +59,16 @@ class Confluence:
     @staticmethod
     def _handle_response_errors(path, params, response):
         # type: (str, Dict[str, str], requests.Response) -> None
-        if response.status_code == 404:
-            raise ResourceNotFound(path, params, response)
+        if response.status_code == 400:
+            raise ConfluenceError(path, params, response)
+        elif response.status_code == 403:
+            raise ConfluencePermissionError(path, params, response)
+        elif response.status_code == 404:
+            raise ConfluenceResourceNotFound(path, params, response)
+        elif response.status_code == 409:
+            raise ConfluenceVersionConflict(path, params, response)
+        elif response.status_code == 413:
+            raise ConfluenceValueTooLong(path, params, response)
 
     # TODO - There's far too much duplicate code in the funtions below. Need to majorly refactor once there's a proper test suite to verify the result.
     # TODO - Need to handle failure status codes from the API rather than just sending exceptions if no json to parse.
