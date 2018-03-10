@@ -34,7 +34,7 @@ class Confluence:
         """
         :param base_url: The URL where the confluence web app is located. e.g. https://mysite.mydomain/confluence
         :param basic_auth: A tuple containing a username/password pair that
-        can log into confluence.
+            can log into confluence.
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
@@ -222,19 +222,19 @@ class Confluence:
         HTTP requests.
 
         :param content_type: Determines whether we want to return blog posts
-        of pages, defaults to page. Valid values are page|blogpost.
+            of pages, defaults to page. Valid values are page|blogpost.
         :param space_key: The string space key of a space on the confluence
-        server. Defaults to None which results in this field being ignored.
+            server. Defaults to None which results in this field being ignored.
         :param title: The title of the page we're looking for. Defaults to
-        None which results in this field being ignored.
+            None which results in this field being ignored.
         :param status: Only return documents in a given status.
-        Defaults to None which results in this field being ignored.
+            Defaults to None which results in this field being ignored.
         :param posting_day: Only valid for blogpost content_type and returns
-        blogs posted on the given day.
+            blogs posted on the given day.
         :param expand: The confluence REST API utilised expansion to avoid
-        returning all fields on all requests. This optional parameter allows
-        the user to select which fields that they want to expand as a comma
-        separated list.
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a comma
+            separated list.
 
         :return: An iterable of pages/blogposts which match the parameters.
         """
@@ -264,8 +264,8 @@ class Confluence:
 
         :param content_id: The ID of the content in confluence.
         :param expand: The confluence REST API utilised expansion to avoid
-        returning all fields on all requests. This optional parameter allows
-        the user to select which fields that they want to expand as a list.
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a list.
 
         :return: A content history object.
         """
@@ -279,10 +279,10 @@ class Confluence:
 
         :param content_id: Must be the confluence ID of a page.
         :param parent_version: Optinanlly pass the version of the page to look
-        for children on. Defaults to 0.
+            for children on. Defaults to 0.
         :param expand: The confluence REST API utilised expansion to avoid
-        returning all fields on all requests. This optional parameter allows
-        the user to select which fields that they want to expand as a list.
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a list.
 
         :return: An iterable containing 0-n pages that are children of this page.
         """
@@ -299,13 +299,13 @@ class Confluence:
 
         :param content_id: The ID of the content in confluence.
         :param depth: Either ROOT or ALL to indicate whether to see all
-        comments at all depths.
+            comments at all depths.
         :param parent_version: The version of the content which we want
-        comments on. Default is to use current version.
+            comments on. Default is to use current version.
         :param location: List of inline, resolved and footer.
         :param expand: The confluence REST API utilised expansion to avoid
-        returning all fields on all requests. This optional parameter allows
-        the user to select which fields that they want to expand as a list.
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a list.
 
         :return: A list of 0-n comments from the document.
         """
@@ -334,10 +334,10 @@ class Confluence:
         :param content_id: The ID of the content in confluence.
         :param filename: Optionally the filename to search by exact filename.
         :param media_type: Optionally the media type of attachments to search
-        for.
+            for.
         :param expand: The confluence REST API utilised expansion to avoid
-        returning all fields on all requests. This optional parameter allows
-        the user to select which fields that they want to expand as a list.
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a list.
 
         :return: A list of 0-n attachments from the document.
         """
@@ -362,12 +362,12 @@ class Confluence:
         :param content_id: the confluence content to add the attachment to.
         :param file_path: The full location of the file on the local system.
         :param file_name: Optionally the name to give the attachment in
-        confluence.
+            confluence.
         :param status: Optionally the status of the attachment after upload.
-        Must be one of current or draft, defaults to current.
+            Must be one of current or draft, defaults to current.
 
         :return: A list containing 0-1 attachments depending on whether this
-        succeeded or not.
+            succeeded or not.
         """
         params = {}
         if status:
@@ -407,13 +407,13 @@ class Confluence:
         of the pages which match the query.
 
         :param cql: A CQL query. See https://developer.atlassian.com/server/confluence/advanced-searching-using-cql/
-        for reference.
+            for reference.
         :param cql_context: "the context to execute a cql search in, this is
-        the json serialized form of SearchContext".
+            the json serialized form of SearchContext".
         :param expand: The confluence REST API utilised expansion to avoid
-        returning all fields on all requests. This optional parameter allows
-        the user to select which fields that they want to expand as a comma
-        separated list.
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a comma
+            separated list.
 
         :return: An iterable of pages which match the parameters.
         """
@@ -430,16 +430,16 @@ class Confluence:
         that query.
 
         :param space_keys: A list of space keys, only these spaces will be
-        returned and invalid values will be ignored.
+            returned and invalid values will be ignored.
         :param space_type: Filter on the type of space, all space types
-        returned by default.
+            returned by default.
         :param status: Filter on the status of space, all statuses returned by
-        default.
+            default.
         :param label: Filter on space label, no filter by default.
         :param favourite: Filter on whether the space is favourited by the
-        user running the query. Ignored by default.
+            user running the query. Ignored by default.
         :param expand: Optional list of things to expand. Some of icon,
-        description, metadata & homepage.
+            description, metadata & homepage.
         :return:
         """
         params = {}
@@ -464,7 +464,7 @@ class Confluence:
 
         :param space_key: Required parameter which identifies the space.
         :param expand: Optional list of things to expand. Some of icon,
-        description, metadata & homepage.
+            description, metadata & homepage.
 
         :return: The space matching the given key.
         """
@@ -517,7 +517,7 @@ class Confluence:
         :param expand: A list of properties which can be expanded.
 
         :return: A generator containing all of the properties attached to the
-        space.
+            space.
         """
         return self._get_paged_results(SpaceProperty, 'space/{}/property'.format(space_key), {}, expand)
 
@@ -529,7 +529,7 @@ class Confluence:
         :param space_key: The space to which we're adding a property.
         :param property_key: The key for the new property.
         :param property_value: An arbitrary JSON serializable object which
-        will become the property value.
+            will become the property value.
 
         :return: The space property that was created.
         """
@@ -550,7 +550,7 @@ class Confluence:
         :param expand: A list of properties which can be expanded.
 
         :return: A generator containing all of the properties attached to the
-        space.
+            space.
         """
         path = 'space/{}/property/{}'.format(space_key, property_key)
 
@@ -566,12 +566,12 @@ class Confluence:
         :param property_key: The key of the property to create.
         :param property_value: The new value of the property.
         :param new_version: The version number of the property. If this is 1
-        then a new property is created, otherwise it must be current_version+1
-        or this function will raise an exception.
+            then a new property is created, otherwise it must be current_version+1
+            or this function will raise an exception.
         :param minor_edit: Defaults to False. Set to true to make this update
-        a minor edit.
+            a minor edit.
         :param hidden_version: Defaults to False. Set to true to make this
-        version hidden.
+            version hidden.
 
         :return: The created property (including version).
         """
@@ -647,7 +647,7 @@ class Confluence:
         :param username: The username as seen in confluence.
         :param user_key: The users unique key in confluence.
         :param expand: An optional list of fields to expand on the returned
-        group objects. None currently known.
+            group objects. None currently known.
 
         :return: The list of groups as an iterator.
         """
@@ -669,7 +669,7 @@ class Confluence:
         Get the entire collection of groups on this instance.
 
         :param expand: An optional list of fields to expand on the returned
-        group objects. None currently known.
+            group objects. None currently known.
 
         :return: The list of groups as an iterator.
         """
@@ -682,7 +682,7 @@ class Confluence:
 
         :param name: The name of the group to search for.
         :param expand: An optional list of fields to expand on the returned
-        group objects. None currently known.
+            group objects. None currently known.
 
         :return: The group object.
         """
@@ -695,7 +695,7 @@ class Confluence:
 
         :param name: The name of the group to search for.
         :param expand: An optional list of fields to expand on the returned
-        user objects. None currently known.
+            user objects. None currently known.
 
         :return: The list of groups as an iterator.
         """
@@ -707,10 +707,10 @@ class Confluence:
         Get the full list of long running tasks from the confluence instance.
 
         :param expand: An optional list of fields to expand on the returned
-        user objects. None currently known.
+            user objects. None currently known.
 
         :return: The list of long running tasks including recently completed
-        ones.
+            ones.
         """
         return self._get_paged_results(LongTask, 'longtask', {}, expand)
 
@@ -721,7 +721,7 @@ class Confluence:
 
         :param task_id: The task id as a GUID.
         :param expand: An optional list of fields to expand on the returned
-        user objects. None currently known.
+            user objects. None currently known.
 
         :return: The full task information.
         """
@@ -736,7 +736,7 @@ class Confluence:
         :param start_date: Optional date to start searching.
         :param end_date: Optional date to end searching.
         :param search_string: Optional string which will be included in all
-        returned audit records.
+            returned audit records.
 
         :return: A list of all audit records matching the given criteria.
         """
@@ -764,9 +764,9 @@ class Confluence:
 
         :param content_id: The unique content id.
         :param user_key: The users unique key. If this is set then username
-        must not be.
+            must not be.
         :param username: The username to check for watches. If this is set
-        then user_key must not be.
+            then user_key must not be.
         """
         if username and user_key:
             raise ValueError('Only one of username or user_key may be set')
@@ -792,9 +792,9 @@ class Confluence:
 
         :param content_id: The unique content id.
         :param user_key: The users unique key. If this is set then username
-        must not be.
+            must not be.
         :param username: The username to check for watches. If this is set
-        then user_key must not be.
+            then user_key must not be.
         """
         if username and user_key:
             raise ValueError('Only one of username or user_key may be set')
@@ -820,12 +820,12 @@ class Confluence:
 
         :param content_id: The content id to check
         :param user_key: The users unique key. If this is set then username
-        must not be.
+            must not be.
         :param username: The username to check for watches. If this is set
-        then user_key must not be.
+            then user_key must not be.
 
         :return: True/False depending on whether the user is watching the
-        specified content.
+            specified content.
         """
         if username and user_key:
             raise ValueError('Only one of username or user_key may be set')
@@ -851,9 +851,9 @@ class Confluence:
 
         :param space_key: The key of the space to add the watch on.
         :param user_key: The users unique key. If this is set then username
-        must not be.
+            must not be.
         :param username: The username to check for watches. If this is set
-        then user_key must not be.
+            then user_key must not be.
         """
         if username and user_key:
             raise ValueError('Only one of username or user_key may be set')
@@ -879,9 +879,9 @@ class Confluence:
 
         :param space_key: The key of the space to remove the watch on.
         :param user_key: The users unique key. If this is set then username
-        must not be.
+            must not be.
         :param username: The username to check for watches. If this is set
-        then user_key must not be.
+            then user_key must not be.
         """
         if username and user_key:
             raise ValueError('Only one of username or user_key may be set')
@@ -907,12 +907,12 @@ class Confluence:
 
         :param space_key: The key of the space to check.
         :param user_key: The users unique key. If this is set then username
-        must not be.
+            must not be.
         :param username: The username to check for watches. If this is set
-        then user_key must not be.
+            then user_key must not be.
 
         :return: True/False depending on whether the user is watching the
-        specified space.
+            specified space.
         """
         if username and user_key:
             raise ValueError('Only one of username or user_key may be set')

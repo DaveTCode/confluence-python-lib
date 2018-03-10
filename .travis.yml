@@ -1,14 +1,11 @@
 language: python
 sudo: false
-addons:
-  apt_packages:
-    - pandoc
 python:
   - '3.5'
   - '3.6'
 install:
   - python setup.py install
-  - pip install bandit codecov pycodestyle mypy pypandoc typing
+  - pip install bandit codecov pycodestyle mypy typing
 script:
   - pycodestyle --first confluence
   - bandit -r confluence

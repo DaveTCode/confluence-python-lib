@@ -2,15 +2,10 @@ from codecs import open
 from os import path
 from setuptools import setup, find_packages
 
-readme = path.join(path.abspath(path.dirname(__file__)), 'README.md')
+readme = path.join(path.abspath(path.dirname(__file__)), 'README.rst')
 
-try:
-    import pypandoc
-    long_description = pypandoc.convert(readme, 'rst')
-except ImportError:
-    print("warning: pypandoc module not found, could not convert Markdown to RST")
-    with open(readme, encoding='utf-8') as f:
-        long_description = f.read()
+with open(readme, encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='confluence-rest-library',
