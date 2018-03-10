@@ -47,7 +47,7 @@ class Confluence:
 
     @property
     def client(self):
-        # type: () -> Union[requests.Session, requests]
+        # type: () -> Union[requests.Session, Any]
         # Allow the class to be used without being inside a with block if
         # required.
         return self._client if self._client else requests
