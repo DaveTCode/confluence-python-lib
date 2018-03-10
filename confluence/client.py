@@ -1,3 +1,4 @@
+from confluence.exceptions.resourcenotfound import ResourceNotFound
 from confluence.models.auditrecord import AuditRecord
 from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType
 from confluence.models.contenthistory import ContentHistory
@@ -10,7 +11,7 @@ from datetime import date
 import logging
 import os
 import requests
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -44,26 +45,39 @@ class Confluence:
         if self._client:
             self._client.close()
 
+    @property
+    def client(self):
+        # type: () -> Union[requests.Session, requests]
+        # Allow the class to be used without being inside a with block if
+        # required.
+        return self._client if self._client else requests
+
+    @staticmethod
+    def _handle_response_errors(path, params, response):
+        # type: (str, Dict[str, str], requests.Response) -> None
+        if response.status_code == 404:
+            raise ResourceNotFound(path, params, response)
+
     # TODO - There's far too much duplicate code in the funtions below. Need to majorly refactor once there's a proper test suite to verify the result.
     # TODO - Need to handle failure status codes from the API rather than just sending exceptions if no json to parse.
-    def _get_raw_result(self, path, params, expand):
-        # type: (str, Dict[str, str], Optional[List[str]]) -> Any
+    def _get(self, path, params, expand):
+        # type: (str, Dict[str, str], Optional[List[str]]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
 
         if expand:
             params['expand'] = ','.join(expand)
 
-        # Allow the class to be used without being inside a with block if
-        # required.
-        if self._client:
-            return self._client.get(url, params=params).json()
-        else:
-            return requests.get(url, params=params, auth=self._basic_auth).json()
+        response = self.client.get(url, params=params, auth=self._basic_auth)
+
+        Confluence._handle_response_errors(path, params, response)
+
+        return response
 
     def _get_single_result(self, item_type, path, params, expand):
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Any
-        return item_type(self._get_raw_result(path, params, expand))
+        return item_type(self._get(path, params, expand).json())
 
+    # TODO - Need to refactor this to make use of _get function.
     def _get_paged_results(self, item_type, path, params, expand):
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Iterable[Any]
         url = '{}/{}'.format(self._api_base, path)
@@ -72,12 +86,9 @@ class Confluence:
             params['expand'] = ','.join(expand)
 
         while url is not None:
-            # Allow the class to be used without being inside a with block if
-            # required.
-            if self._client:
-                search_results = self._client.get(url, params=params).json()
-            else:
-                search_results = requests.get(url, params=params, auth=self._basic_auth).json()
+            response = self.client.get(url, params=params, auth=self._basic_auth)
+            Confluence._handle_response_errors(path, params, response)
+            search_results = response.json()
 
             if 'next' in search_results['_links']:
                 # We have another page of results
@@ -90,56 +101,52 @@ class Confluence:
             for result in search_results['results']:
                 yield item_type(result)
 
-    def _post(self, path, params):
-        # type: (str, Dict[str, str]) -> None
-        url = '{}/{}'.format(self._api_base, path)
-
-        if self._client:
-            self._client.post(url, params=params)
-        else:
-            requests.post(url, params=params, auth=self._basic_auth)
-
-    def _post_return_single(self, item_type, path, params, data):
-        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
-        url = '{}/{}'.format(self._api_base, path)
-
-        if self._client:
-            result = self._client.post(url, json=data, params=params).json()
-        else:
-            result = requests.put(url, json=data, params=params, auth=self._basic_auth).json()
-
-        return item_type(result)
-
-    def _post_return_multiple(self, item_type, path, params, files):
+    def _post(self, path, params, data, files=None):
+        # type: (str, Dict[str, str], Dict[str, Any], Optional[Any]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
-        if self._client:
-            result = self._client.post(url, headers=headers, files=files, params=params).json()
-        else:
-            result = requests.put(url, headers=headers, files=files, params=params, auth=self._basic_auth).json()
+        response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth)
 
-        return [item_type(r) for r in result['results']]
+        Confluence._handle_response_errors(path, params, response)
 
-    def _put(self, item_type, path, params, data):
+        return response
+
+    def _post_return_single(self, item_type, path, params, data):
         # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        return item_type(self._post(path, params, data).json())
+
+    def _post_return_multiple(self, item_type, path, params, files):
+        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        response = self._post(path, params, {}, files)
+
+        return [item_type(r) for r in response.json()['results']]
+
+    def _put(self, path, params, data):
+        # type: (str, Dict[str, str], Dict[str, Any]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
+        headers = {"X-Atlassian-Token": "nocheck"}
 
-        if self._client:
-            result = self._client.put(url, json=data, params=params).json()
-        else:
-            result = requests.put(url, json=data, params=params, auth=self._basic_auth).json()
+        response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth)
 
-        return item_type(result)
+        Confluence._handle_response_errors(path, params, response)
+
+        return response
+
+    def _put_return_single(self, item_type, path, params, data):
+        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        return item_type(self._put(path, params, data).json())
 
     def _delete(self, path, params):
-        # type: (str, Dict[str, str]) -> None
+        # type: (str, Dict[str, str]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
+        headers = {"X-Atlassian-Token": "nocheck"}
 
-        if self._client:
-            self._client.delete(url, params=params)
-        else:
-            requests.delete(url, params=params, auth=self._basic_auth)
+        response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth)
+
+        Confluence._handle_response_errors(path, params, response)
+
+        return response
 
     def put_content(self, content_id, content_type, new_version, status,
                     new_content, new_title, new_parent, new_status):
@@ -187,7 +194,7 @@ class Confluence:
         if status:
             params['status'] = status.value
 
-        return self._put(ContentType, 'content/{}'.format(content_id), params=params, data=content)
+        return self._put_return_single(ContentType, 'content/{}'.format(content_id), params=params, data=content)
 
     def get_content(self, content_type=ContentType.PAGE, space_key=None,
                     title=None, status=None, posting_day=None, expand=None):
@@ -566,7 +573,7 @@ class Confluence:
                 'hidden': hidden_version
             }
         }
-        return self._put(SpaceProperty, path, params={}, data=data)
+        return self._put_return_single(SpaceProperty, path, params={}, data=data)
 
     def delete_space_property(self, space_key, property_key):
         # type: (str, str) -> None
@@ -759,7 +766,7 @@ class Confluence:
         if user_key:
             params['key'] = user_key
 
-        self._post('user/watch/content/{}'.format(content_id), params)
+        self._post('user/watch/content/{}'.format(content_id), params=params, data={})
 
     def remove_content_watch(self, content_id, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> None
@@ -818,7 +825,7 @@ class Confluence:
         if user_key:
             params['key'] = user_key
 
-        return self._get_raw_result('user/watch/content/{}'.format(content_id), params, None)['watching']
+        return self._get('user/watch/content/{}'.format(content_id), params, None).json()['watching']
 
     def add_space_watch(self, space_key, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> None
@@ -846,7 +853,7 @@ class Confluence:
         if user_key:
             params['key'] = user_key
 
-        self._post('user/watch/space/{}'.format(space_key), params)
+        self._post('user/watch/space/{}'.format(space_key), params, data={})
 
     def remove_space_watch(self, space_key, user_key=None, username=None):
         # type: (str, Optional[str], Optional[str]) -> None
@@ -905,7 +912,7 @@ class Confluence:
         if user_key:
             params['key'] = user_key
 
-        return self._get_raw_result('user/watch/space/{}'.format(space_key), params, None)['watching']
+        return self._get('user/watch/space/{}'.format(space_key), params, None).json()['watching']
 
     def __str__(self):
         return self._api_base
