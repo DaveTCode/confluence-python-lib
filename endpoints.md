@@ -8,6 +8,7 @@ is current as of v6.6.0.
 
 State key:
 - empty => Not written
+- -1 => Not necessary (duplicate of another endpoint)
 - 1 => written but not tested
 - 2 => written and tested
 
@@ -137,11 +138,11 @@ objects have not yet been expanded.
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
 |GET        |/rest/space/{spaceKey}/property                          | 1     |
-|POST       |/rest/space/{spaceKey}/property                          |       |
-|GET        |/rest/space/{spaceKey}/property/{key}                    |       |
-|PUT        |/rest/space/{spaceKey}/property/{key}                    |       |
-|DELETE     |/rest/space/{spaceKey}/property/{key}                    |       |
-|POST       |/rest/space/{spaceKey}/property/{key}                    |       |
+|POST       |/rest/space/{spaceKey}/property                          | 1     |
+|GET        |/rest/space/{spaceKey}/property/{key}                    | 1     |
+|PUT        |/rest/space/{spaceKey}/property/{key}                    | 1     |
+|DELETE     |/rest/space/{spaceKey}/property/{key}                    | 1     |
+|POST       |/rest/space/{spaceKey}/property/{key}                    | -1    | 
 
 ## user
 

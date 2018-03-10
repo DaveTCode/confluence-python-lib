@@ -44,6 +44,8 @@ class Confluence:
         if self._client:
             self._client.close()
 
+    # TODO - There's far too much duplicate code in the funtions below. Need to majorly refactor once there's a proper test suite to verify the result.
+    # TODO - Need to handle failure status codes from the API rather than just sending exceptions if no json to parse.
     def _get_raw_result(self, path, params, expand):
         # type: (str, Dict[str, str], Optional[List[str]]) -> Any
         url = '{}/{}'.format(self._api_base, path)
@@ -97,6 +99,28 @@ class Confluence:
         else:
             requests.post(url, params=params, auth=self._basic_auth)
 
+    def _post_return_single(self, item_type, path, params, data):
+        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        url = '{}/{}'.format(self._api_base, path)
+
+        if self._client:
+            result = self._client.post(url, json=data, params=params).json()
+        else:
+            result = requests.put(url, json=data, params=params, auth=self._basic_auth).json()
+
+        return item_type(result)
+
+    def _post_return_multiple(self, item_type, path, params, files):
+        url = '{}/{}'.format(self._api_base, path)
+        headers = {"X-Atlassian-Token": "nocheck"}
+
+        if self._client:
+            result = self._client.post(url, headers=headers, files=files, params=params).json()
+        else:
+            result = requests.put(url, headers=headers, files=files, params=params, auth=self._basic_auth).json()
+
+        return [item_type(r) for r in result['results']]
+
     def _put(self, item_type, path, params, data):
         # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
         url = '{}/{}'.format(self._api_base, path)
@@ -116,17 +140,6 @@ class Confluence:
             self._client.delete(url, params=params)
         else:
             requests.delete(url, params=params, auth=self._basic_auth)
-
-    def _post_return_multiple(self, item_type, path, params, files):
-        url = '{}/{}'.format(self._api_base, path)
-        headers = {"X-Atlassian-Token": "nocheck"}
-
-        if self._client:
-            result = self._client.post(url, headers=headers, files=files, params=params).json()
-        else:
-            result = requests.put(url, headers=headers, files=files, params=params, auth=self._basic_auth).json()
-
-        return [item_type(r) for r in result['results']]
 
     def put_content(self, content_id, content_type, new_version, status,
                     new_content, new_title, new_parent, new_status):
@@ -488,6 +501,81 @@ class Confluence:
         space.
         """
         return self._get_paged_results(SpaceProperty, 'space/{}/property'.format(space_key), {}, expand)
+
+    def create_space_property(self, space_key, property_key, property_value):
+        # type: (str, str, Dict[str, Any]) -> SpaceProperty
+        """
+        Create a property attached to a space.
+
+        :param space_key: The space to which we're adding a property.
+        :param property_key: The key for the new property.
+        :param property_value: An arbitrary JSON serializable object which
+        will become the property value.
+
+        :return: The space property that was created.
+        """
+        data = {
+            'key': property_key,
+            'value': property_value
+        }
+        return self._post_return_single(SpaceProperty, 'space/{}/property'.format(space_key), params={}, data=data)
+
+    def get_space_property(self, space_key, property_key, expand=None):
+        # type: (str, str, Optional[List[str]]) -> Iterable[SpaceProperty]
+        """
+        Get all of the properties attached to a given space which match a
+        property key.
+
+        :param space_key: The key of the space.
+        :param property_key: The key of the property.
+        :param expand: A list of properties which can be expanded.
+
+        :return: A generator containing all of the properties attached to the
+        space.
+        """
+        path = 'space/{}/property/{}'.format(space_key, property_key)
+
+        return self._get_paged_results(SpaceProperty, path, {}, expand)
+
+    def update_space_property(self, space_key, property_key, property_value, new_version,
+                              minor_edit=False, hidden_version=False):
+        # type: (str, str, Dict[str, Any], int, Optional[bool], Optional[bool]) -> SpaceProperty
+        """
+        Create a new version of a space property.
+
+        :param space_key: The space to create the property in.
+        :param property_key: The key of the property to create.
+        :param property_value: The new value of the property.
+        :param new_version: The version number of the property. If this is 1
+        then a new property is created, otherwise it must be current_version+1
+        or this function will raise an exception.
+        :param minor_edit: Defaults to False. Set to true to make this update
+        a minor edit.
+        :param hidden_version: Defaults to False. Set to true to make this
+        version hidden.
+
+        :return: The created property (including version).
+        """
+        path = 'space/{}/property/{}'.format(space_key, property_key)
+        data = {
+            'key': property_key,
+            'value': property_value,
+            'version': {
+                'number': new_version,
+                'minorEdit': minor_edit,
+                'hidden': hidden_version
+            }
+        }
+        return self._put(SpaceProperty, path, params={}, data=data)
+
+    def delete_space_property(self, space_key, property_key):
+        # type: (str, str) -> None
+        """
+
+        :param space_key: The space in which we're removing a property.
+        :param property_key: The property to remove.
+        """
+        self._delete('/space/{}/property/{}'.format(space_key, property_key), {})
 
     def get_user(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> User
