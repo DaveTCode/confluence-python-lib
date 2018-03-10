@@ -12,8 +12,8 @@ class ResourceNotFound(Exception):
     """
     def __init__(self, path, params, response):
         # type: (str, Dict[str, str], requests.Response) -> None
-        msg = 'Resource was not found at path {} or the user has insufficient permissions'
+        msg = 'Resource was not found at path {} or the user has insufficient permissions'.format(path)
         self.path = path
         self.params = params
         self.response = response
-        super(ResourceNotFound, self).__init__(msg, format(path))
+        super(ResourceNotFound, self).__init__(msg)
