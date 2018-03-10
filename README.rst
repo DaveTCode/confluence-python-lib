@@ -1,4 +1,4 @@
-|Build Status| |PyPI version| |codecov| |Requirements Status|
+|Build Status| |PyPI version| |codecov| |Requirements Status| |Docs|
 
 Confluence Python Library
 =========================
@@ -56,3 +56,6 @@ using
    :target: https://codecov.io/gh/DaveTCode/confluence-python-lib
 .. |Requirements Status| image:: https://requires.io/github/DaveTCode/confluence-python-lib/requirements.svg?branch=develop
    :target: https://requires.io/github/DaveTCode/confluence-python-lib/requirements/?branch=develop
+.. |Docs| image:: https://readthedocs.org/projects/confluence-python-lib/badge/?version=latest
+   :target: http://confluence-python-lib.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
