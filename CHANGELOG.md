@@ -11,6 +11,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Nothing
 
+## [0.10.0] - 2017-03-10
+
+### Added
+- Added support for all endpoints relating to space properties
+
+### Changed
+- Complete overhaul of the way that failed responses are handled, all of them now raise custom exceptions.
+
+## [0.9.0] - 2017-03-09
+
+### Added
+- Added partial support for space properties
+
+### Changed
+- Nothing
+
 ## [0.8.0] - 2017-03-09
 
 ### Added
