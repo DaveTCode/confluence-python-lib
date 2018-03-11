@@ -70,8 +70,6 @@ class Confluence:
         elif response.status_code == 413:
             raise ConfluenceValueTooLong(path, params, response)
 
-    # TODO - There's far too much duplicate code in the funtions below. Need to majorly refactor once there's a proper test suite to verify the result.
-    # TODO - Need to handle failure status codes from the API rather than just sending exceptions if no json to parse.
     def _get(self, path, params, expand):
         # type: (str, Dict[str, str], Optional[List[str]]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
@@ -114,7 +112,7 @@ class Confluence:
                 yield item_type(result)
 
     def _post(self, path, params, data, files=None):
-        # type: (str, Dict[str, str], Dict[str, Any], Optional[Any]) -> requests.Response
+        # type: (str, Dict[str, str], Any, Optional[Any]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
@@ -125,17 +123,17 @@ class Confluence:
         return response
 
     def _post_return_single(self, item_type, path, params, data):
-        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        # type: (Callable, str, Dict[str, str], Any) -> Any
         return item_type(self._post(path, params, data).json())
 
-    def _post_return_multiple(self, item_type, path, params, files):
-        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
-        response = self._post(path, params, {}, files)
+    def _post_return_multiple(self, item_type, path, params, data, files):
+        # type: (Callable, str, Dict[str, str], Any, Dict[str, Any]) -> Any
+        response = self._post(path, params, data, files)
 
         return [item_type(r) for r in response.json()['results']]
 
     def _put(self, path, params, data):
-        # type: (str, Dict[str, str], Dict[str, Any]) -> requests.Response
+        # type: (str, Dict[str, str], Any) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
@@ -146,7 +144,7 @@ class Confluence:
         return response
 
     def _put_return_single(self, item_type, path, params, data):
-        # type: (Callable, str, Dict[str, str], Dict[str, Any]) -> Any
+        # type: (Callable, str, Dict[str, str], Any) -> Any
         return item_type(self._put(path, params, data).json())
 
     def _delete(self, path, params):
@@ -382,7 +380,8 @@ class Confluence:
             return self._post_return_multiple(Content,
                                               '/content/{}/child/attachment'.format(content_id),
                                               params=params,
-                                              files={'file': (file_name, f)})
+                                              files={'file': (file_name, f)},
+                                              data={})
 
     def get_labels(self, content_id, prefix):  # type: (int, Optional[str]) -> Iterable[Label]
         """
@@ -399,6 +398,36 @@ class Confluence:
             params['prefix'] = prefix
 
         return self._get_paged_results(Label, 'content/{}/label'.format(content_id), params, None)
+
+    def create_labels(self, content_id, new_labels):  # type: (int, Iterable[Tuple[str, str]]) -> Iterable[Label]
+        """
+        Create 1-n labels on a piece of content.
+
+        :param content_id: The unique identifier for the content object.
+        :param new_labels: An array of tuples where item 1 is the label prefix
+            and item 2 is the label name.
+
+        :return: The set of labels as Label objects.
+        """
+        data = [{
+            'prefix': label[0],
+            'name': label[1]
+        } for label in new_labels]
+
+        return self._post_return_multiple(Label, 'content/{}/label'.format(content_id),
+                                          files={}, data=data, params={})
+
+    def delete_label(self, content_id, label_name):  # type: (int, str) -> None
+        """
+        Remove a label from a piece of content by label name.
+
+        Note that we use the query parameter form of the delete to allow for
+        deleting labels with a / in the name.
+
+        :param content_id: The unique identifier for the content object.
+        :param label_name: The name of the label to remove.
+        """
+        self._delete('content/{}/label'.format(content_id), params={'name': label_name})
 
     def search(self, cql, cql_context=None, expand=None):
         # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Content]
