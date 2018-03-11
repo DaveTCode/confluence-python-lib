@@ -7,9 +7,9 @@ install:
   - python setup.py install
   - pip install bandit codecov pycodestyle mypy typing
 script:
-  - pycodestyle --first confluence
-  - bandit -r confluence
-  - mypy --py2 confluence
+  - pycodestyle --first --exclude venv
+  - bandit -r . -x venv,tests,docs
+  - mypy --py2
   - python setup.py test --addopts "--cov confluence tests"
 after_success:
   - codecov

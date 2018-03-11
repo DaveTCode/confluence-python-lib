@@ -15,7 +15,9 @@ def test_create_full_json():
         "percentageComplete": 100,
         "successful": True,
         "messages": [{
-            "translation": "Finished PDF space export. Download <a href=\"/confluence/download/temp/pdfexport-20180111-110118-1209-23/x-110118-1209-24.pdf\">here</a>.",
+            "translation": "Finished PDF space export. Download <a "
+                           "href=\"/confluence/download/temp/pdfexport-20180111-110118-1209-23/x-110118-1209-24.pdf"
+                           "\">here</a>.",
             "args": []
         }]
     })

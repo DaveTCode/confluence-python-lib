@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
 
-def test_create_audit_record(): 
+def test_create_audit_record():
     a = AuditRecord({
         "author":  {
             "type":  "user",
