@@ -90,6 +90,11 @@ objects have not yet been expanded.
 |-----------|--------------------------------------------------------:|-------|
 |GET        |/rest/content/{id}/restriction/byOperation               |       |
 |GET        |/rest/content/{id}/restriction/byOperation/{operationKey}|       |
+
+### content/blueprint
+
+| HTTP Type | Endpoint                                                | State |
+|-----------|--------------------------------------------------------:|-------|
 |POST       |/rest/content/blueprint/instance/{draftId}               |       |
 |PUT        |/rest/content/blueprint/instance/{draftId}               |       |
 
@@ -125,10 +130,10 @@ objects have not yet been expanded.
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
 |GET        |/rest/space                                              | 1     |
-|POST       |/rest/space                                              |       |
-|POST       |/rest/space/_private                                     |       |
-|PUT        |/rest/space/{spaceKey}                                   |       |
-|DELETE     |/rest/space/{spaceKey}                                   |       |
+|POST       |/rest/space                                              | 1     |
+|POST       |/rest/space/_private                                     | 1     |
+|PUT        |/rest/space/{spaceKey}                                   | 1     |
+|DELETE     |/rest/space/{spaceKey}                                   | 1     |
 |GET        |/rest/space/{spaceKey}                                   | 1     |
 |GET        |/rest/space/{spaceKey}/content                           | 1     |
 |GET        |/rest/space/{spaceKey}/content/{type}                    | 1     |

@@ -458,6 +458,37 @@ class Confluence:
 
         return self._get_paged_results(Space, 'space', params, expand)
 
+    def create_space(self, space_key, space_name, space_description=None, is_private=False):
+        # type: (str, str, Optional[str], bool) -> Space
+        """
+        Create a space with the specified key, name and (optional) description.
+
+        :param space_key: The new space key. Causes exception if this is not
+            unique.
+        :param space_name: The new name for the space.
+        :param space_description: Optional. A description of the space.
+        :param is_private: Set to true to make this space only visible by the
+            creator.
+
+        :return: The full space object including it's id.
+        """
+        path = 'space/_private' if is_private else 'space'
+
+        data = {
+            'key': space_key,
+            'name': space_name
+        }  # type: Dict[str, Any]
+
+        if space_description:
+            data['description'] = {
+                'plain': {
+                    'value': space_description,
+                    'representation': 'plain'
+                }
+            }
+
+        return self._post_return_single(Space, path, data=data, params={})
+
     def get_space(self, space_key, expand=None):  # type: (str, Optional[List[str]]) -> Space
         """
         Retrieve information on a single space.
@@ -469,6 +500,41 @@ class Confluence:
         :return: The space matching the given key.
         """
         return self._get_single_result(Space, 'space/{}'.format(space_key), {}, expand)
+
+    def update_space(self, space_key, new_name, new_description):
+        # type: (str, Optional[str], Optional[str]) -> Space
+        """
+        Update the name, description or both for a given space.
+
+        :param space_key: The unique key for the space.
+        :param new_name: The new name, if None then don't update.
+        :param new_description: The new description, if None then don't update.
+
+        :return: The full new space object including id.
+        """
+        data = {}  # type: Dict[str, Any]
+
+        if new_name:
+            data['name'] = new_name
+
+        if new_description:
+            data['description'] = {
+                'plain': {
+                    'value': new_description,
+                    'representation': 'plain'
+                }
+            }
+
+        return self._put_return_single(Space, 'space/{}'.format(space_key), data=data, params={})
+
+    def delete_space(self, space_key):  # type: (str) -> None
+        """
+        Delete a space inside of a long running task.
+
+        # TODO - This should really return the longtask that can be used to poll for when it completes.
+        :param space_key: The spaces unique identifier.
+        """
+        self._delete('space/{}'.format(space_key), params={})
 
     def get_space_content(self, space_key, just_root=False, expand=None):
         # type: (str, bool, Optional[List[str]]) -> Iterable[Content]
