@@ -9,7 +9,7 @@ install:
 script:
   - pycodestyle --first --exclude venv,.eggs
   - bandit -r . -x venv,tests,docs,.eggs
-  - mypy --py2
+  - mypy --py2 . --ignore-missing-imports
   - python setup.py test --addopts "--cov confluence tests"
 after_success:
   - codecov
