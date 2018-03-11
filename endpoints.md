@@ -34,7 +34,7 @@ objects have not yet been expanded.
 |GET        |/rest/content                                            | 1     |
 |PUT        |/rest/content/{contentId}                                | 1     |
 |GET        |/rest/content/{id}                                       | 1     |
-|DELETE     |/rest/content/{id}                                       |       |
+|DELETE     |/rest/content/{id}                                       | 1     |
 |GET        |/rest/content/{id}/history                               | 1     |
 |GET        |/rest/content/{id}/history/{version}/macro/hash/{hash}   |       |
 |GET        |/rest/content/{id}/history/{version}/macro/id/{macroId}  |       |

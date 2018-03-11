@@ -254,6 +254,19 @@ class Confluence:
 
         return self._get_paged_results(Content, 'content', params, expand)
 
+    def delete_content(self, content_id, content_status):  # type: (int, ContentStatus) -> None
+        """
+        Deletes a piece of content according to a set of rules based on it's status.
+
+        c.f. https://docs.atlassian.com/ConfluenceServer/rest/6.6.0/#content-delete
+        for more details.
+
+        :param content_id: The ID of the content in confluence.
+        :param content_status: Required on this call to determine how to
+            delete (whether to trash or permanently delete).
+        """
+        self._delete('content/{}'.format(content_id), params={'status': content_status.value})
+
     def get_content_history(self, content_id, expand=None):  # type: (int, Optional[List[str]]) -> None
         """
         Get the full history of a confluence object. Note that in general you
