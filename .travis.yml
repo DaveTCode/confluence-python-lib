@@ -1,18 +1,23 @@
 language: python
 sudo: false
 python:
-  - '3.5'
-  - '3.6'
+- '3.5'
+- '3.6'
 install:
-  - python setup.py install
-  - pip install bandit codecov pycodestyle mypy typing
-script:
-  - pycodestyle --first --exclude venv,.eggs
-  - bandit -r . -x venv,tests,docs,.eggs
-  - mypy --py2 . --ignore-missing-imports
-  - python setup.py test --addopts "tests --cov confluence tests"
+- python setup.py install
+- pip install bandit codecov pycodestyle mypy typing
+jobs:
+  include:
+  - stage: lint
+    script: pycodestyle --first --exclude venv,.eggs
+  - stage: securitylint
+    script: bandit -r . -x venv,tests,docs,.eggs
+  - stage: typecheck
+    script: mypy --py2 . --ignore-missing-imports
+  - stage: unittests
+    script: python setup.py test --addopts "--cov confluence tests"
 after_success:
-  - codecov
+- codecov
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
@@ -23,3 +28,8 @@ deploy:
     tags: true
     repo: DaveTCode/confluence-python-lib
     condition: "$TRAVIS_PYTHON_VERSION == 3.6 && $TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
+env:
+  global:
+  - secure: a0XzSjcSTWCdwMWh+QKdUgIRgoGQ4KPyi8gpyp5Go2BxZyyHvu0ZE+RtZsvaBtBmVOIFDWrV59QT6FQMD0xrnumOtfX06OFrAqdqHzJTz4sQDXXdFc8nsrF5bzgAjpYL+NwZWyuuWArtYpaz3zXaNP2D1wTt1lpvoAM2MbyWXhEXUcbTsx7SOFd7Zb85doN7qKSICEiziTvgiFS2IROqtEFe+v9vo9hW/pCUmPU/l4ApQfX20nOkUfR8zcdFVPACRUwckT17cUyaW29QJVM8DDoxxZejfuV0qY+3mpAg41ztcgilEAi4mvtOFMsmR8mYiOHPBTRmIZrEFtPw1pNZkwjCkENXqbVLdxvCmpc3chbU1eUnfQnJNDtflPPYqqJ9E8kz8dEf9L8yWp5IM3DXxFkBsgQLsSWCxpbO+BixLe4IyAonE8gIUEM2Iv2rc03eIO3T1SI08/W27BbDZmRyzBUncuZAzp7Qbcmt59f9vwbvvhT0KuT0Buq4+CI83BxVOE6zQSQLGMhYDisA5+FCZh6p7UqM79mXo1+AS83mv9vT2ouyc+Ap7khdAdaKK2X0wR3Ol9/JPqob95C6O2UC1UNiCXP7W2e5Ilq6upUCSMxhabLgc7D7QeMFLZBCaf9veU3qw7iu+bwa+ge+1kh6CXQnD7HrYzRbpj3AsHRViV4=
+  - secure: iM7Of071RCZoURxSidtDC4pb0dQfSONY2HQS49UfvMxjGyntGj+QEjbmxBqOVJN39UyicYL5Grt7Q2MGnpLTN321Dl0PRC36yYFJOonRnQjPR2VzOakZ1G1yzGCvXRFFHCjyLFeTZrgFT3UT0IEbZ+ogplgGUafWnl+Yui8HmELKo7JFGp/aZQFKLZwAR9+PbjskszMjbaEX9BRVeAY55hH8j5e564pZ90F+dXKhr6vXfaD+Byz/CAgwGVgxxZgSIlMakuSnJvxBRU5rk0ySbA/cfg9paKutrw+44aX3ZIHwQ4PEIx0hP3xGGuOf/1nWS05wJheQxvQZNYQVtN0/NL9a4SMwmwuPWe0PN1T+XlSRh5bpG/9B2uTifOlBGNWvlxdiw9MyVpYcU5vwVGygWOg7Yv20pn7O6zAPT1ddkWAov3i3+I4bTSJnm4kPDiipmAmoEK8X3F5jKVwBfIScoyNGTDEf7qj60CjOA/ZMH35V9F513CN9tLKX9cWb4mR+PaR/d5d16ac9HDLQDxuuSt6D6/VEEPTwkWQLxzvUv47h6q8yTrqGGv8SJcbkA+TDPBHfoc2YU5ztpFCmHFSf9EvlNtnpafYA/bwWGhh9aUnS2vlDUpkNlOPpXZ4IJ0PRYUmu20ICtt1xhV/qM60fp7eyQDYHUzOkzkDh/8eqJdc=
+  - secure: hMsh9PV+Nue2NrNb2ysO2jK7CPAFHi2jM6Gbh1Z0T3HrBFYwm/HDfKQPodDrvyYzG2OZSwoSZzjSElU3K7l5TL4c5AI4ygj7rPzwVHvi1Mxph7AWfrYASASyiGo1GHqoNuTX6KjyZGxrRwfB+zIalWS6tu4QDsLp9r24CyGid9/QFuhhsAQXbNEuiv/1fYy0Rn3FSpfXHysYbUx0Q84wDhk1KlXyCwPuSKe7N8Ie2Rwko+oz8/xwx3weR8xdXDehjqVJKfI8PdgK8TLYRGXLwRlp7iDbUY6J4TozWJ8tHn8rfC4cw90JJUfFrbYxzizMp3T/rdcbskkH5vTRvElycZECfNSm9ZVnqt/duRQ4ImxGeZF0Zmlbn1LprKTiEJ8uDn1XamAocZzg0bjNErXDn609NWhLDd/ZYt4/1NgPGjtqMRJgWJYMd/OcyXkcYeiIw2i+xVN0AsbiiLyGo7rr8laSJXqIanea1AppB9Vk9ZpHGYGHJmhunpIVeQDhDyvmBpVyXdbffSNH/XVjYrb1+yB7yuD1BGMOEy+fEDV/iRuMyyh5+UYpCx925Xs8f8mNoY8Bz9iulm8fO++QIfS1exyA+Uk8pVnSSjwp7qZZeDd++4kulUhZucHmskCBYN4dG3wyrMvcR0wE0zNBzQzmsJo4oKU7K6DxQIbM5QB3hro=
