@@ -3,22 +3,8 @@ language: python
 sudo: false
 
 python:
-- '3.5'
-- '3.6'
-
-matrix:
-  include:
-    - python: 3.5
-      env: PYENV=py35
-    - python: 3.6
-      env: PYENV=py36
-
-stages:
-  - name: lint
-  - name: securitylint
-  - name: typecheck
-  - name: test
-    if: env(PYENV) = py36
+  - '3.5'
+  - '3.6'
 
 jobs:
   include:
@@ -38,6 +24,7 @@ jobs:
       script:
         - mypy --py2 . --ignore-missing-imports
     - stage: test
+      python: 3.6
       install:
         - python setup.py install
         - pip install codecov
