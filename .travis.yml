@@ -1,23 +1,43 @@
 language: python
+
 sudo: false
+
 python:
 - '3.5'
 - '3.6'
+
+matrix:
+  include:
+    - python: 3.5
+      env: PYENV=py35
+    - python: 3.6
+      env: PYENV=py36
+
 install:
 - python setup.py install
 - pip install bandit codecov pycodestyle mypy typing
+
+stages:
+  - name: lint
+  - name: securitylint
+  - name: typecheck
+  - name: test
+    if: env(PYENV) = py36
+
 jobs:
   include:
-  - stage: lint
-    script: pycodestyle --first --exclude venv,.eggs
-  - stage: securitylint
-    script: bandit -r . -x venv,tests,docs,.eggs
-  - stage: typecheck
-    script: mypy --py2 . --ignore-missing-imports
-  - stage: unittests
-    script: python setup.py test --addopts "--cov confluence tests"
+    - stage: lint
+      script: pycodestyle --first --exclude venv,.eggs
+    - stage: securitylint
+      script: bandit -r . -x venv,tests,docs,.eggs
+    - stage: typecheck
+      script: mypy --py2 . --ignore-missing-imports
+    - stage: test
+      script: python setup.py test --addopts "tests integration_tests --cov confluence"
+
 after_success:
 - codecov
+
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
@@ -28,6 +48,7 @@ deploy:
     tags: true
     repo: DaveTCode/confluence-python-lib
     condition: "$TRAVIS_PYTHON_VERSION == 3.6 && $TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
+
 env:
   global:
   - secure: a0XzSjcSTWCdwMWh+QKdUgIRgoGQ4KPyi8gpyp5Go2BxZyyHvu0ZE+RtZsvaBtBmVOIFDWrV59QT6FQMD0xrnumOtfX06OFrAqdqHzJTz4sQDXXdFc8nsrF5bzgAjpYL+NwZWyuuWArtYpaz3zXaNP2D1wTt1lpvoAM2MbyWXhEXUcbTsx7SOFd7Zb85doN7qKSICEiziTvgiFS2IROqtEFe+v9vo9hW/pCUmPU/l4ApQfX20nOkUfR8zcdFVPACRUwckT17cUyaW29QJVM8DDoxxZejfuV0qY+3mpAg41ztcgilEAi4mvtOFMsmR8mYiOHPBTRmIZrEFtPw1pNZkwjCkENXqbVLdxvCmpc3chbU1eUnfQnJNDtflPPYqqJ9E8kz8dEf9L8yWp5IM3DXxFkBsgQLsSWCxpbO+BixLe4IyAonE8gIUEM2Iv2rc03eIO3T1SI08/W27BbDZmRyzBUncuZAzp7Qbcmt59f9vwbvvhT0KuT0Buq4+CI83BxVOE6zQSQLGMhYDisA5+FCZh6p7UqM79mXo1+AS83mv9vT2ouyc+Ap7khdAdaKK2X0wR3Ol9/JPqob95C6O2UC1UNiCXP7W2e5Ilq6upUCSMxhabLgc7D7QeMFLZBCaf9veU3qw7iu+bwa+ge+1kh6CXQnD7HrYzRbpj3AsHRViV4=
