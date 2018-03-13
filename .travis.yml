@@ -13,10 +13,6 @@ matrix:
     - python: 3.6
       env: PYENV=py36
 
-install:
-- python setup.py install
-- pip install bandit codecov pycodestyle mypy typing
-
 stages:
   - name: lint
   - name: securitylint
@@ -27,16 +23,28 @@ stages:
 jobs:
   include:
     - stage: lint
-      script: pycodestyle --first --exclude venv,.eggs
+      install:
+        - pip install pycodestyle
+      script:
+        - pycodestyle --first --exclude venv,.eggs
     - stage: securitylint
-      script: bandit -r . -x venv,tests,docs,.eggs
+      install:
+        - pip install bandit
+      script:
+        - bandit -r . -x venv,tests,docs,.eggs
     - stage: typecheck
-      script: mypy --py2 . --ignore-missing-imports
+      install:
+        - pip install mypy typing
+      script:
+        - mypy --py2 . --ignore-missing-imports
     - stage: test
-      script: python setup.py test --addopts "tests integration_tests --cov confluence"
-
-after_success:
-- codecov
+      install:
+        - python setup.py install
+        - pip install codecov
+      script:
+        - python setup.py test --addopts "tests integration_tests --cov confluence"
+      after_success:
+        - codecov
 
 deploy:
   provider: pypi
