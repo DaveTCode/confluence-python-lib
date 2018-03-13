@@ -29,7 +29,7 @@ jobs:
         - pip install mypy typing
       script:
         - mypy --py2 . --ignore-missing-imports
-    - stage: integrationtest
+    - stage: test
       python: 3.6
       install:
         - python setup.py install
@@ -38,17 +38,16 @@ jobs:
         - python setup.py test --addopts "tests integration_tests --cov confluence"
       after_success:
         - codecov
-
-deploy:
-  provider: pypi
-  distributions: sdist bdist_wheel
-  user: davetcode
-  password:
-    secure: e0TFZVtf49ypzOJBLXDqYacFrtPC9fGHeBOq68I6GcdunpSRi4VPKTZE1omBNeprZZKvMXoA2c9Uxig6jlD4kc0mYCcSO4xKMA0ZHirzvbtZSIIAllXQRBT8Ri+pstdR6Th424T3Ld6TOmrXtRmrVrO+jbKBH8rjITDs7gHPovm+Q+8Et98ObBxNIvnA74YeZBz8LMBY16PB3fFCtOUz8eG3DZg8Rzf6q5pE+4n7XvtojCSngIeHgLsl1tj6J2o7FmLc2zGyY4HDXwg6yIFrSclmjUsoEyp+hrFmq834Ru3gzUfTPerSYNip5n3coqtobJDawcx3se/n181xfxeE3jCK+tsCHLGA3JAfhLyTLTUP1WNjlWJ083PihIlLkprahsh+PiBG7eh3lLNgx8y6f2uCOwksLCa/K+GGo9doq5u5iGoHkBQFkd1Oo1KtKiejGOp7rDj8BuCenj30MybYLISC/eT1+ZESadiPAoGUd6xW8VKNCwX1jdiyan+SZQ9sqckWgd4NKsG2P+k23zLcN6hBN8jQFTdRwdsRT83iTuBi8+XG/YxIbsXYyxGNfLGyVYlZXA+jJnZmaYkT/L16JBI+Bi6RbUjA9xRypONEfpBp8aFvWVrNlp7f75RX6l6EpGVcL2BPTCWuKYWPjdlejGnRrJecAxEKMirEFv22PmE=
-  on:
-    tags: true
-    repo: DaveTCode/confluence-python-lib
-    condition: "$TRAVIS_PYTHON_VERSION == 3.6 && $TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
+      deploy:
+        provider: pypi
+        distributions: sdist bdist_wheel
+        user: davetcode
+        password:
+          secure: e0TFZVtf49ypzOJBLXDqYacFrtPC9fGHeBOq68I6GcdunpSRi4VPKTZE1omBNeprZZKvMXoA2c9Uxig6jlD4kc0mYCcSO4xKMA0ZHirzvbtZSIIAllXQRBT8Ri+pstdR6Th424T3Ld6TOmrXtRmrVrO+jbKBH8rjITDs7gHPovm+Q+8Et98ObBxNIvnA74YeZBz8LMBY16PB3fFCtOUz8eG3DZg8Rzf6q5pE+4n7XvtojCSngIeHgLsl1tj6J2o7FmLc2zGyY4HDXwg6yIFrSclmjUsoEyp+hrFmq834Ru3gzUfTPerSYNip5n3coqtobJDawcx3se/n181xfxeE3jCK+tsCHLGA3JAfhLyTLTUP1WNjlWJ083PihIlLkprahsh+PiBG7eh3lLNgx8y6f2uCOwksLCa/K+GGo9doq5u5iGoHkBQFkd1Oo1KtKiejGOp7rDj8BuCenj30MybYLISC/eT1+ZESadiPAoGUd6xW8VKNCwX1jdiyan+SZQ9sqckWgd4NKsG2P+k23zLcN6hBN8jQFTdRwdsRT83iTuBi8+XG/YxIbsXYyxGNfLGyVYlZXA+jJnZmaYkT/L16JBI+Bi6RbUjA9xRypONEfpBp8aFvWVrNlp7f75RX6l6EpGVcL2BPTCWuKYWPjdlejGnRrJecAxEKMirEFv22PmE=
+        on:
+          tags: true
+          repo: DaveTCode/confluence-python-lib
+          condition: "$TRAVIS_PYTHON_VERSION == 3.6 && $TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
 
 env:
   global:
