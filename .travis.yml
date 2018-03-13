@@ -6,6 +6,12 @@ python:
   - '3.5'
   - '3.6'
 
+stages:
+  - name: lint
+  - name: securitylint
+  - name: typecheck
+  - name: test
+
 jobs:
   include:
     - stage: lint
