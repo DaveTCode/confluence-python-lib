@@ -2,7 +2,7 @@ from confluence.client import Confluence
 import logging
 import os
 
-local_url = 'http://localhost:1990'
+local_url = 'http://localhost:1990/confluence'
 local_admin = ('admin', 'admin')
 
 
