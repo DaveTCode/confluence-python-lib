@@ -9,25 +9,19 @@ stages:
 jobs:
   include:
     - stage: lint
-      python:
-        - '3.5'
-        - '3.6'
+      python: 3.6
       install:
         - pip install pycodestyle
       script:
         - pycodestyle --first --exclude venv,.eggs
     - stage: securitylint
-      python:
-        - '3.5'
-        - '3.6'
+      python: 3.6
       install:
         - pip install bandit
       script:
         - bandit -r . -x venv,tests,docs,.eggs
     - stage: typecheck
-      python:
-        - '3.5'
-        - '3.6'
+      python: 3.6
       install:
         - pip install mypy typing
       script:
