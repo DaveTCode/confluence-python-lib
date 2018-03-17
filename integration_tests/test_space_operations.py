@@ -22,9 +22,6 @@ def test_create_duplicate_space():
 
 
 def test_get_all_spaces():
-    spaces = c.get_spaces()
-    assert 1 == len(list(spaces))
-
     spaces = c.get_spaces(space_keys=['TEST'])
     assert 1 == len(list(spaces))
 
