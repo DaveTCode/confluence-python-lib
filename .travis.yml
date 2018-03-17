@@ -29,8 +29,8 @@ jobs:
     - stage: integrationtest
       python: 3.6
       before_install:
-        - curl https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb -O
-        - sudo dpkg -i /path/to/atlassian-plugin-sdk_6.3.10_all.deb
+        - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
+        - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
         - atlas-run-standalone --product confluence --version 6.6.0 --server localhost
       install:
         - python setup.py install
