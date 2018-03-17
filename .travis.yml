@@ -1,25 +1,55 @@
 language: python
-sudo: false
-python:
-  - '3.5'
-  - '3.6'
-install:
-  - python setup.py install
-  - pip install bandit codecov pycodestyle mypy typing
-script:
-  - pycodestyle --first --exclude venv,.eggs
-  - bandit -r . -x venv,tests,docs,.eggs
-  - mypy --py2 . --ignore-missing-imports
-  - python setup.py test --addopts "tests --cov confluence tests"
-after_success:
-  - codecov
-deploy:
-  provider: pypi
-  distributions: sdist bdist_wheel
-  user: davetcode
-  password:
-    secure: e0TFZVtf49ypzOJBLXDqYacFrtPC9fGHeBOq68I6GcdunpSRi4VPKTZE1omBNeprZZKvMXoA2c9Uxig6jlD4kc0mYCcSO4xKMA0ZHirzvbtZSIIAllXQRBT8Ri+pstdR6Th424T3Ld6TOmrXtRmrVrO+jbKBH8rjITDs7gHPovm+Q+8Et98ObBxNIvnA74YeZBz8LMBY16PB3fFCtOUz8eG3DZg8Rzf6q5pE+4n7XvtojCSngIeHgLsl1tj6J2o7FmLc2zGyY4HDXwg6yIFrSclmjUsoEyp+hrFmq834Ru3gzUfTPerSYNip5n3coqtobJDawcx3se/n181xfxeE3jCK+tsCHLGA3JAfhLyTLTUP1WNjlWJ083PihIlLkprahsh+PiBG7eh3lLNgx8y6f2uCOwksLCa/K+GGo9doq5u5iGoHkBQFkd1Oo1KtKiejGOp7rDj8BuCenj30MybYLISC/eT1+ZESadiPAoGUd6xW8VKNCwX1jdiyan+SZQ9sqckWgd4NKsG2P+k23zLcN6hBN8jQFTdRwdsRT83iTuBi8+XG/YxIbsXYyxGNfLGyVYlZXA+jJnZmaYkT/L16JBI+Bi6RbUjA9xRypONEfpBp8aFvWVrNlp7f75RX6l6EpGVcL2BPTCWuKYWPjdlejGnRrJecAxEKMirEFv22PmE=
-  on:
-    tags: true
-    repo: DaveTCode/confluence-python-lib
-    condition: "$TRAVIS_PYTHON_VERSION == 3.6 && $TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"
+
+stages:
+  - name: lint
+  - name: securitylint
+  - name: typecheck
+  - name: test
+
+jobs:
+  include:
+    - stage: lint
+      python: 3.6
+      install:
+        - pip install pycodestyle
+      script:
+        - pycodestyle --first --exclude venv,.eggs
+    - stage: securitylint
+      python: 3.6
+      install:
+        - pip install bandit
+      script:
+        - bandit -r . -x venv,tests,docs,.eggs
+    - stage: typecheck
+      python: 3.6
+      install:
+        - pip install mypy typing
+      script:
+        - mypy --py2 . --ignore-missing-imports
+    - stage: integrationtest
+      python: 3.6
+      before_install:
+        - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
+        - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
+        - yes n | atlas-run-standalone --product confluence --version 6.6.0 --server localhost &
+        - >
+          until $(curl --output /dev/null --silent --head --fail http://localhost:1990/confluence); do
+            sleep 5
+          done
+      install:
+        - python setup.py install
+        - pip install codecov
+      script:
+        - python setup.py test --addopts "tests integration_tests --cov confluence"
+      after_success:
+        - codecov
+      deploy:
+        provider: pypi
+        distributions: sdist bdist_wheel
+        user: davetcode
+        password:
+          secure: e0TFZVtf49ypzOJBLXDqYacFrtPC9fGHeBOq68I6GcdunpSRi4VPKTZE1omBNeprZZKvMXoA2c9Uxig6jlD4kc0mYCcSO4xKMA0ZHirzvbtZSIIAllXQRBT8Ri+pstdR6Th424T3Ld6TOmrXtRmrVrO+jbKBH8rjITDs7gHPovm+Q+8Et98ObBxNIvnA74YeZBz8LMBY16PB3fFCtOUz8eG3DZg8Rzf6q5pE+4n7XvtojCSngIeHgLsl1tj6J2o7FmLc2zGyY4HDXwg6yIFrSclmjUsoEyp+hrFmq834Ru3gzUfTPerSYNip5n3coqtobJDawcx3se/n181xfxeE3jCK+tsCHLGA3JAfhLyTLTUP1WNjlWJ083PihIlLkprahsh+PiBG7eh3lLNgx8y6f2uCOwksLCa/K+GGo9doq5u5iGoHkBQFkd1Oo1KtKiejGOp7rDj8BuCenj30MybYLISC/eT1+ZESadiPAoGUd6xW8VKNCwX1jdiyan+SZQ9sqckWgd4NKsG2P+k23zLcN6hBN8jQFTdRwdsRT83iTuBi8+XG/YxIbsXYyxGNfLGyVYlZXA+jJnZmaYkT/L16JBI+Bi6RbUjA9xRypONEfpBp8aFvWVrNlp7f75RX6l6EpGVcL2BPTCWuKYWPjdlejGnRrJecAxEKMirEFv22PmE=
+        on:
+          tags: true
+          repo: DaveTCode/confluence-python-lib
+          condition: "$TRAVIS_TAG =~ ^[0-9]+[.][0-9]+[.][0-9]+(rc[0-9]+|[.]dev[0-9]+)?$"

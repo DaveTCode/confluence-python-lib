@@ -1,14 +1,13 @@
-from confluence.client import Confluence
 from confluence.exceptions.generalerror import ConfluenceError
 from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
-from integration_tests.config import local_url, local_admin
+from integration_tests.config import get_confluence_instance
 import logging
 import pytest
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
-c = Confluence(local_url, local_admin)
+c = get_confluence_instance()
 
 
 def test_create_space():
@@ -23,11 +22,8 @@ def test_create_duplicate_space():
 
 
 def test_get_all_spaces():
-    spaces = c.get_spaces()
-    assert len(list(spaces)) == 2
-
     spaces = c.get_spaces(space_keys=['TEST'])
-    assert len(list(spaces)) == 1
+    assert 1 == len(list(spaces))
 
 
 def test_get_space_no_expands():
