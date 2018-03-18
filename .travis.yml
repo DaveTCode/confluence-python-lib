@@ -40,6 +40,7 @@ jobs:
           until $(curl --fail http://localhost:1990/confluence); do
             sleep 5
           done
+        - curl --fail http://localhost:1990/confluence
         - python setup.py test --addopts "tests integration_tests --cov confluence"
       after_success:
         - codecov
