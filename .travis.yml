@@ -28,7 +28,10 @@ jobs:
         - mypy --py2 . --ignore-missing-imports
     - stage: integrationtest
       python: 3.6
-      before_install:
+      install:
+        - python setup.py install
+        - pip install codecov
+      script:
         - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
         - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
         - yes n | atlas-version
@@ -37,10 +40,6 @@ jobs:
           until $(curl --output /dev/null --silent --head --fail http://localhost:1990/confluence); do
             sleep 5
           done
-      install:
-        - python setup.py install
-        - pip install codecov
-      script:
         - python setup.py test --addopts "tests integration_tests --cov confluence"
       after_success:
         - codecov
