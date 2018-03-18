@@ -112,10 +112,13 @@ class Confluence:
             for result in search_results['results']:
                 yield item_type(result)
 
-    def _post(self, path, params, data, files=None):
-        # type: (str, Dict[str, str], Any, Optional[Any]) -> requests.Response
+    def _post(self, path, params, data, files=None, expand=None):
+        # type: (str, Dict[str, str], Any, Optional[Any], Optional[List[str]]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
         headers = {"X-Atlassian-Token": "nocheck"}
+
+        if params:
+            params['expand'] = ','.join(expand)
 
         response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth)
 
@@ -123,20 +126,23 @@ class Confluence:
 
         return response
 
-    def _post_return_single(self, item_type, path, params, data):
-        # type: (Callable, str, Dict[str, str], Any) -> Any
-        return item_type(self._post(path, params, data).json())
+    def _post_return_single(self, item_type, path, params, data, expand=None):
+        # type: (Callable, str, Dict[str, str], Any, Optional[List[str]]) -> Any
+        return item_type(self._post(path, params, data, expand).json())
 
-    def _post_return_multiple(self, item_type, path, params, data, files):
-        # type: (Callable, str, Dict[str, str], Any, Dict[str, Any]) -> Any
-        response = self._post(path, params, data, files)
+    def _post_return_multiple(self, item_type, path, params, data, files, expand=None):
+        # type: (Callable, str, Dict[str, str], Any, Dict[str, Any], Optional[List[str]]) -> Any
+        response = self._post(path, params, data, files, expand)
 
         return [item_type(r) for r in response.json()['results']]
 
-    def _put(self, path, params, data):
-        # type: (str, Dict[str, str], Any) -> requests.Response
+    def _put(self, path, params, data, expand):
+        # type: (str, Dict[str, str], Any, Optional[List[str]]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
         headers = {"X-Atlassian-Token": "nocheck"}
+
+        if params:
+            params['expand'] = ','.join(expand)
 
         response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth)
 
@@ -144,9 +150,9 @@ class Confluence:
 
         return response
 
-    def _put_return_single(self, item_type, path, params, data):
-        # type: (Callable, str, Dict[str, str], Any) -> Any
-        return item_type(self._put(path, params, data).json())
+    def _put_return_single(self, item_type, path, params, data, expand=None):
+        # type: (Callable, str, Dict[str, str], Any, Optional[List[str]]) -> Any
+        return item_type(self._put(path, params, data, expand).json())
 
     def _delete(self, path, params):
         # type: (str, Dict[str, str]) -> requests.Response
@@ -159,8 +165,52 @@ class Confluence:
 
         return response
 
-    def put_content(self, content_id, content_type, new_version, status,
-                    new_content, new_title, new_parent, new_status):
+    def create_content(self, content_type, title, space_key, content, parent_content_id=None, expand=None):
+        # type: (ContentType, str, str, str, Optional[int], Optional[List[str]]) -> Content
+        """
+        Create a new piece of content, used for creating blog entries & pages.
+
+        :param content_type: Currently only works for ContentType.PAGE and
+            BLOG_POST. Attachments and comments are handled through other
+            routes.
+        :param title: The title of the content.
+        :param space_key: The space to put the content in.
+        :param content: The storage format of the new piece of content.
+        :param parent_content_id: An optional parent page id to put as the
+            ancestor for this piece of content.
+        :param expand: The confluence REST API utilised expansion to avoid
+            returning all fields on all requests. This optional parameter
+            allows the user to select which fields that they want to expand on
+            the returning piece of content.
+
+        :return: A fully populated content object.
+        """
+        if content_type not in (ContentType.BLOG_POST, ContentType.PAGE):
+            raise ValueError('Only blog posts and pages can be added through this function')
+
+        data = {
+            'type': content_type.value,
+            'title': title,
+            'space': {
+                'key': space_key
+            },
+            'body': {
+                'storage': {
+                    'value': content,
+                    'representation': 'storage'
+                }
+            }
+        }
+
+        if parent_content_id:
+            data['ancestors'] = [{
+                'id': parent_content_id
+            }]
+
+        return self._post_return_single(Content, 'content', {}, data, expand)
+
+    def update_content(self, content_id, content_type, new_version, status,
+                       new_content, new_title, new_parent, new_status):
         # type: (int, ContentType, int, Optional[ContentStatus], Optional[str], Optional[str], Optional[int], Optional[ContentStatus]) -> Content
         """
         Replace a piece of content in confluence. This can be used to update
