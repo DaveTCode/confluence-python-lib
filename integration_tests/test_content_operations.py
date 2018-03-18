@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
 c = get_confluence_instance()
-space_key = 'PS'
+space_key = 'PSA'
 
 
 def setup_module():
