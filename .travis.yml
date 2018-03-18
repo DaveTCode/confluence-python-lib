@@ -31,11 +31,7 @@ jobs:
       before_install:
         - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
         - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
-        - yes n | atlas-run-standalone --product confluence --version 6.6.0 --server localhost >nul 2>&1 &
-        - >
-          until $(curl --output /dev/null --silent --head --fail http://localhost:1990/confluence); do
-            sleep 5
-          done
+        - python integration_tests/create_test_instance.py
       install:
         - python setup.py install
         - pip install codecov
