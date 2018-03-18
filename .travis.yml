@@ -31,7 +31,7 @@ jobs:
       before_install:
         - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
         - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
-        - yes n | atlas-run-standalone --product confluence --version 6.6.0 --server localhost &
+        - yes n | atlas-run-standalone --product confluence --version 6.6.0 --server localhost & > /dev/null
         - >
           until $(curl --output /dev/null --silent --head --fail http://localhost:1990/confluence); do
             sleep 5
