@@ -48,6 +48,7 @@ class Confluence:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self._client:
             self._client.close()
+            self._client = None
 
     @property
     def client(self):
