@@ -41,6 +41,7 @@ jobs:
             sleep 5
           done
         - curl --fail http://localhost:1990/confluence
+        - lsof -Pnl +M -i4
         - python setup.py test --addopts "tests integration_tests --cov confluence"
       after_success:
         - codecov
