@@ -16,7 +16,9 @@ class Version:
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.number = json['number']  # type: int
         self.minor_edit = json['minorEdit']  # type: bool
-        self.hidden = json['hidden']  # type: bool
+
+        if 'hidden' in json:
+            self.hidden = json['hidden']  # type: bool
 
         if 'by' in json:
             self.by = User(json['by'])
