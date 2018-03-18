@@ -8,7 +8,7 @@ def create_detached_server(version):
 
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     for line in p.stdout:
-        p.stdin.writelines('n'.encode())
+        p.stdin.write(b'n\n')
         if line.startswith('[INFO] Type Ctrl-C to exit'.encode()):
             print('Found exit line')
             break
