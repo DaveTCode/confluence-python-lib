@@ -30,7 +30,7 @@ objects have not yet been expanded.
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|POST       |/rest/content                                            |       |
+|POST       |/rest/content                                            | 1     |
 |GET        |/rest/content                                            | 1     |
 |PUT        |/rest/content/{contentId}                                | 1     |
 |GET        |/rest/content/{id}                                       | 1     |

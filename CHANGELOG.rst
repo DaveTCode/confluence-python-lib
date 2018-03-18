@@ -19,6 +19,20 @@ Changed
 
 -  Nothing
 
+`0.12.0`_ - 2017-03-18
+----------------------
+
+Added
+~~~~~
+
+-  Added support for creating new content (blogs & pages)
+-  Added functional tests for creating new content and various space functions
+
+Changed
+~~~~~~~
+
+-  hidden is now optional when viewing a Version object
+
 `0.11.0`_ - 2017-03-11
 ----------------------
 
@@ -176,7 +190,8 @@ Changed
 
 .. _Keep a Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: http://semver.org/
-.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.11.0...HEAD
+.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.12.0...HEAD
+.. _0.12.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.11.1...0.12.0
 .. _0.11.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.10.1...0.11.0
 .. _0.10.1: https://github.com/DaveTCode/confluence-python-lib/compare/0.9.0...0.10.1
 .. _0.10.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.9.0...0.10.0
