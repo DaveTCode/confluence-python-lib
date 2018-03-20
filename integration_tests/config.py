@@ -1,7 +1,6 @@
 from confluence.client import Confluence
 import logging
 import os
-import requests
 
 local_url = 'http://localhost:1990/confluence'
 local_admin = ('admin', 'admin')
@@ -9,7 +8,7 @@ local_admin = ('admin', 'admin')
 
 def get_confluence_instance():
     # type: () -> Confluence
-    print(requests.get('http://localhost:1990/confluence/rest/api/space').json())
+    os.system('curl --fail http://localhost:1990/confluence/rest/api/space')
     user = os.environ.get('ATLASSIAN_CLOUD_USER')
     password = os.environ.get('ATLASSIAN_CLOUD_PASSWORD')
     url = os.environ.get('ATLASSIAN_CLOUD_URL')
