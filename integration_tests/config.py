@@ -8,7 +8,7 @@ local_admin = ('admin', 'admin')
 
 def get_confluence_instance():
     # type: () -> Confluence
-    os.system('curl --fail http://localhost:1990/confluence/rest/api/space')
+    print(os.system('curl --fail http://localhost:1990/confluence/rest/api/space'))
     user = os.environ.get('ATLASSIAN_CLOUD_USER')
     password = os.environ.get('ATLASSIAN_CLOUD_PASSWORD')
     url = os.environ.get('ATLASSIAN_CLOUD_URL')
