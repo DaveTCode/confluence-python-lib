@@ -8,7 +8,6 @@ install:
 script:
   - pycodestyle --first --exclude venv,.eggs
   - bandit -r . -x venv,tests,docs,.eggs
-  - pip install
   - mypy --py2 . --ignore-missing-imports
   - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
   - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
