@@ -141,7 +141,7 @@ class Confluence:
         url = '{}/{}'.format(self._api_base, path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
-        if params:
+        if expand:
             params['expand'] = ','.join(expand)
 
         response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth)
