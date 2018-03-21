@@ -20,7 +20,6 @@ script:
   - curl --fail http://localhost:1990/confluence/rest/api/space
   - python setup.py test --addopts "tests integration_tests --cov confluence"
   - kill -9 $CONFLUENCE_PID
-  - rm -rf amps-standalone-*
 after_success:
   - codecov
 deploy:
