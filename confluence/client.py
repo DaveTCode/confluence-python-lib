@@ -128,11 +128,11 @@ class Confluence:
 
     def _post_return_single(self, item_type, path, params, data, expand=None):
         # type: (Callable, str, Dict[str, str], Any, Optional[List[str]]) -> Any
-        return item_type(self._post(path, params, data, expand).json())
+        return item_type(self._post(path, params, data, files=None, expand=expand).json())
 
     def _post_return_multiple(self, item_type, path, params, data, files, expand=None):
         # type: (Callable, str, Dict[str, str], Any, Dict[str, Any], Optional[List[str]]) -> Any
-        response = self._post(path, params, data, files, expand)
+        response = self._post(path, params, data, files=files, expand=expand)
 
         return [item_type(r) for r in response.json()['results']]
 
