@@ -12,16 +12,17 @@ script:
   - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
   - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
   - yes n | atlas-run-standalone --product confluence --version 6.6.0 --server localhost &>/dev/null &
+  - CONFLUENCE_PID=$!
   - >
     until $(curl --fail http://localhost:1990/confluence); do
       sleep 5
     done
   - curl --fail http://localhost:1990/confluence/rest/api/space
   - python setup.py test --addopts "tests integration_tests --cov confluence"
+  - kill -9 $CONFLUENCE_PID
+  - rm -rf amps-standalone-*
 after_success:
   - codecov
-before_deploy:
-  - rm -rf amps-standalone-*
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
