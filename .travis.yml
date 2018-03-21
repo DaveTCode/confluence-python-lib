@@ -34,14 +34,12 @@ jobs:
       script:
         - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
         - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
-        - yes n | atlas-version
-        - atlas-run-standalone --product confluence --version 6.6.0 --server localhost &>/dev/null &
+        - yes n | atlas-run-standalone --product confluence --version 6.6.0 --server localhost &>/dev/null &
         - >
           until $(curl --fail http://localhost:1990/confluence); do
             sleep 5
           done
         - curl --fail http://localhost:1990/confluence/rest/api/space
-        - lsof -Pnl +M -i4
         - python setup.py test --addopts "tests integration_tests --cov confluence"
       after_success:
         - codecov
