@@ -41,6 +41,7 @@ jobs:
           done
         - curl --fail http://localhost:1990/confluence/rest/api/space
         - python setup.py test --addopts "tests integration_tests --cov confluence"
+        - rm -rf amps-standalone-*
       after_success:
         - codecov
       deploy:
