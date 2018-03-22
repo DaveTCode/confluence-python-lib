@@ -1,5 +1,4 @@
 from confluence.exceptions.generalerror import ConfluenceError
-from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
 from confluence.models.content import ContentType, ContentStatus
 from integration_tests.config import get_confluence_instance
 import logging

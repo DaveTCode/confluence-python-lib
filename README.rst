@@ -50,7 +50,7 @@ The integration tests are more complex and require the developer to take the fol
 - Install the `Atlassian SDK <https://developer.atlassian.com/server/framework/atlassian-sdk/set-up-the-atlassian-plugin-sdk-and-build-a-project/>`_
 - Run ``atlas-run-standalone --product confluence --version 6.6.0 --server localhost``
 - Wait for the server to complete starting up
-- Run integration tests using``python setup.py test --addopts "integration_tests"``
+- Run integration tests using ``python setup.py test --addopts "integration_tests"``
 
 .. _endpoints.md: endpoints.md
 .. _Contribution guidelines for this project: CONTRIBUTING.md

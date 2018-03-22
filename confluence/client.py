@@ -388,7 +388,7 @@ class Confluence:
                                        params=params,
                                        expand=expand)
 
-    def get_attachments(self, content_id, filename, media_type, expand=None):
+    def get_attachments(self, content_id, filename=None, media_type=None, expand=None):
         # type: (int, Optional[str], Optional[str], Optional[List[str]]) -> Iterable[Content]
         """
         Retrieve attachments on a piece of content.
@@ -442,7 +442,7 @@ class Confluence:
 
         with open(file_path, 'rb') as f:
             return self._post_return_multiple(Content,
-                                              '/content/{}/child/attachment'.format(content_id),
+                                              'content/{}/child/attachment'.format(content_id),
                                               params=params,
                                               files={'file': (file_name, f)},
                                               data={})
@@ -753,7 +753,7 @@ class Confluence:
         :param space_key: The space in which we're removing a property.
         :param property_key: The property to remove.
         """
-        self._delete('/space/{}/property/{}'.format(space_key, property_key), {})
+        self._delete('space/{}/property/{}'.format(space_key, property_key), {})
 
     def get_user(self, username=None, user_key=None, expand=None):
         # type: (Optional[str], Optional[str], Optional[List[str]]) -> User
