@@ -4,7 +4,8 @@ from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
 from confluence.exceptions.valuetoolong import ConfluenceValueTooLong
 from confluence.exceptions.versionconflict import ConfluenceVersionConflict
 from confluence.models.auditrecord import AuditRecord
-from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType
+from confluence.models.content import CommentDepth, CommentLocation, Content, ContentStatus, ContentType, \
+    ContentProperty
 from confluence.models.contenthistory import ContentHistory
 from confluence.models.group import Group
 from confluence.models.label import Label
@@ -492,6 +493,103 @@ class Confluence:
         :param label_name: The name of the label to remove.
         """
         self._delete('content/{}/label'.format(content_id), params={'name': label_name})
+
+    def get_content_properties(self, content_id, expand=None):
+        # type: (int, Optional[List[str]]) -> Iterable[ContentProperty]
+        """
+
+        :param content_id: Required to identify which piece of content we want
+            to get properties from.
+        :param expand: The confluence REST API utilised expansion to avoid
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a comma
+            separated list.
+
+        :return: The full list of properties defined on that piece of content.
+        """
+        return self._get_paged_results(ContentProperty, 'content/{}/property'.format(content_id), {}, expand)
+
+    def create_content_property(self, content_id, property_key, property_value):
+        # type: (int, str, Dict[str, Any]) -> ContentProperty
+        """
+        Create a property on a specific piece of content.
+
+        :param content_id: Required to identify which piece of content we want
+            to store the property on.
+        :param property_key: The new key, will raise a GeneralError if this
+            clashes with an existing property.
+        :param property_value: An arbitrary piece of json serializable data.
+
+        :return: The fully populated ContentProperty object.
+        """
+        data = {
+            'key': property_key,
+            'value': property_value
+        }
+
+        return self._post_return_single(ContentProperty, 'content/{}/property'.format(content_id), {}, data)
+
+    def get_content_property(self, content_id, property_key, expand=None):
+        # type: (int, str, Optional[List[str]]) -> ContentProperty
+        """
+        Retrieve a single property by key from a particular piece of content.
+
+        :param content_id: Required to identify the content we're looking for a
+            property on.
+        :param property_key: The specific property to search for. If this
+            doesn't exist then we raise a ResourceNotFound error.
+        :param expand: The confluence REST API utilised expansion to avoid
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a comma
+            separated list.
+
+        :return: The fully populated ContentProperty object.
+        """
+        return self._get_single_result(ContentProperty, 'content/{}/property/{}'.format(content_id, property_key), {},
+                                       expand)
+
+    def update_content_property(self, content_id, property_key, new_value, new_version,
+                                is_minor_edit=False, is_hidden_edit=False):
+        # type: (int, str, Dict[str, Any], int, bool, bool) -> ContentProperty
+        """
+        Create a new version of a property on a piece of content.
+
+        :param content_id: Required to identify the piece of content.
+        :param property_key: The specific property to update. If this doesn't
+            exist then we raise a ResourceNotFound error.
+        :param new_value: Any arbitrary JSON serializable value.
+        :param new_version: If this is 1 and the key doesn't already exist then
+            create a new property. Otherwise it must be 1 more than the
+            previous version number for this property.
+        :param is_minor_edit: Whether this should count as a minor update.
+            Defaults to False.
+        :param is_hidden_edit: Whether this should count as a hidden edit.
+            Defaults to False.
+
+        :return: The new ContentProperty object.
+        """
+        data = {
+            'key': property_key,
+            'value': new_value,
+            'version': {
+                'number': new_version,
+                'minorEdit': is_minor_edit,
+                'hidden': is_hidden_edit
+            }
+        }
+
+        return self._put_return_single(ContentProperty, 'content/{}/property/{}'.format(content_id, property_key),
+                                       {}, data)
+
+    def delete_content_property(self, content_id, property_key):
+        # type: (int, str) -> None
+        """
+        Remove a property from a piece of content.
+
+        :param content_id: Required to identify the piece of content.
+        :param property_key: Required to identify the property uniquely.
+        """
+        self._delete('content/{}/property/{}'.format(content_id, property_key), {})
 
     def search(self, cql, cql_context=None, expand=None):
         # type: (str, Optional[str], Optional[List[str]]) -> Iterable[Content]

@@ -80,3 +80,22 @@ class Content:
 
     def __str__(self):
         return '{} - {}'.format(self.id, self.title)
+
+
+class ContentProperty:
+    """
+    Represents a single property attached to a piece of content.
+
+    Corresponds to https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/JsonContentProperty.html
+    """
+
+    def __init__(self, json):  # type: (Dict[str, Any]) -> None
+        self.key = json['key']  # type: str
+        self.value = json['value']  # type: Dict[str, Any]
+        if 'version' in json:
+            self.version = Version(json['version'])
+        if 'content' in json:
+            self.content = Content(json['content'])
+
+    def __str__(self):
+        return self.key

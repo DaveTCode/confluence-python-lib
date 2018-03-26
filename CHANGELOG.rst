@@ -19,6 +19,19 @@ Changed
 
 -  Nothing
 
+`0.13.0`_ - 2017-03-26
+----------------------
+
+Added
+~~~~~
+
+-  Added functionality for handling content properties
+
+Changed
+~~~~~~~
+
+-  Nothing
+
 `0.12.0`_ - 2017-03-18
 ----------------------
 
@@ -190,7 +203,8 @@ Changed
 
 .. _Keep a Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: http://semver.org/
-.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.12.0...HEAD
+.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.0...HEAD
+.. _0.13.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.12.0...0.13.0
 .. _0.12.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.11.1...0.12.0
 .. _0.11.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.10.1...0.11.0
 .. _0.10.1: https://github.com/DaveTCode/confluence-python-lib/compare/0.9.0...0.10.1

@@ -77,12 +77,12 @@ objects have not yet been expanded.
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|GET        |/rest/content/{id}/property                              |       |
-|POST       |/rest/content/{id}/property                              |       |
-|GET        |/rest/content/{id}/property/{key}                        |       |
-|PUT        |/rest/content/{id}/property/{key}                        |       |
-|DELETE     |/rest/content/{id}/property/{key}                        |       |
-|POST       |/rest/content/{id}/property/{key}                        |       |
+|GET        |/rest/content/{id}/property                              | 2     |
+|POST       |/rest/content/{id}/property                              | 2     |
+|GET        |/rest/content/{id}/property/{key}                        | 2     |
+|PUT        |/rest/content/{id}/property/{key}                        | 2     |
+|DELETE     |/rest/content/{id}/property/{key}                        | 2     |
+|POST       |/rest/content/{id}/property/{key}                        | -1    |
 
 ### content/{id}/restriction
 
