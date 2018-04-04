@@ -42,9 +42,10 @@ class Confluence:
         self._api_base = '{}/rest/api'.format(self._base_url)
         self._client = None  # type: requests.Session
 
-    def __enter__(self):
+    def __enter__(self):  # type: () -> Confluence
         self._client = requests.session()
         self._client.auth = self._basic_auth
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self._client:
