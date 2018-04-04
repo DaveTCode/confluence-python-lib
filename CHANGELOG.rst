@@ -19,6 +19,19 @@ Changed
 
 -  Nothing
 
+`0.13.2`_ - 2017-04-04
+----------------------
+
+Added
+~~~~~
+
+-  Nothing
+
+Changed
+~~~~~~~
+
+-  Fixed content body implementation to contain the correct data and added integration tests to verify it
+
 `0.13.1`_ - 2017-04-04
 ----------------------
 

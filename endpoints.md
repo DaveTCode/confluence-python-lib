@@ -30,11 +30,11 @@ objects have not yet been expanded.
 
 | HTTP Type | Endpoint                                                | State |
 |-----------|--------------------------------------------------------:|-------|
-|POST       |/rest/content                                            | 1     |
-|GET        |/rest/content                                            | 1     |
-|PUT        |/rest/content/{contentId}                                | 1     |
-|GET        |/rest/content/{id}                                       | 1     |
-|DELETE     |/rest/content/{id}                                       | 1     |
+|POST       |/rest/content                                            | 2     |
+|GET        |/rest/content                                            | 2     |
+|PUT        |/rest/content/{contentId}                                | 2     |
+|GET        |/rest/content/{id}                                       |       |
+|DELETE     |/rest/content/{id}                                       | 2     |
 |GET        |/rest/content/{id}/history                               | 1     |
 |GET        |/rest/content/{id}/history/{version}/macro/hash/{hash}   |       |
 |GET        |/rest/content/{id}/history/{version}/macro/id/{macroId}  |       |

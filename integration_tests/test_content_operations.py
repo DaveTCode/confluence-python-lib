@@ -37,6 +37,28 @@ def test_create_page_with_ancestor():
         c.delete_content(parent.id, ContentStatus.CURRENT)
 
 
+def test_get_page_content():
+    title = 'Full page'
+    content = 'This is a full piece of content'
+    c.create_content(ContentType.PAGE, title, space_key, content=content)
+    result = c.get_content(ContentType.PAGE, space_key=space_key, title=title,
+                           expand=['body.storage', 'body.editor', 'body.view', 'body.export_view', 'body.styled_view',
+                                   'body.anonymous_export_view'])
+    page = list(result)[0]  # TODO - Replace with call to get content by ID when implemented
+    assert page.body.anonymous_export_view == content
+    assert page.body.anonymous_export_view_representation == 'anonymous_export_view'
+    assert page.body.editor == content
+    assert page.body.editor_representation == 'editor'
+    assert page.body.export_view == content
+    assert page.body.export_view_representation == 'export_view'
+    assert page.body.storage == content
+    assert page.body.storage_representation == 'storage'
+    assert content in page.body.styled_view
+    assert page.body.styled_view_representation == 'styled_view'
+    assert page.body.view == content
+    assert page.body.view_representation == 'view'
+
+
 def test_create_duplicate_page():
     c.create_content(ContentType.PAGE, 'Duplicate Page', space_key, '1')
 
