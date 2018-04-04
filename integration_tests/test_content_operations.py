@@ -46,17 +46,17 @@ def test_get_page_content():
                                    'body.anonymous_export_view'])
     page = list(result)[0]  # TODO - Replace with call to get content by ID when implemented
     assert page.body.anonymous_export_view == content
-    assert page.body.anonymous_export_view_representation == 'anonymous_export_view'
+    assert hasattr(page.body, 'anonymous_export_view_representation')
     assert page.body.editor == content
-    assert page.body.editor_representation == 'editor'
+    assert hasattr(page.body, 'editor_representation')
     assert page.body.export_view == content
-    assert page.body.export_view_representation == 'export_view'
+    assert hasattr(page.body, 'export_view_representation')
     assert page.body.storage == content
-    assert page.body.storage_representation == 'storage'
+    assert hasattr(page.body, 'storage_representation')
     assert content in page.body.styled_view
-    assert page.body.styled_view_representation == 'styled_view'
+    assert hasattr(page.body, 'styled_view_representation')
     assert page.body.view == content
-    assert page.body.view_representation == 'view'
+    assert hasattr(page.body, 'view_representation')
 
 
 def test_create_duplicate_page():
