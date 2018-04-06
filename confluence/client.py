@@ -211,9 +211,9 @@ class Confluence:
 
         return self._post_return_single(Content, 'content', {}, data, expand)
 
-    def update_content(self, content_id, content_type, new_version, status,
-                       new_content, new_title, new_parent, new_status):
-        # type: (int, ContentType, int, Optional[ContentStatus], Optional[str], Optional[str], Optional[int], Optional[ContentStatus]) -> Content
+    def update_content(self, content_id, content_type, new_version,
+                       new_content, new_title, status=None, new_parent=None, new_status=None):
+        # type: (int, ContentType, int, str, str, Optional[ContentStatus], Optional[int], Optional[ContentStatus]) -> Content
         """
         Replace a piece of content in confluence. This can be used to update
         title, content, parent or status.
@@ -222,14 +222,15 @@ class Confluence:
         :param content_type: The type of content to be updated.
         :param new_version: This should be the current version + 1.
         :param status: The current status of the object.
-        :param new_content: The new content to store, optional.
-        :param new_title: The new title, optional.
+        :param new_content: The new content to store.
+        :param new_title: The new title.
         :param new_parent: The new parent content id, optional.
         :param new_status: The new content status, optional.
 
         :return: The updated content object.
         """
         content = {
+            'title': new_title,
             'version': {
                 'number': new_version
             },
@@ -241,9 +242,6 @@ class Confluence:
                 }
             }
         }
-
-        if new_title:
-            content['title'] = new_title
 
         if new_parent:
             content['ancestors'] = [{
@@ -257,7 +255,7 @@ class Confluence:
         if status:
             params['status'] = status.value
 
-        return self._put_return_single(ContentType, 'content/{}'.format(content_id), params=params, data=content)
+        return self._put_return_single(Content, 'content/{}'.format(content_id), params=params, data=content)
 
     def get_content(self, content_type=ContentType.PAGE, space_key=None,
                     title=None, status=None, posting_day=None, expand=None):
@@ -306,6 +304,21 @@ class Confluence:
             params['postingDay'] = posting_day.strftime('%Y-%m-%d')
 
         return self._get_paged_results(Content, 'content', params, expand)
+
+    def get_content_by_id(self, content_id, expand=None):
+        # type: (int, Optional[List[str]]) -> Content
+        """
+        Matches the REST API call https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/#content-getContentById
+        which returns the document based on the id.
+
+        :param expand: The confluence REST API utilised expansion to avoid
+            returning all fields on all requests. This optional parameter allows
+            the user to select which fields that they want to expand as a comma
+            separated list.
+
+        :return: An iterable of pages/blogposts which match the parameters.
+        """
+        return self._get_single_result(Content, 'content/{}'.format(content_id), {}, expand)
 
     def delete_content(self, content_id, content_status):  # type: (int, ContentStatus) -> None
         """

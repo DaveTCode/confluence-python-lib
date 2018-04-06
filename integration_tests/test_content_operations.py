@@ -59,6 +59,26 @@ def test_get_page_content():
     assert hasattr(page.body, 'view_representation')
 
 
+def test_update_page_content():
+    # Create test page
+    title = 'Full page updated'
+    content = 'This is a full piece of content'
+    result = c.create_content(ContentType.PAGE, title, space_key, content=content, expand=['body.storage', 'version'])
+    assert result.body.storage == content
+
+    # Update test page
+    new_content = 'This is updated content'
+    new_title = 'Updated title'
+    result = c.update_content(result.id, result.type, result.version.number + 1, new_content, new_title)
+    assert result.title == new_title
+    assert result.body.storage == new_content
+
+    # Read updated page
+    result = c.get_content_by_id(result.id, expand=['body.storage'])
+    assert result.title == new_title
+    assert result.body.storage == new_content
+
+
 def test_create_duplicate_page():
     c.create_content(ContentType.PAGE, 'Duplicate Page', space_key, '1')
 
