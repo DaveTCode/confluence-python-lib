@@ -336,7 +336,7 @@ class Confluence:
         """
         self._delete('content/{}'.format(content_id), params={'status': content_status.value})
 
-    def get_content_history(self, content_id, expand=None):  # type: (int, Optional[List[str]]) -> None
+    def get_content_history(self, content_id, expand=None):  # type: (int, Optional[List[str]]) -> ContentHistory
         """
         Get the full history of a confluence object. Note that in general you
         can retrieve this by using get_content with history expanded so this
@@ -358,7 +358,7 @@ class Confluence:
         their children.
 
         :param content_id: Must be the confluence ID of a page.
-        :param parent_version: Optinanlly pass the version of the page to look
+        :param parent_version: Optionally pass the version of the page to look
             for children on. Defaults to 0.
         :param expand: The confluence REST API utilised expansion to avoid
             returning all fields on all requests. This optional parameter allows
@@ -370,7 +370,7 @@ class Confluence:
         if parent_version:
             params['parentVersion'] = str(parent_version)
 
-        return self._get_paged_results(Content, 'content/{}/page'.format(content_id), params, expand)
+        return self._get_paged_results(Content, 'content/{}/child/page'.format(content_id), params, expand)
 
     def get_comments(self, content_id, depth=None, parent_version=None, location=None, expand=None):
         # type: (int, Optional[CommentDepth], Optional[int], Optional[List[CommentLocation]], Optional[List[str]]) -> Iterable[Content]

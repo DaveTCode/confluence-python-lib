@@ -32,6 +32,9 @@ def test_create_page_with_ancestor():
     try:
         child = c.create_content(ContentType.PAGE, 'Child page', space_key, 'Child', parent_content_id=parent.id)
         assert child.title == 'Child page'
+        children = c.get_child_pages(parent.id)
+        assert len(list(children)) == 1
+
         c.delete_content(child.id, ContentStatus.CURRENT)
     finally:
         c.delete_content(parent.id, ContentStatus.CURRENT)
@@ -57,6 +60,8 @@ def test_get_page_content():
     assert page.body.view == content
     assert hasattr(page.body, 'view_representation')
 
+    c.delete_content(page.id, ContentStatus.CURRENT)
+
 
 def test_update_page_content():
     # Create test page
@@ -77,14 +82,28 @@ def test_update_page_content():
     assert result.title == new_title
     assert result.body.storage == new_content
 
+    c.delete_content(result.id, ContentStatus.CURRENT)
+
+
+def test_get_content_no_results():
+    result = list(c.get_content(ContentType.PAGE, space_key=space_key, title='Nothing here'))
+    assert len(result) == 0
+
 
 def test_create_duplicate_page():
-    c.create_content(ContentType.PAGE, 'Duplicate Page', space_key, '1')
+    page = c.create_content(ContentType.PAGE, 'Duplicate Page', space_key, '1')
 
     with pytest.raises(ConfluenceError):
         c.create_content(ContentType.PAGE, 'Duplicate Page', space_key, '1')
+
+    c.delete_content(page.id, ContentStatus.CURRENT)
 
 
 def test_create_page_in_nonexistent_space():
     with pytest.raises(ConfluenceError):
         c.create_content(ContentType.PAGE, 'Bad page', 'NONSENSE', 'Test')
+
+
+def test_get_content_with_bad_content_type():
+    with pytest.raises(ValueError):
+        c.get_content(ContentType.ATTACHMENT)
