@@ -1,9 +1,9 @@
 # Endpoints
 
-This document details the list of endpoints exposed by the REST API and their current 
+This document details the list of endpoints exposed by the REST API and their current
 state in this library.
 
-It was pulled from https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/ so 
+It was pulled from https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/ so
 is current as of v6.6.0.
 
 State key:
@@ -33,7 +33,7 @@ objects have not yet been expanded.
 |POST       |/rest/content                                            | 2     |
 |GET        |/rest/content                                            | 2     |
 |PUT        |/rest/content/{contentId}                                | 2     |
-|GET        |/rest/content/{id}                                       |       |
+|GET        |/rest/content/{id}                                       | 2     |
 |DELETE     |/rest/content/{id}                                       | 2     |
 |GET        |/rest/content/{id}/history                               | 1     |
 |GET        |/rest/content/{id}/history/{version}/macro/hash/{hash}   |       |
@@ -147,7 +147,7 @@ objects have not yet been expanded.
 |GET        |/rest/space/{spaceKey}/property/{key}                    | 1     |
 |PUT        |/rest/space/{spaceKey}/property/{key}                    | 1     |
 |DELETE     |/rest/space/{spaceKey}/property/{key}                    | 1     |
-|POST       |/rest/space/{spaceKey}/property/{key}                    | -1    | 
+|POST       |/rest/space/{spaceKey}/property/{key}                    | -1    |
 
 ## user
 

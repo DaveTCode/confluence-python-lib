@@ -311,6 +311,9 @@ class Confluence:
         Matches the REST API call https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/#content-getContentById
         which returns the document based on the id.
 
+        :param content_id: The unique identifier in confluence for the piece
+            of content.
+
         :param expand: The confluence REST API utilised expansion to avoid
             returning all fields on all requests. This optional parameter allows
             the user to select which fields that they want to expand as a comma

@@ -19,7 +19,20 @@ Changed
 
 -  Nothing
 
-`0.13.2`_ - 2017-04-04
+`0.14.0`_ - 2018-04-06
+----------------------
+
+Added
+~~~~~
+
+-  Get content by identifier
+
+Changed
+~~~~~~~
+
+-  Fixed update_content and added integration tests for it
+
+`0.13.2`_ - 2018-04-04
 ----------------------
 
 Added
@@ -32,7 +45,7 @@ Changed
 
 -  Fixed content body implementation to contain the correct data and added integration tests to verify it
 
-`0.13.1`_ - 2017-04-04
+`0.13.1`_ - 2018-04-04
 ----------------------
 
 Added
@@ -45,7 +58,7 @@ Changed
 
 -  Fixed context managed client to return itself
 
-`0.13.0`_ - 2017-03-26
+`0.13.0`_ - 2018-03-26
 ----------------------
 
 Added
@@ -58,7 +71,7 @@ Changed
 
 -  Nothing
 
-`0.12.0`_ - 2017-03-18
+`0.12.0`_ - 2018-03-18
 ----------------------
 
 Added
@@ -72,7 +85,7 @@ Changed
 
 -  hidden is now optional when viewing a Version object
 
-`0.11.0`_ - 2017-03-11
+`0.11.0`_ - 2018-03-11
 ----------------------
 
 Added
@@ -86,7 +99,7 @@ Changed
 
 -  Nothing
 
-`0.10.0`_ - 2017-03-10
+`0.10.0`_ - 2018-03-10
 ----------------------
 
 Added
@@ -100,7 +113,7 @@ Changed
 -  Complete overhaul of the way that failed responses are handled, all
    of them now raise custom exceptions.
 
-`0.9.0`_ - 2017-03-09
+`0.9.0`_ - 2018-03-09
 ---------------------
 
 Added
@@ -113,7 +126,7 @@ Changed
 
 -  Nothing
 
-`0.8.0`_ - 2017-03-09
+`0.8.0`_ - 2018-03-09
 ---------------------
 
 Added
@@ -126,7 +139,7 @@ Changed
 
 -  Nothing
 
-`0.7.0`_ - 2017-01-30
+`0.7.0`_ - 2018-01-30
 ---------------------
 
 Added
@@ -142,7 +155,7 @@ Changed
 -  Major overhaul of the content based objects to better match the API
    provided
 
-`0.6.0`_ - 2017-01-26
+`0.6.0`_ - 2018-01-26
 ---------------------
 
 Added
@@ -157,7 +170,7 @@ Changed
 -  client.spaces is renamed to client.get_spaces in keeping with other
    endpoints
 
-`0.5.0`_ - 2017-01-26
+`0.5.0`_ - 2018-01-26
 ---------------------
 
 Added
@@ -172,7 +185,7 @@ Changed
 
 -  Nothing
 
-`0.3.0`_ - 2017-01-18
+`0.3.0`_ - 2018-01-18
 ---------------------
 
 Added
@@ -187,7 +200,7 @@ Changed
 
 -  Nothing
 
-`0.2.2`_ - 2017-01-18
+`0.2.2`_ - 2018-01-18
 ---------------------
 
 Added
@@ -200,7 +213,7 @@ Changed
 
 -  requests.get isn’t a context manager…
 
-`0.2.1`_ - 2017-01-18
+`0.2.1`_ - 2018-01-18
 ---------------------
 
 Added
@@ -214,7 +227,8 @@ Changed
 -  Bug fix so we don’t hold a session for quite so long when running
    large queries
 
-First public release of the library ## `0.2.0`_ - 2017-01-15
+`0.2.0`_ - 2018-01-15
+---------------------
 
 Added
 ~~~~~
@@ -229,7 +243,8 @@ Changed
 
 .. _Keep a Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: http://semver.org/
-.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.1...HEAD
+.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.14.0...HEAD
+.. _0.14.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.1...0.14.0
 .. _0.13.1: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.0...0.13.1
 .. _0.13.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.12.0...0.13.0
 .. _0.12.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.11.1...0.12.0

@@ -40,11 +40,10 @@ def test_create_page_with_ancestor():
 def test_get_page_content():
     title = 'Full page'
     content = 'This is a full piece of content'
-    c.create_content(ContentType.PAGE, title, space_key, content=content)
-    result = c.get_content(ContentType.PAGE, space_key=space_key, title=title,
-                           expand=['body.storage', 'body.editor', 'body.view', 'body.export_view', 'body.styled_view',
-                                   'body.anonymous_export_view'])
-    page = list(result)[0]  # TODO - Replace with call to get content by ID when implemented
+    page = c.create_content(ContentType.PAGE, title, space_key, content=content)
+    page = c.get_content_by_id(page.id,
+                               expand=['body.storage', 'body.editor', 'body.view', 'body.export_view',
+                                       'body.styled_view', 'body.anonymous_export_view'])
     assert page.body.anonymous_export_view == content
     assert hasattr(page.body, 'anonymous_export_view_representation')
     assert page.body.editor == content
