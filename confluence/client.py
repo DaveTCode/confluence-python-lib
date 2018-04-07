@@ -1027,7 +1027,7 @@ class Confluence:
         return self._get_paged_results(AuditRecord, 'audit', params, None)
 
     def add_content_watch(self, content_id, user_key=None, username=None):
-        # type: (str, Optional[str], Optional[str]) -> None
+        # type: (int, Optional[str], Optional[str]) -> None
         """
         Add a watch for a given user & piece of content.
 
@@ -1055,7 +1055,7 @@ class Confluence:
         self._post('user/watch/content/{}'.format(content_id), params=params, data={})
 
     def remove_content_watch(self, content_id, user_key=None, username=None):
-        # type: (str, Optional[str], Optional[str]) -> None
+        # type: (int, Optional[str], Optional[str]) -> None
         """
         Stop a user watching a piece of content.
 
@@ -1083,7 +1083,7 @@ class Confluence:
         self._delete('user/watch/content/{}'.format(content_id), params)
 
     def is_user_watching_content(self, content_id, user_key=None, username=None):
-        # type: (str, Optional[str], Optional[str]) -> bool
+        # type: (int, Optional[str], Optional[str]) -> bool
         """
         Get information about whether a user is watching specific content.
 
