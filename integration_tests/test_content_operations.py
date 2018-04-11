@@ -78,7 +78,7 @@ def test_get_page_more_than_25_results():
             c.create_content(ContentType.PAGE, str(i), 'LOTS', content=str(i), expand=['version'])
 
         pages = list(c.get_content(ContentType.PAGE, space_key='LOTS', expand=['version']))
-        assert len(pages) == 50  # NOTE: This relies on no other pages being added to the space and not deleted.
+        assert len(pages) == 51  # NOTE: This relies on no other pages being added to the space and not deleted.
     finally:
         c.delete_space('LOTS')
 
