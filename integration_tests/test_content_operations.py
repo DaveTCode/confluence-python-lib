@@ -63,6 +63,26 @@ def test_get_page_content():
     c.delete_content(page.id, ContentStatus.CURRENT)
 
 
+def test_create_content_wrong_type():
+    with pytest.raises(ValueError):
+        c.create_content(ContentType.ATTACHMENT, space_key=space_key, content='', title='')
+
+    with pytest.raises(ValueError):
+        c.create_content(ContentType.COMMENT, space_key=space_key, content='', title='')
+
+
+def test_get_page_more_than_25_results():
+    c.create_space('LOTS', 'Lots')
+    try:
+        for i in range(50):
+            c.create_content(ContentType.PAGE, str(i), 'LOTS', content=str(i), expand=['version'])
+
+        pages = list(c.get_content(ContentType.PAGE, space_key='LOTS', expand=['version']))
+        assert len(pages) == 50  # NOTE: This relies on no other pages being added to the space and not deleted.
+    finally:
+        c.delete_space('LOTS')
+
+
 def test_update_page_content():
     # Create test page
     title = 'Full page updated'
