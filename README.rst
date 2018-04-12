@@ -53,7 +53,7 @@ The integration tests are more complex and require the developer to take the fol
 - Run integration tests using ``python setup.py test --addopts "integration_tests"``
 
 .. _endpoints.md: endpoints.md
-.. _Contribution guidelines for this project: CONTRIBUTING.md
+.. _Contribution guidelines for this project: CONTRIBUTING.rst
 
 .. |Build Status| image:: https://travis-ci.org/DaveTCode/confluence-python-lib.svg?branch=master
    :target: https://travis-ci.org/DaveTCode/confluence-python-lib
