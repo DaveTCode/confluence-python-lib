@@ -212,8 +212,9 @@ class Confluence:
         return self._post_return_single(Content, 'content', {}, data, expand)
 
     def update_content(self, content_id, content_type, new_version,
-                       new_content, new_title, status=None, new_parent=None, new_status=None):
-        # type: (int, ContentType, int, str, str, Optional[ContentStatus], Optional[int], Optional[ContentStatus]) -> Content
+                       new_content, new_title, status=None, new_parent=None, new_status=None,
+                       minor_edit=False, edit_message=None):
+        # type: (int, ContentType, int, str, str, Optional[ContentStatus], Optional[int], Optional[ContentStatus], Optional[bool], Optional[str]) -> Content
         """
         Replace a piece of content in confluence. This can be used to update
         title, content, parent or status.
@@ -226,13 +227,17 @@ class Confluence:
         :param new_title: The new title.
         :param new_parent: The new parent content id, optional.
         :param new_status: The new content status, optional.
+        :param minor_edit: Defaults to False. Set to true to make this update
+            a minor edit.
+        :param edit_message: Edit message, optional.
 
         :return: The updated content object.
         """
         content = {
             'title': new_title,
             'version': {
-                'number': new_version
+                'number': new_version,
+                'minorEdit': minor_edit
             },
             'type': content_type.value,
             'body': {
@@ -242,6 +247,9 @@ class Confluence:
                 }
             }
         }
+
+        if edit_message:
+            content['version']['message'] = edit_message
 
         if new_parent:
             content['ancestors'] = [{
