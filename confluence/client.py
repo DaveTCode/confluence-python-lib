@@ -41,7 +41,7 @@ class Confluence:
         self._base_url = base_url
         self._basic_auth = basic_auth
         self._api_base = '{}/rest/api'.format(self._base_url)
-        self._client = None  # type: requests.Session
+        self._client = None  # type: Optional[requests.Session]
 
     def __enter__(self):  # type: () -> Confluence
         self._client = requests.session()
@@ -94,7 +94,7 @@ class Confluence:
     # TODO - Need to refactor this to make use of _get function.
     def _get_paged_results(self, item_type, path, params, expand):
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Iterable[Any]
-        url = '{}/{}'.format(self._api_base, path)
+        url = '{}/{}'.format(self._api_base, path)  # type: Optional[str]
 
         if expand:
             params['expand'] = ','.join(expand)
