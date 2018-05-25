@@ -6,9 +6,7 @@ logger.addHandler(logging.NullHandler())
 
 
 class Group:
-    """
-    Represents a group object in confluence.
-    """
+    """Represents a group object in confluence."""
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.type = json['type']

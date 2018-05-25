@@ -1,7 +1,8 @@
-from confluence.models.user import User
-from datetime import datetime
 import logging
+from datetime import datetime
 from typing import Any, Dict, List
+
+from confluence.models.user import User
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -9,9 +10,11 @@ logger.addHandler(logging.NullHandler())
 
 class AffectedObject:
     """
-    Represents the affected object of an audit record as described here:
+    Represents the affected object of an audit record. c.f.
+
     https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/audit/AffectedObject.html
     """
+
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.name = json['name']  # type: str
         self.object_type = json['objectType']  # type: str
@@ -23,6 +26,7 @@ class AffectedObject:
 class ChangedValue:
     """
     Represents the change in value of an object in an audit record. c.f.
+
     https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/audit/ChangedValue.html
     """
 
@@ -37,7 +41,8 @@ class ChangedValue:
 
 class AuditRecord:
     """
-    Represents a single audit record from Confluence as described here:
+    Represents a single audit record from Confluence. c.f.
+
     https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/audit/AuditRecord.html
     """
 

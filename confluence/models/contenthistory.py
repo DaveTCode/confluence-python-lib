@@ -1,17 +1,15 @@
-from confluence.models.version import Version
-from confluence.models.user import User
 import logging
 from typing import Any, Dict
+
+from confluence.models.user import User
+from confluence.models.version import Version
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
 
 class ContentHistory:
-    """
-    Represents the history of a piece of content(blog|page|comment|attachment)
-    in confluence.
-    """
+    """Represents the history of a piece of content(blog|page|comment|attachment) in confluence."""
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.latest = json['latest']

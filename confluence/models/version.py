@@ -1,6 +1,7 @@
-from confluence.models.user import User
 import logging
 from typing import Any, Dict
+
+from confluence.models.user import User
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

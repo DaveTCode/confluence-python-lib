@@ -6,9 +6,8 @@ logger.addHandler(logging.NullHandler())
 
 
 class TaskName:
-    """
-    Represents the name of a long running task.
-    """
+    """Represents the name of a long running task."""
+
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.key = json['key']  # type: str
         self.args = json['args']  # type: List[str]
@@ -18,9 +17,8 @@ class TaskName:
 
 
 class TaskMessage:
-    """
-    Represents a message about a long running task.
-    """
+    """Represents a message about a long running task."""
+
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.translation = json['translation']  # type: str
         self.args = json['args']  # type: List[str]
@@ -30,9 +28,7 @@ class TaskMessage:
 
 
 class LongTask:
-    """
-    Represents a single long running task in confluence (e.g. PDF space export)
-    """
+    """Represents a single long running task in confluence (e.g. PDF space export)."""
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.id = json['id']  # type: str

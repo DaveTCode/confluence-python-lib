@@ -1,3 +1,10 @@
+import logging
+import os
+from datetime import date
+from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
+
+import requests
+
 from confluence.exceptions.generalerror import ConfluenceError
 from confluence.exceptions.permissionerror import ConfluencePermissionError
 from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
@@ -12,11 +19,6 @@ from confluence.models.label import Label
 from confluence.models.longtask import LongTask
 from confluence.models.space import Space, SpaceProperty, SpaceStatus, SpaceType
 from confluence.models.user import User
-from datetime import date
-import logging
-import os
-import requests
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -24,10 +26,9 @@ logger.addHandler(logging.NullHandler())
 
 class Confluence:
     """
-    External interface into this library, all calls should be made through
-    an instance of this class.
+    External interface into this library, all calls should be made through an instance of this class.
 
-    Note: This class should be used in a context manager (e.g.
+    Note: This class should be used in a context manager. e.g.
     ```with Confluence(...) as c:```
     """
 

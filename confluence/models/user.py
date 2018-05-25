@@ -1,6 +1,7 @@
-from confluence.models.icon import Icon
 import logging
 from typing import Any, Dict
+
+from confluence.models.icon import Icon
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -8,11 +9,10 @@ logger.addHandler(logging.NullHandler())
 
 class User:
     """
-    Represents a single user object in confluence either as attached to a page
-    or as requested directly over the API.
+    Represents a single user object in confluence either as attached to a page or as requested directly over the API.
 
     Note that all fields here are optional as the user attached to pages might
-    not contain standard fields (e.g. when it's anonymous)
+    not contain standard fields (e.g. when it's anonymous).
     """
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None

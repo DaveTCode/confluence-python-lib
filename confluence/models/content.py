@@ -1,10 +1,11 @@
+import logging
+from enum import Enum
+from typing import Any, Dict
+
 from confluence.models.contentbody import ContentBody
 from confluence.models.contenthistory import ContentHistory
-from confluence.models.version import Version
 from confluence.models.space import Space
-from enum import Enum
-import logging
-from typing import Any, Dict
+from confluence.models.version import Version
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -12,10 +13,11 @@ logger.addHandler(logging.NullHandler())
 
 class ContentType(Enum):
     """
-    The set of valid content types in confluence along with their representation on the API
+    The set of valid content types in confluence along with their representation on the API.
 
     https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/ContentType.html
     """
+
     ATTACHMENT = "attachment"
     BLOG_POST = "blogpost"
     COMMENT = "comment"
@@ -28,6 +30,7 @@ class ContentStatus(Enum):
 
     https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/ContentStatus.html
     """
+
     CURRENT = "current"
     DRAFT = "draft"
     HISTORICAL = "historical"
@@ -35,23 +38,29 @@ class ContentStatus(Enum):
 
 
 class CommentLocation(Enum):
+    """
+    The set of valid comment locations as per the Confluence API.
+    """
+
     INLINE = 'inline'
     FOOTER = 'footer'
     RESOLVED = 'resolved'
 
 
 class CommentDepth(Enum):
+    """
+    The set of depths at which comments can be retrieved over the API.
+    """
+
     ROOT = ''
     ALL = 'all'
 
 
 class Content:
     """
-    Main content class for all the different content types. This includes
-    pages, blogs, comments and attachments.
+    Main content class for all the different content types. This includes pages, blogs, comments and attachments.
 
-    The type field will allow the end user to distinguish between the types
-    from calling code.
+    The type field will allow the end user to distinguish between the types from calling code.
     """
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None

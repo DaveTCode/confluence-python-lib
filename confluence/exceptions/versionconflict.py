@@ -1,6 +1,7 @@
 import logging
-import requests
 from typing import Dict
+
+import requests
 
 from confluence.exceptions.generalerror import ConfluenceError
 
@@ -9,9 +10,8 @@ logger.addHandler(logging.NullHandler())
 
 
 class ConfluenceVersionConflict(ConfluenceError):
-    """
-    This exception corresponds to 409 errors on the REST API
-    """
+    """This exception corresponds to 409 errors on the REST API."""
+
     def __init__(self, path, params, response):
         # type: (str, Dict[str, str], requests.Response) -> None
         msg = 'The given version does not match the expected next version. This is likely because someone else has ' \

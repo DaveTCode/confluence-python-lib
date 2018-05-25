@@ -6,9 +6,8 @@ logger.addHandler(logging.NullHandler())
 
 
 class Icon:
-    """
-    Represents a single user or space icon in confluence.
-    """
+    """Represents a single user or space icon in confluence."""
+
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         self.path = json['path']
         self.width = json['width']

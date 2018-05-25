@@ -15,6 +15,7 @@ class SpaceType(Enum):
 
     https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/SpaceType.html
     """
+
     GLOBAL = "global"
     PERSONAL = "personal"
 
@@ -25,14 +26,13 @@ class SpaceStatus(Enum):
 
     https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/SpaceStatus.html
     """
+
     CURRENT = "current"
     ARCHIVED = "archived"
 
 
 class Space:
-    """
-    Represents a single space in Confluence.
-    """
+    """Represents a single space in Confluence."""
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
         # All fields always exist on the json object

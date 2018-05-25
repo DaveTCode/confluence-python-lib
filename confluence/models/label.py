@@ -7,8 +7,9 @@ logger.addHandler(logging.NullHandler())
 
 class Label:
     """
-    Represents a label on a piece of confluence content. c.f.
-    https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/labels/Label.html
+    Represents a label on a piece of confluence content.
+
+    c.f. https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/labels/Label.html
     """
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
