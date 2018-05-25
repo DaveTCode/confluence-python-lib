@@ -3,10 +3,11 @@ language: python
 python: 3.6
 
 install:
-  - pip install bandit codecov mypy pycodestyle typing
+  - pip install bandit codecov mypy pycodestyle safety typing
   - python setup.py install
 script:
   - pycodestyle --first --exclude venv,.eggs
+  - safety check
   - bandit -r . -x venv,tests,docs,.eggs
   - mypy --py2 . --ignore-missing-imports
   - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
