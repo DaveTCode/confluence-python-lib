@@ -19,6 +19,19 @@ Changed
 
 -  Nothing
 
+`0.15.0`_ - 2018-05-25
+----------------------
+
+Added
+~~~~~
+
+-  Option to update content without sending notifications
+
+Changed
+~~~~~~~
+
+-  Added lots of extra docstrings
+
 `0.14.0`_ - 2018-04-06
 ----------------------
 
@@ -243,7 +256,8 @@ Changed
 
 .. _Keep a Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: http://semver.org/
-.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.14.0...HEAD
+.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.15.0...HEAD
+.. _0.15.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.14.0...0.15.0
 .. _0.14.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.1...0.14.0
 .. _0.13.1: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.0...0.13.1
 .. _0.13.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.12.0...0.13.0
