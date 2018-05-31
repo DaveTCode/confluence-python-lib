@@ -64,8 +64,8 @@ The integration tests are more complex and require the developer to take the fol
 .. |codecov| image:: https://codecov.io/gh/DaveTCode/confluence-python-lib/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/DaveTCode/confluence-python-lib
    :alt: Code coverage stats
-.. |Requirements Status| image:: https://requires.io/github/DaveTCode/confluence-python-lib/requirements.svg?branch=develop
-   :target: https://requires.io/github/DaveTCode/confluence-python-lib/requirements/?branch=develop
+.. |Requirements Status| image:: https://requires.io/github/DaveTCode/confluence-python-lib/requirements.svg?branch=master
+   :target: https://requires.io/github/DaveTCode/confluence-python-lib/requirements/?branch=master
    :alt: Requirements status
 .. |Docs| image:: https://readthedocs.org/projects/confluence-python-lib/badge/?version=latest
    :target: http://confluence-python-lib.readthedocs.io/en/latest/?badge=latest
