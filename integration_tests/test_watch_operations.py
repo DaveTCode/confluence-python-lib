@@ -38,6 +38,36 @@ def test_user_watching_content():
         c.delete_content(page.id, ContentStatus.CURRENT)
 
 
+def test_user_is_watching_content_by_username():
+    page = c.create_content(ContentType.PAGE, space_key=space_key, title='Test', content='Test')
+    try:
+        c.add_content_watch(page.id, username='admin')
+        assert c.is_user_watching_content(page.id, username='admin')
+        c.remove_content_watch(page.id, username='admin')
+    finally:
+        c.delete_content(page.id, ContentStatus.CURRENT)
+
+
+def test_user_is_watching_content_by_key():
+    page = c.create_content(ContentType.PAGE, space_key=space_key, title='Test', content='Test')
+    try:
+        user = c.get_user(username='admin')
+        c.add_content_watch(page.id, user_key=user.user_key)
+        assert c.is_user_watching_content(page.id, user_key=user.user_key)
+        c.remove_content_watch(page.id, user_key=user.user_key)
+    finally:
+        c.delete_content(page.id, ContentStatus.CURRENT)
+
+
+def test_bad_user_of_content_watch_functions():
+    with pytest.raises(ValueError):
+        c.add_content_watch(1, "a", "a")
+    with pytest.raises(ValueError):
+        c.is_user_watching_content(1, "a", "a")
+    with pytest.raises(ValueError):
+        c.remove_content_watch(1, "a", "a")
+
+
 def test_user_not_watching_space():
     assert not c.is_user_watching_space(space_key, username='admin')
 
