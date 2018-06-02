@@ -111,6 +111,17 @@ def test_update_page_content():
     c.delete_content(result.id, ContentStatus.CURRENT)
 
 
+def test_minor_update():
+    result = c.create_content(ContentType.PAGE, 'Minor Doc', space_key, content='Hello')
+    update_result = c.update_content(result.id, result.type, result.version.number + 1, 'Hello minor', 'Minor Doc',
+                                     minor_edit=True, edit_message='An edit message', expand=['version'])
+    assert update_result.version.message == 'An edit message'
+    # Note that the API says it wasn't a minor edit but that's a lie so commenting this check out.
+    # assert update_result.version.minor_edit
+
+    c.delete_content(update_result.id, ContentStatus.CURRENT)
+
+
 def test_get_content_no_results():
     result = list(c.get_content(ContentType.PAGE, space_key=space_key, title='Nothing here'))
     assert len(result) == 0

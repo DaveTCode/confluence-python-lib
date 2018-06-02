@@ -212,10 +212,19 @@ class Confluence:
 
         return self._post_return_single(Content, 'content', {}, data, expand)
 
-    def update_content(self, content_id, content_type, new_version,
-                       new_content, new_title, status=None, new_parent=None, new_status=None,
-                       minor_edit=False, edit_message=None):
-        # type: (int, ContentType, int, str, str, Optional[ContentStatus], Optional[int], Optional[ContentStatus], Optional[bool], Optional[str]) -> Content
+    def update_content(self,
+                       content_id,  # type: int
+                       content_type,  # type: ContentType
+                       new_version,  # type: str
+                       new_content,  # type: str
+                       new_title,  # type: str
+                       status=None,  # type: Optional[ContentStatus]
+                       new_parent=None,  # type: Optional[int]
+                       new_status=None,  # type: Optional[ContentStatus]
+                       minor_edit=False,  # type: Optional[bool]
+                       edit_message=None,  # type: Optional[str]
+                       expand=None,    # type: Optional[List[str]]
+                       ):  # type: (...) -> Content
         """
         Replace a piece of content in confluence. This can be used to update
         title, content, parent or status.
@@ -231,6 +240,7 @@ class Confluence:
         :param minor_edit: Defaults to False. Set to true to make this update
             a minor edit.
         :param edit_message: Edit message, optional.
+        :param expand: An optional list of properties to be expanded on the resulting content object.
 
         :return: The updated content object.
         """
@@ -264,7 +274,8 @@ class Confluence:
         if status:
             params['status'] = status.value
 
-        return self._put_return_single(Content, 'content/{}'.format(content_id), params=params, data=content)
+        return self._put_return_single(Content, 'content/{}'.format(content_id), params=params, data=content,
+                                       expand=expand)
 
     def get_content(self, content_type=ContentType.PAGE, space_key=None,
                     title=None, status=None, posting_day=None, expand=None):
