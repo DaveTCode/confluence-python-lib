@@ -264,7 +264,7 @@ class Confluence:
 
         if new_parent:
             content['ancestors'] = [{
-              'id': new_parent
+                'id': new_parent
             }]
 
         if new_status:
