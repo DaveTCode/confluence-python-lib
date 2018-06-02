@@ -74,7 +74,7 @@ def test_create_content_wrong_type():
 
 def test_create_too_large_page():
     with pytest.raises(ConfluenceValueTooLong):
-        c.create_content(ContentType.PAGE, space_key=space_key, content='a'*100000000, title='too long')
+        c.create_content(ContentType.PAGE, space_key=space_key, content='a'*10000000, title='too long')
 
 
 def test_get_page_more_than_25_results():
