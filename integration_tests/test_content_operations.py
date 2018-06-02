@@ -1,4 +1,5 @@
 from confluence.exceptions.generalerror import ConfluenceError
+from confluence.exceptions.valuetoolong import ConfluenceValueTooLong
 from confluence.models.content import ContentType, ContentStatus
 from integration_tests.config import get_confluence_instance
 import logging
@@ -69,6 +70,11 @@ def test_create_content_wrong_type():
 
     with pytest.raises(ValueError):
         c.create_content(ContentType.COMMENT, space_key=space_key, content='', title='')
+
+
+def test_create_too_large_page():
+    with pytest.raises(ConfluenceValueTooLong):
+        c.create_content(ContentType.PAGE, space_key=space_key, content='a'*100000000, title='too long')
 
 
 def test_get_page_more_than_25_results():
