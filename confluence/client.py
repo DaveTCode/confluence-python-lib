@@ -55,6 +55,12 @@ class Confluence:
 
     @property
     def client(self):
+        """
+        Provides access to an underlying requestsalike object so that the
+        client can be used in or out of a with block.
+
+        :return: An object which behaves like requests.Session
+        """
         # type: () -> Union[requests.Session, Any]
         # Allow the class to be used without being inside a with block if
         # required.
