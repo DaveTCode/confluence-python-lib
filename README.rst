@@ -4,10 +4,7 @@ Confluence Python Library
 =========================
 
 This is a simple wrapper around the REST API which the Confluence
-provides.
-
-Note that the library is undergoing major work so don’t expect the API
-to be stable until this notice is removed!
+provides. Consider the API to be stable as of v1.0.0 (now released)
 
 c.f. `endpoints.md`_ for a list of endpoints and whether this library
 supports them yet. Please do send pull requests if you want an endpoint
