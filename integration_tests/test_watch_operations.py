@@ -49,10 +49,10 @@ def test_user_is_watching_space():
 
 
 def test_user_is_watching_space_by_key():
-    c.add_space_watch(space_key, username='admin')
     user = c.get_user(username='admin')
+    c.add_space_watch(space_key, user_key=user.user_key)
     assert c.is_user_watching_space(space_key, user_key=user.user_key)
-    c.remove_space_watch(space_key, username='admin')
+    c.remove_space_watch(space_key, user_key=user.user_key)
 
 
 def test_remove_space_watch_without_one():
