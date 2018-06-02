@@ -1,9 +1,11 @@
+import logging
+
+import pytest
+
 from confluence.exceptions.generalerror import ConfluenceError
 from confluence.exceptions.valuetoolong import ConfluenceValueTooLong
 from confluence.models.content import ContentType, ContentStatus
 from integration_tests.config import get_confluence_instance
-import logging
-import pytest
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

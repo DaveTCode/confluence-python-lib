@@ -1,8 +1,10 @@
-from confluence.models.content import ContentType, ContentStatus
-from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
-from integration_tests.config import get_confluence_instance
 import logging
+
 import pytest
+
+from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
+from confluence.models.content import ContentType, ContentStatus
+from integration_tests.config import get_confluence_instance
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
