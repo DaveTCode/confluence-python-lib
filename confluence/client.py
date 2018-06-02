@@ -15,7 +15,7 @@ from confluence.models.content import CommentDepth, CommentLocation, Content, Co
     ContentProperty
 from confluence.models.contenthistory import ContentHistory
 from confluence.models.group import Group
-from confluence.models.label import Label
+from confluence.models.label import Label, LabelPrefix
 from confluence.models.longtask import LongTask
 from confluence.models.space import Space, SpaceProperty, SpaceStatus, SpaceType
 from confluence.models.user import User
@@ -485,7 +485,7 @@ class Confluence:
                                               files={'file': (file_name, f)},
                                               data={})
 
-    def get_labels(self, content_id, prefix):  # type: (int, Optional[str]) -> Iterable[Label]
+    def get_labels(self, content_id, prefix=None):  # type: (int, Optional[LabelPrefix]) -> Iterable[Label]
         """
         Retrieve the set of labels on a piece of content.
 
@@ -497,11 +497,12 @@ class Confluence:
         params = {}
 
         if prefix:
-            params['prefix'] = prefix
+            params['prefix'] = prefix.value
 
         return self._get_paged_results(Label, 'content/{}/label'.format(content_id), params, None)
 
-    def create_labels(self, content_id, new_labels):  # type: (int, Iterable[Tuple[str, str]]) -> Iterable[Label]
+    def create_labels(self, content_id, new_labels):
+        # type: (int, Iterable[Tuple[LabelPrefix, str]]) -> Iterable[Label]
         """
         Create 1-n labels on a piece of content.
 
@@ -512,7 +513,7 @@ class Confluence:
         :return: The set of labels as Label objects.
         """
         data = [{
-            'prefix': label[0],
+            'prefix': label[0].value,
             'name': label[1]
         } for label in new_labels]
 
