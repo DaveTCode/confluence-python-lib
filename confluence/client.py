@@ -34,7 +34,8 @@ class Confluence:
 
     def __init__(self, base_url, basic_auth):  # type: (str, Tuple[str, str]) -> None
         """
-        :param base_url: The URL where the confluence web app is located. e.g. https://mysite.mydomain/confluence
+        :param base_url: The URL where the confluence web app is located.
+            e.g. https://mysite.mydomain/confluence.
         :param basic_auth: A tuple containing a username/password pair that
             can log into confluence.
         """
@@ -55,13 +56,13 @@ class Confluence:
 
     @property
     def client(self):
+        # type: () -> Union[requests.Session, Any]
         """
         Provides access to an underlying requestsalike object so that the
         client can be used in or out of a with block.
 
         :return: An object which behaves like requests.Session
         """
-        # type: () -> Union[requests.Session, Any]
         # Allow the class to be used without being inside a with block if
         # required.
         return self._client if self._client else requests
@@ -1031,8 +1032,7 @@ class Confluence:
     def get_audit_records(self, start_date, end_date, search_string):
         # type: (Optional[date], Optional[date], Optional[str]) -> Iterable[AuditRecord]
         """
-        Retrieve audit records between two dates with the given search
-        parameters.
+        Retrieve audit records between two dates with the given search parameters.
 
         :param start_date: Optional date to start searching.
         :param end_date: Optional date to end searching.

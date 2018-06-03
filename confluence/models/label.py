@@ -12,6 +12,7 @@ class LabelPrefix(Enum):
 
     c.f. https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/Label.Prefix.html
     """
+
     GLOBAL = 'global'
     MY = 'my'
     SYSTEM = 'system'

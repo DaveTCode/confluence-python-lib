@@ -11,7 +11,7 @@ class Version:
     """
     Represents a version of an object in Confluence.
 
-    Corresponds to https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/Version.html
+    c.f. https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/Version.html
     """
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None

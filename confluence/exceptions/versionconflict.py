@@ -10,7 +10,7 @@ logger.addHandler(logging.NullHandler())
 
 
 class ConfluenceVersionConflict(ConfluenceError):
-    """This exception corresponds to 409 errors on the REST API."""
+    """Corresponds to 409 errors on the REST API."""
 
     def __init__(self, path, params, response):
         # type: (str, Dict[str, str], requests.Response) -> None

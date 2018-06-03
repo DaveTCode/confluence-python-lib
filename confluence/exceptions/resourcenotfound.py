@@ -10,7 +10,7 @@ logger.addHandler(logging.NullHandler())
 
 
 class ConfluenceResourceNotFound(ConfluenceError):
-    """This exception corresponds to 404 errors on the REST API."""
+    """Corresponds to 404 errors on the REST API."""
 
     def __init__(self, path, params, response):
         # type: (str, Dict[str, str], requests.Response) -> None

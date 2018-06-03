@@ -1,4 +1,1 @@
-import logging
-
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
+"""Package contains the exceptions which can be raised by the API."""
