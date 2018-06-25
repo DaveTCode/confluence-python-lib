@@ -108,6 +108,7 @@ class Confluence:
 
         while url is not None:
             response = self.client.get(url, params=params, auth=self._basic_auth)
+
             Confluence._handle_response_errors(path, params, response)
             search_results = response.json()
 
@@ -125,13 +126,13 @@ class Confluence:
     def _post(self, path, params, data, files=None, expand=None):
         # type: (str, Dict[str, str], Any, Optional[Any], Optional[List[str]]) -> requests.Response
         url = '{}/{}'.format(self._api_base, path)
+
         headers = {"X-Atlassian-Token": "nocheck"}
 
         if expand:
             params['expand'] = ','.join(expand)
 
         response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth)
-
         Confluence._handle_response_errors(path, params, response)
 
         return response
@@ -144,7 +145,13 @@ class Confluence:
         # type: (Callable, str, Dict[str, str], Any, Dict[str, Any], Optional[List[str]]) -> Any
         response = self._post(path, params, data, files=files, expand=expand)
 
-        return [item_type(r) for r in response.json()['results']]
+        # Handle case if there is no results key (uploading a new version of the file)
+        if 'results' in response.json():
+            outputs = [item_type(r) for r in response.json()['results']]
+        else:
+            outputs = [item_type(response.json())]
+
+        return outputs
 
     def _put(self, path, params, data, expand):
         # type: (str, Dict[str, str], Any, Optional[List[str]]) -> requests.Response
@@ -477,6 +484,7 @@ class Confluence:
             succeeded or not.
         """
         params = {}
+
         if status:
             if status in (ContentStatus.HISTORICAL, ContentStatus.TRASHED):
                 raise ValueError('Only draft or current are valid states for a new attachment')
@@ -485,12 +493,83 @@ class Confluence:
         if not file_name:
             file_name = os.path.basename(file_path)
 
+        attachments = self.get_attachments(content_id, filename=file_name)
+
+        # Attachment items
+        attachment_items = list()
+
+        for item in attachments:
+            attachment_items.append(item)
+
+        # If attachment exist, create a new version of the file, otherwise create new
+        if attachment_items:
+            # Use just the last item ID from attachment_items,
+            # there should be only one attachment by that name anyway
+            uri = 'content/{}/child/attachment/{}/data'.format(content_id, attachment_items[-1].id)
+        else:
+            print("Attachment does not exist")
+            uri = 'content/{}/child/attachment'.format(content_id)
+
         with open(file_path, 'rb') as f:
-            return self._post_return_multiple(Content,
-                                              'content/{}/child/attachment'.format(content_id),
-                                              params=params,
-                                              files={'file': (file_name, f)},
-                                              data={})
+            file = {
+                'file': (file_name, f),
+                'comment': "Uploaded automatically.",
+                'minorEdit': "true"
+            }
+
+            outputs = self._post_return_multiple(Content, uri, params=params, files=file, data={})
+
+        return outputs
+
+    def update_attachment(self, content_id, file_path, file_name=None, status=None):
+        # type: (int, str, Optional[str], Optional[ContentStatus]) -> Iterable[Content]
+        """
+        Update a single attachment to an existing piece of content.
+
+        :param content_id: the confluence content to add the attachment to.
+        :param file_path: The full location of the file on the local system.
+        :param file_name: Optionally the name to give the attachment in
+            confluence.
+        :param status: Optionally the status of the attachment after upload.
+            Must be one of current or draft, defaults to current.
+
+        :return: A list containing 0-1 attachments depending on whether this
+            succeeded or not.
+        """
+        params = {}
+
+        if status:
+            if status in (ContentStatus.HISTORICAL, ContentStatus.TRASHED):
+                raise ValueError('Only draft or current are valid states for a new attachment')
+            params['status'] = status.value
+
+        if not file_name:
+            file_name = os.path.basename(file_path)
+
+        attachments = self.get_attachments(content_id, filename=file_name)
+
+        # Attachment items
+        attachment_items = list()
+
+        for item in attachments:
+            attachment_items.append(item)
+
+        uri = 'content/{}/child/attachment/{}/data'.format(content_id, attachment_items[-1].id)
+
+        # If attachment exist, create a new version of the file, otherwise create new
+        if not attachment_items:
+            raise ValueError('Attachment must be there to update it')
+
+        with open(file_path, 'rb') as f:
+            file = {
+                'file': (file_name, f),
+                'comment': "Uploaded automatically.",
+                'minorEdit': "true"
+            }
+
+            outputs = self._post_return_multiple(Content, uri, params=params, files=file, data={})
+
+        return outputs
 
     def get_labels(self, content_id, prefix=None):  # type: (int, Optional[LabelPrefix]) -> Iterable[Label]
         """

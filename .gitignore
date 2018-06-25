@@ -8,6 +8,8 @@
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
+.idea/codeStyles
+.idea/dbnavigator.xml
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
