@@ -493,22 +493,7 @@ class Confluence:
         if not file_name:
             file_name = os.path.basename(file_path)
 
-        attachments = self.get_attachments(content_id, filename=file_name)
-
-        # Attachment items
-        attachment_items = list()
-
-        for item in attachments:
-            attachment_items.append(item)
-
-        # If attachment exist, create a new version of the file, otherwise create new
-        if attachment_items:
-            # Use just the last item ID from attachment_items,
-            # there should be only one attachment by that name anyway
-            uri = 'content/{}/child/attachment/{}/data'.format(content_id, attachment_items[-1].id)
-        else:
-            print("Attachment does not exist")
-            uri = 'content/{}/child/attachment'.format(content_id)
+        uri = 'content/{}/child/attachment'.format(content_id)
 
         with open(file_path, 'rb') as f:
             file = {
