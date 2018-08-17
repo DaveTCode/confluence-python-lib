@@ -1,5 +1,6 @@
-from confluence.client import Confluence
 import os
+
+from confluence.client import Confluence
 
 local_url = 'http://localhost:1990/confluence'
 local_admin = ('admin', 'admin')

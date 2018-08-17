@@ -2,6 +2,7 @@ import logging
 import py
 import pytest
 
+from confluence.client import Confluence
 from confluence.exceptions.authenticationerror import ConfluenceAuthenticationError
 from integration_tests.config import local_url
 
