@@ -15,3 +15,4 @@ def test_context_managed_client():
     with c:
         c.create_space('TCMC', 'Test context managed space', 'Description')
         c.delete_space('TCMC')
+        assert str(c) is not None

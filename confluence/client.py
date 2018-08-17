@@ -15,7 +15,7 @@ from confluence.models.content import CommentDepth, CommentLocation, Content, Co
     ContentProperty
 from confluence.models.contenthistory import ContentHistory
 from confluence.models.group import Group
-from confluence.models.label import Label
+from confluence.models.label import Label, LabelPrefix
 from confluence.models.longtask import LongTask
 from confluence.models.space import Space, SpaceProperty, SpaceStatus, SpaceType
 from confluence.models.user import User
@@ -34,7 +34,8 @@ class Confluence:
 
     def __init__(self, base_url, basic_auth):  # type: (str, Tuple[str, str]) -> None
         """
-        :param base_url: The URL where the confluence web app is located. e.g. https://mysite.mydomain/confluence
+        :param base_url: The URL where the confluence web app is located.
+            e.g. https://mysite.mydomain/confluence.
         :param basic_auth: A tuple containing a username/password pair that
             can log into confluence.
         """
@@ -56,6 +57,12 @@ class Confluence:
     @property
     def client(self):
         # type: () -> Union[requests.Session, Any]
+        """
+        Provides access to an underlying requestsalike object so that the
+        client can be used in or out of a with block.
+
+        :return: An object which behaves like requests.Session
+        """
         # Allow the class to be used without being inside a with block if
         # required.
         return self._client if self._client else requests
@@ -214,10 +221,19 @@ class Confluence:
 
         return self._post_return_single(Content, 'content', {}, data, expand)
 
-    def update_content(self, content_id, content_type, new_version,
-                       new_content, new_title, status=None, new_parent=None, new_status=None,
-                       minor_edit=False, edit_message=None):
-        # type: (int, ContentType, int, str, str, Optional[ContentStatus], Optional[int], Optional[ContentStatus], Optional[bool], Optional[str]) -> Content
+    def update_content(self,
+                       content_id,  # type: int
+                       content_type,  # type: ContentType
+                       new_version,  # type: str
+                       new_content,  # type: str
+                       new_title,  # type: str
+                       status=None,  # type: Optional[ContentStatus]
+                       new_parent=None,  # type: Optional[int]
+                       new_status=None,  # type: Optional[ContentStatus]
+                       minor_edit=False,  # type: Optional[bool]
+                       edit_message=None,  # type: Optional[str]
+                       expand=None,    # type: Optional[List[str]]
+                       ):  # type: (...) -> Content
         """
         Replace a piece of content in confluence. This can be used to update
         title, content, parent or status.
@@ -233,6 +249,7 @@ class Confluence:
         :param minor_edit: Defaults to False. Set to true to make this update
             a minor edit.
         :param edit_message: Edit message, optional.
+        :param expand: An optional list of properties to be expanded on the resulting content object.
 
         :return: The updated content object.
         """
@@ -266,7 +283,8 @@ class Confluence:
         if status:
             params['status'] = status.value
 
-        return self._put_return_single(Content, 'content/{}'.format(content_id), params=params, data=content)
+        return self._put_return_single(Content, 'content/{}'.format(content_id), params=params, data=content,
+                                       expand=expand)
 
     def get_content(self, content_type=ContentType.PAGE, space_key=None,
                     title=None, status=None, posting_day=None, expand=None):
@@ -476,7 +494,7 @@ class Confluence:
                                               files={'file': (file_name, f)},
                                               data={})
 
-    def get_labels(self, content_id, prefix):  # type: (int, Optional[str]) -> Iterable[Label]
+    def get_labels(self, content_id, prefix=None):  # type: (int, Optional[LabelPrefix]) -> Iterable[Label]
         """
         Retrieve the set of labels on a piece of content.
 
@@ -488,11 +506,12 @@ class Confluence:
         params = {}
 
         if prefix:
-            params['prefix'] = prefix
+            params['prefix'] = prefix.value
 
         return self._get_paged_results(Label, 'content/{}/label'.format(content_id), params, None)
 
-    def create_labels(self, content_id, new_labels):  # type: (int, Iterable[Tuple[str, str]]) -> Iterable[Label]
+    def create_labels(self, content_id, new_labels):
+        # type: (int, Iterable[Tuple[LabelPrefix, str]]) -> Iterable[Label]
         """
         Create 1-n labels on a piece of content.
 
@@ -503,7 +522,7 @@ class Confluence:
         :return: The set of labels as Label objects.
         """
         data = [{
-            'prefix': label[0],
+            'prefix': label[0].value,
             'name': label[1]
         } for label in new_labels]
 
@@ -1015,8 +1034,7 @@ class Confluence:
     def get_audit_records(self, start_date, end_date, search_string):
         # type: (Optional[date], Optional[date], Optional[str]) -> Iterable[AuditRecord]
         """
-        Retrieve audit records between two dates with the given search
-        parameters.
+        Retrieve audit records between two dates with the given search parameters.
 
         :param start_date: Optional date to start searching.
         :param end_date: Optional date to end searching.

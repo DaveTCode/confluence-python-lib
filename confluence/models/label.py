@@ -1,8 +1,22 @@
 import logging
+from enum import Enum
 from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
+
+
+class LabelPrefix(Enum):
+    """
+    Represents the valid prefix values for a Label.
+
+    c.f. https://docs.atlassian.com/atlassian-confluence/6.6.0/com/atlassian/confluence/api/model/content/Label.Prefix.html
+    """
+
+    GLOBAL = 'global'
+    MY = 'my'
+    SYSTEM = 'system'
+    TEAM = 'team'
 
 
 class Label:

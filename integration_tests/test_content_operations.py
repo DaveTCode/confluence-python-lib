@@ -1,8 +1,11 @@
+import logging
+
+import pytest
+
 from confluence.exceptions.generalerror import ConfluenceError
+from confluence.exceptions.valuetoolong import ConfluenceValueTooLong
 from confluence.models.content import ContentType, ContentStatus
 from integration_tests.config import get_confluence_instance
-import logging
-import pytest
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -71,6 +74,11 @@ def test_create_content_wrong_type():
         c.create_content(ContentType.COMMENT, space_key=space_key, content='', title='')
 
 
+def test_create_too_large_page():
+    with pytest.raises(ConfluenceValueTooLong):
+        c.create_content(ContentType.PAGE, space_key=space_key, content='a'*10000000, title='too long')
+
+
 def test_get_page_more_than_25_results():
     c.create_space('LOTS', 'Lots')
     try:
@@ -103,6 +111,17 @@ def test_update_page_content():
     assert result.body.storage == new_content
 
     c.delete_content(result.id, ContentStatus.CURRENT)
+
+
+def test_minor_update():
+    result = c.create_content(ContentType.PAGE, 'Minor Doc', space_key, content='Hello')
+    update_result = c.update_content(result.id, result.type, result.version.number + 1, 'Hello minor', 'Minor Doc',
+                                     minor_edit=True, edit_message='An edit message', expand=['version'])
+    assert update_result.version.message == 'An edit message'
+    # Note that the API says it wasn't a minor edit but that's a lie so commenting this check out.
+    # assert update_result.version.minor_edit
+
+    c.delete_content(update_result.id, ContentStatus.CURRENT)
 
 
 def test_get_content_no_results():

@@ -19,6 +19,19 @@ Changed
 
 -  Nothing
 
+`1.0.0`_ - 2018-06-02
+----------------------
+
+Added
+~~~~~
+
+-  Additional functional tests to bring coverage up to ~90%
+
+Changed
+~~~~~~~
+
+-  The API for getting labels has been changed so that the prefix is now an enum as the HTTP API expects.
+
 `0.15.0`_ - 2018-05-25
 ----------------------
 
@@ -256,7 +269,8 @@ Changed
 
 .. _Keep a Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: http://semver.org/
-.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/0.15.0...HEAD
+.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/1.0.0...HEAD
+.. _1.0.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.15.0...1.0.0
 .. _0.15.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.14.0...0.15.0
 .. _0.14.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.1...0.14.0
 .. _0.13.1: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.0...0.13.1

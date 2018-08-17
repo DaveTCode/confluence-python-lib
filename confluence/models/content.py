@@ -38,9 +38,7 @@ class ContentStatus(Enum):
 
 
 class CommentLocation(Enum):
-    """
-    The set of valid comment locations as per the Confluence API.
-    """
+    """The set of valid comment locations as per the Confluence API."""
 
     INLINE = 'inline'
     FOOTER = 'footer'
@@ -48,9 +46,7 @@ class CommentLocation(Enum):
 
 
 class CommentDepth(Enum):
-    """
-    The set of depths at which comments can be retrieved over the API.
-    """
+    """The set of depths at which comments can be retrieved over the API."""
 
     ROOT = ''
     ALL = 'all'

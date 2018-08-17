@@ -10,26 +10,41 @@ logger.addHandler(logging.NullHandler())
 
 c = get_confluence_instance()
 space_key = 'ATTSP'
-page_id = 0
 
 
 def setup_module():
     c.create_space(space_key, 'Page Space')
-    global page_id
-    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Attachment Page').id
 
 
 def teardown_module():
-    c.delete_content(content_id=page_id, content_status=ContentStatus.CURRENT)
     c.delete_space(space_key)
 
 
 def test_add_attachment(tmpdir):  # type: (py.path.local) -> None
-    p = tmpdir.mkdir("attachments").join("test.txt")
-    p.write("test")
-    c.add_attachment(page_id, p.realpath())
-    attachments = list(c.get_attachments(page_id, filename=None, media_type=None))
-    assert len(attachments) == 1
+    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Attachment Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        c.add_attachment(page_id, p.realpath())
+        attachments = list(c.get_attachments(page_id, filename=None, media_type=None))
+        assert len(attachments) == 1
+    finally:
+        c.delete_content(page_id, ContentStatus.CURRENT)
+
+
+def test_get_attachment_by_filename(tmpdir):  # type: (py.path.local) -> None
+    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Filename Attachment Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        c.add_attachment(page_id, p.realpath())
+        c.add_attachment(page_id, p.realpath(), file_name='other_file.txt')
+        attachments = list(c.get_attachments(page_id, filename='test.txt', media_type=None))
+        assert len(attachments) == 1
+    finally:
+        c.delete_content(page_id, ContentStatus.CURRENT)
 
 
 def test_add_attachment_to_missing_page(tmpdir):  # type: (py.path.local) -> None

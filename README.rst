@@ -4,10 +4,7 @@ Confluence Python Library
 =========================
 
 This is a simple wrapper around the REST API which the Confluence
-provides.
-
-Note that the library is undergoing major work so don’t expect the API
-to be stable until this notice is removed!
+provides. Consider the API to be stable as of v1.0.0 (now released)
 
 c.f. `endpoints.md`_ for a list of endpoints and whether this library
 supports them yet. Please do send pull requests if you want an endpoint
@@ -64,8 +61,8 @@ The integration tests are more complex and require the developer to take the fol
 .. |codecov| image:: https://codecov.io/gh/DaveTCode/confluence-python-lib/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/DaveTCode/confluence-python-lib
    :alt: Code coverage stats
-.. |Requirements Status| image:: https://requires.io/github/DaveTCode/confluence-python-lib/requirements.svg?branch=develop
-   :target: https://requires.io/github/DaveTCode/confluence-python-lib/requirements/?branch=develop
+.. |Requirements Status| image:: https://requires.io/github/DaveTCode/confluence-python-lib/requirements.svg?branch=master
+   :target: https://requires.io/github/DaveTCode/confluence-python-lib/requirements/?branch=master
    :alt: Requirements status
 .. |Docs| image:: https://readthedocs.org/projects/confluence-python-lib/badge/?version=latest
    :target: http://confluence-python-lib.readthedocs.io/en/latest/?badge=latest
