@@ -1,7 +1,6 @@
 import logging
-from typing import Dict
-
 import requests
+from typing import Dict
 
 from confluence.exceptions.generalerror import ConfluenceError
 

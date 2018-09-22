@@ -19,6 +19,19 @@ Changed
 
 -  Nothing
 
+`1.0.1`_ - 2018-08-17
+----------------------
+
+Added
+~~~~~
+
+-  Added support for handling 401 errors and wrapping them in specific exceptions
+
+Changed
+~~~~~~~
+
+- Nothing
+
 `1.0.0`_ - 2018-06-02
 ----------------------
 

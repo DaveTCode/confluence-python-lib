@@ -1,10 +1,10 @@
 import logging
 import os
+import requests
 from datetime import date
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
 
-import requests
-
+from confluence.exceptions.authenticationerror import ConfluenceAuthenticationError
 from confluence.exceptions.generalerror import ConfluenceError
 from confluence.exceptions.permissionerror import ConfluencePermissionError
 from confluence.exceptions.resourcenotfound import ConfluenceResourceNotFound
@@ -72,6 +72,8 @@ class Confluence:
         # type: (str, Dict[str, str], requests.Response) -> None
         if response.status_code == 400:
             raise ConfluenceError(path, params, response)
+        elif response.status_code == 401:
+            raise ConfluenceAuthenticationError(path, params, response)
         elif response.status_code == 403:
             raise ConfluencePermissionError(path, params, response)
         elif response.status_code == 404:
