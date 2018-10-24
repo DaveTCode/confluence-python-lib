@@ -32,17 +32,22 @@ class Confluence:
     ```with Confluence(...) as c:```
     """
 
-    def __init__(self, base_url, basic_auth):  # type: (str, Tuple[str, str]) -> None
+    def __init__(self, base_url, basic_auth, verify=True):  # type: (str, Tuple[str, str]) -> None
         """
         :param base_url: The URL where the confluence web app is located.
             e.g. https://mysite.mydomain/confluence.
         :param basic_auth: A tuple containing a username/password pair that
             can log into confluence.
+        :param verify: The same as "verify" in requests.
+            If False then SSL certificate verification is disabled,
+            if True the verification is enabled (default),
+            if string, it should be a path to a CA bundle (.pem).
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
         self._api_base = '{}/rest/api'.format(self._base_url)
         self._client = None  # type: Optional[requests.Session]
+        self._verify = verify
 
     def __enter__(self):  # type: () -> Confluence
         self._client = requests.session()
@@ -90,7 +95,7 @@ class Confluence:
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.get(url, params=params, auth=self._basic_auth)
+        response = self.client.get(url, params=params, auth=self._basic_auth, verify=self._verify)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -109,7 +114,7 @@ class Confluence:
             params['expand'] = ','.join(expand)
 
         while url is not None:
-            response = self.client.get(url, params=params, auth=self._basic_auth)
+            response = self.client.get(url, params=params, auth=self._basic_auth, verify=self._verify)
             Confluence._handle_response_errors(path, params, response)
             search_results = response.json()
 
@@ -132,7 +137,7 @@ class Confluence:
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth)
+        response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth, verify=self._verify)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -156,7 +161,7 @@ class Confluence:
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth)
+        response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth, verify=self._verify)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -171,7 +176,7 @@ class Confluence:
         url = '{}/{}'.format(self._api_base, path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
-        response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth)
+        response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth, verify=self._verify)
 
         Confluence._handle_response_errors(path, params, response)
 
