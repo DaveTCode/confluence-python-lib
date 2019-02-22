@@ -83,6 +83,9 @@ class Content:
         if 'version' in json:
             self.version = Version(json['version'])
 
+        if '_links' in json:
+            self.links = json['_links']  # type: Dict[str, Any]
+
     def __str__(self):
         return '{} - {}'.format(self.id, self.title)
 
