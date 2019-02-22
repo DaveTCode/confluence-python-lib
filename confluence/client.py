@@ -463,6 +463,27 @@ class Confluence:
                                        params=params,
                                        expand=expand)
 
+    def download_attachment(self, attachment):
+        # type: (Content) -> [byte]
+        """
+        Downloads an attachment. To be used in conjunction with get_attachments
+
+        :param attachment: A content record for the attachment to be downloaded
+        
+
+        :return: A byte array for the attachment.
+        """
+
+        path = attachment.links['download']
+        url = self._base_url + path
+
+        headers = {'Accept': attachment.extensions['mediaType']}
+
+        response = self.client.get(url, headers=headers, auth=self._basic_auth)
+
+        Confluence._handle_response_errors(path, {}, response)
+        return response.content
+
     def add_attachment(self, content_id, file_path, file_name=None, status=None):
         # type: (int, str, Optional[str], Optional[ContentStatus]) -> Iterable[Content]
         """
