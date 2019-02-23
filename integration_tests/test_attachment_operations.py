@@ -52,3 +52,16 @@ def test_add_attachment_to_missing_page(tmpdir):  # type: (py.path.local) -> Non
     p.write("bad")
     with pytest.raises(ConfluenceResourceNotFound):
         c.add_attachment(-1, file_path=p.realpath())
+
+
+def test_download_attachment(tmpdir):  # type: (py.path.local) -> None
+    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Download Attachment Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        attachments = c.add_attachment(page_id, p.realpath())
+        file_contents = c.download_attachment(attachments[0])
+        assert file_contents == b"test"
+    finally:
+        c.delete_content(page_id, ContentStatus.CURRENT)
