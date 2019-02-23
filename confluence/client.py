@@ -466,20 +466,20 @@ class Confluence:
     def download_attachment(self, attachment):
         # type: (Content) -> [byte]
         """
-        Downloads an attachment. To be used in conjunction with get_attachments
+        Downloads an attachment. To be used in conjunction with get_attachments.
+        Note: This method accesses get directly rather than via _get method
 
         :param attachment: A content record for the attachment to be downloaded
-        
 
         :return: A byte array for the attachment.
         """
+        if not isinstance(attachment, Content) or attachment.type != ContentType.ATTACHMENT:
+            raise ValueError('Parameter must be an Attachment Content object')
 
         path = attachment.links['download']
-        url = self._base_url + path
+        url = '{}/{}'.format(self._base_url, path)
 
-        headers = {'Accept': attachment.extensions['mediaType']}
-
-        response = self.client.get(url, headers=headers, auth=self._basic_auth)
+        response = self.client.get(url, auth=self._basic_auth)
 
         Confluence._handle_response_errors(path, {}, response)
         return response.content
