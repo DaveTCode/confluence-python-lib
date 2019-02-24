@@ -26,7 +26,7 @@ def test_create_group_with_valid_json():
             "fileSize": 61601,
             "comment": "Added by UWC, the Universal Wiki Converter"
         },
-        "_links" : {
+        "_links": {
             "download": "/download/attachment/123454/Puppet%20Architecture.png"
         }
     })
