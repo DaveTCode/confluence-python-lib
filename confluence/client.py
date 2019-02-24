@@ -515,6 +515,63 @@ class Confluence:
                                               files={'file': (file_name, f)},
                                               data={})
 
+    def update_attachment(self,
+                          page_id,  # type: int
+                          attachment_id,  # type: str
+                          version,  # type: int
+                          filename,  # type: str
+                          new_comment=None,  # type: Optional[str]
+                          new_media_type=None,  # type: Optional[str]
+                          new_page_id=None,  # type: Optional[int]
+                          new_status=None,  # type: Optional[ContentStatus]
+                          expand=None,  # type: Optional[List[str]]
+                          ):  # type: (...) -> Content
+        """
+        Update the information about an attachment in confluence.
+        This can be used to update filename, media type, comment
+        or status.
+
+        :param page_id: The parent page of the attachment.
+        :param attachment_id: Id of attachment to be updated
+        :param version: This should be the current version.
+        :param filename: The filename to be used.
+        :param new_comment: The new comment to be used, optional.
+        :param new_media_type: The new comment to be used, optional.
+        :param new_page_id: The new page id for this attachment, optional.
+        :param new_status: The new content status, optional.
+        :param expand: An optional list of properties to be expanded on the resulting attachment object.
+
+        :return: The updated attachment object.
+        """
+        
+        content = {
+            'id': attachment_id,
+            'type': ContentType.ATTACHMENT.value,
+            'title': filename,
+            'status': 'current',
+            'version': {
+                'number': version,
+            },
+            'container': {},
+            'metadata': {}
+        }
+
+        if new_comment:
+            content['metadata']['comment'] = new_comment
+
+        if new_media_type:
+            content['metadata']['mediaType'] = new_media_type
+
+        if new_page_id:
+            content['container']['id'] = new_page_id
+            content['container']['type'] = ContentType.ATTACHMENT.value
+
+        if new_status:
+            content['status'] = new_status.value
+
+        path = 'content/{}/child/attachment/{}'.format(page_id, attachment_id)
+        return self._put_return_single(Content, path, {}, data=content, expand=expand)
+
     def get_labels(self, content_id, prefix=None):  # type: (int, Optional[LabelPrefix]) -> Iterable[Label]
         """
         Retrieve the set of labels on a piece of content.
