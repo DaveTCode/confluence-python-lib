@@ -10,7 +10,7 @@ with open(readme, encoding='utf-8') as f:
 setup(
     name='confluence-rest-library',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version='1.0.1',
+    version='1.1.1',
     description='A simple wrapper around the Confluence REST API.',
     long_description=long_description,
     author='David Tyler',
@@ -18,7 +18,7 @@ setup(
     url='https://github.com/DaveTCode/confluence-python-lib',
     keywords=['confluence'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.7',
