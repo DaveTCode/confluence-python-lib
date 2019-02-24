@@ -477,7 +477,7 @@ class Confluence:
             raise ValueError('Parameter must be an Attachment Content object')
 
         path = attachment.links['download']
-        url = '{}/{}'.format(self._base_url, path)
+        url = '{}{}'.format(self._base_url, path)
 
         response = self.client.get(url, auth=self._basic_auth)
 
