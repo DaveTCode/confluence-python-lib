@@ -74,7 +74,7 @@ def test_update_attachment(tmpdir):  # type: (py.path.local) -> None
         p = tmpdir.mkdir("attachments").join("test.txt")
         p.write("test")
         attachments = list(c.add_attachment(page_id, p.realpath()))
-        attachment = c.update_attachment(page_id, attachment[0].id, attachment[0].version.number, 'test_update.txt', new_media_type='text/plain')
+        attachment = c.update_attachment(page_id, attachments[0].id, attachments[0].version.number, new_filename='test_update.txt', new_media_type='text/plain')
         assert attachment.title == 'test_update.txt'
         assert attachment.metadata['mediaType'] == 'text/plain'
     finally:
