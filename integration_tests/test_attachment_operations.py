@@ -60,7 +60,7 @@ def test_download_attachment(tmpdir):  # type: (py.path.local) -> None
     try:
         p = tmpdir.mkdir("attachments").join("test.txt")
         p.write("test")
-        attachments = c.add_attachment(page_id, p.realpath())
+        attachments = list(c.add_attachment(page_id, p.realpath()))
         file_contents = c.download_attachment(attachments[0])
         assert file_contents == b"test"
     finally:
