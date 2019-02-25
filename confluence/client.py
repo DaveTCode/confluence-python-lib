@@ -543,7 +543,6 @@ class Confluence:
 
         :return: The updated attachment object.
         """
-        
         content = {
             'id': attachment_id,
             'type': ContentType.ATTACHMENT.value,
