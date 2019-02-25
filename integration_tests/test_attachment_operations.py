@@ -79,3 +79,20 @@ def test_update_attachment(tmpdir):  # type: (py.path.local) -> None
         assert attachment.metadata['mediaType'] == 'text/plain'
     finally:
         c.delete_content(page_id, ContentStatus.CURRENT)
+
+
+def test_update_attachment_data(tmpdir):  # type: (py.path.local) -> None
+    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Update Attachment Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        attachments = list(c.add_attachment(page_id, p.realpath()))
+        p2 = tmpdir.join("attachments", "test2.txt")
+        p2.write("test2")
+        attachment = c.update_attachment_data(page_id, attachments[0].id, attachments[0].version.number + 1, p2.realpath())
+        assert attachment.title == 'test2.txt'
+        assert attachment.id == attachments[0].id
+        assert attachment.version.number == attachments[0].version.number + 1
+    finally:
+        c.delete_content(page_id, ContentStatus.CURRENT)
