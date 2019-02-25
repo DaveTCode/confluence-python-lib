@@ -19,6 +19,19 @@ Changed
 
 -  Nothing
 
+`1.1.1`_ - 2019-02-24
+----------------------
+
+Added
+~~~~~
+
+-  Added a function to get attachment data from an attachment object
+
+Changed
+~~~~~~~
+
+- Nothing
+
 `1.0.1`_ - 2018-08-17
 ----------------------
 
