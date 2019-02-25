@@ -517,9 +517,9 @@ class Confluence:
 
     def update_attachment(self,
                           page_id,  # type: int
-                          attachment_id,  # type: str
+                          attachment_id,  # type: int
                           version,  # type: int
-                          filename,  # type: str
+                          new_filename=None,  # type: Optional[str]
                           new_comment=None,  # type: Optional[str]
                           new_media_type=None,  # type: Optional[str]
                           new_page_id=None,  # type: Optional[int]
@@ -534,7 +534,7 @@ class Confluence:
         :param page_id: The parent page of the attachment.
         :param attachment_id: Id of attachment to be updated
         :param version: This should be the current version.
-        :param filename: The filename to be used.
+        :param new_filename: The new filename to be used.
         :param new_comment: The new comment to be used, optional.
         :param new_media_type: The new comment to be used, optional.
         :param new_page_id: The new page id for this attachment, optional.
@@ -546,14 +546,14 @@ class Confluence:
         content = {
             'id': attachment_id,
             'type': ContentType.ATTACHMENT.value,
-            'title': filename,
-            'status': 'current',
             'version': {
                 'number': version,
             },
-            'container': {},
             'metadata': {}
         }
+
+        if new_filename:
+            content['title'] = new_filename
 
         if new_comment:
             content['metadata']['comment'] = new_comment
@@ -562,6 +562,7 @@ class Confluence:
             content['metadata']['mediaType'] = new_media_type
 
         if new_page_id:
+            content['container'] = {}
             content['container']['id'] = new_page_id
             content['container']['type'] = ContentType.ATTACHMENT.value
 
