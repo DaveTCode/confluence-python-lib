@@ -65,3 +65,17 @@ def test_download_attachment(tmpdir):  # type: (py.path.local) -> None
         assert file_contents == b"test"
     finally:
         c.delete_content(page_id, ContentStatus.CURRENT)
+
+
+def test_update_attachment(tmpdir):  # type: (py.path.local) -> None
+    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Update Attachment Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        attachments = list(c.add_attachment(page_id, p.realpath()))
+        attachment = c.update_attachment(page_id, attachment[0].id, attachment[0].version.number, 'test_update.txt', new_media_type='text/plain')
+        assert attachment.title == 'test_update.txt'
+        assert attachment.metadata['mediaType'] == 'text/plain'
+    finally:
+        c.delete_content(page_id, ContentStatus.CURRENT)
