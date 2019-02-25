@@ -30,4 +30,4 @@ def test_create_group_with_valid_json():
             "download": "/download/attachment/123454/Puppet%20Architecture.png"
         }
     })
-    assert str(a) == 'att35459744 - Puppet Architecture.png'
+    assert str(a) == '35459744 - Puppet Architecture.png'

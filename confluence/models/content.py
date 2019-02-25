@@ -60,7 +60,12 @@ class Content:
     """
 
     def __init__(self, json):  # type: (Dict[str, Any]) -> None
-        self.id = json['id']  # type: int
+        # attachment id get returned starting with att which can be stripped
+        # this ensures ids are always of type int
+        id = str(json['id'])
+        if id.startswith('att'):
+            id = id[3:]
+        self.id = int(id)
         self.title = json['title']  # type: str
         self.status = ContentStatus(json['status'])  # type: ContentStatus
         self.type = ContentType(json['type'])  # type: ContentType
