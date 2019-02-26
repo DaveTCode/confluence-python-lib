@@ -113,7 +113,7 @@ class Confluence:
         if expand:
             params['expand'] = ','.join(expand)
 
-        while path is not None:
+        while path != "":
             response = self._get(path, params, [])
             Confluence._handle_response_errors(path, params, response)
             search_results = response.json()
@@ -124,7 +124,7 @@ class Confluence:
                 params.clear()
             else:
                 # No more pages of results
-                path = None
+                path = ""
 
             for result in search_results['results']:
                 yield item_type(result)
