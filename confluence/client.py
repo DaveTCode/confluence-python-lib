@@ -1355,4 +1355,4 @@ class Confluence:
         return self._get('user/watch/space/{}'.format(space_key), params, None).json()['watching']
 
     def __str__(self):
-        return self._api_base
+        return self._base_url
