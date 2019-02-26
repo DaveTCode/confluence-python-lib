@@ -19,6 +19,15 @@ Changed
 
 -  Nothing
 
+`1.2.1`_ - 2019-02-26
+----------------------
+
+Added
+~~~~~
+
+-  Added support for updating attachment metadata
+-  Added support for updating attachment contents
+
 `1.1.1`_ - 2019-02-24
 ----------------------
 
