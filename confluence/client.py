@@ -471,7 +471,6 @@ class Confluence:
         # type: (Content) -> bytes
         """
         Downloads an attachment. To be used in conjunction with get_attachments.
-        Note: This method accesses get directly rather than via _get method
 
         :param attachment: A content record for the attachment to be downloaded
 
