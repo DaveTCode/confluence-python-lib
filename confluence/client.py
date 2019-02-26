@@ -3,7 +3,6 @@ import os
 import requests
 from datetime import date
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Union
-from mimetypes import guess_type
 
 from confluence.exceptions.authenticationerror import ConfluenceAuthenticationError
 from confluence.exceptions.generalerror import ConfluenceError
