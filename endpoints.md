@@ -54,8 +54,8 @@ objects have not yet been expanded.
 |-----------|--------------------------------------------------------:|-------|
 |GET        |/rest/content/{id}/child/attachment                      | 1     |
 |POST       |/rest/content/{id}/child/attachment                      | 1     |
-|PUT        |/rest/content/{id}/child/attachment/{attachmentId}       |       |
-|POST       |/rest/content/{id}/child/attachment/{attachmentId}/data  |       |
+|PUT        |/rest/content/{id}/child/attachment/{attachmentId}       | 1     |
+|POST       |/rest/content/{id}/child/attachment/{attachmentId}/data  | 1     |
 
 ### content/{id}/descendant
 

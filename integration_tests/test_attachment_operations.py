@@ -65,3 +65,53 @@ def test_download_attachment(tmpdir):  # type: (py.path.local) -> None
         assert file_contents == b"test"
     finally:
         c.delete_content(page_id, ContentStatus.CURRENT)
+
+
+def test_update_attachment(tmpdir):  # type: (py.path.local) -> None
+    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Update Attachment Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        attachments = list(c.add_attachment(page_id, p.realpath()))
+        attachment = c.update_attachment(page_id, attachments[0].id, attachments[0].version.number, new_filename='test_update.txt', new_media_type='text/plain')
+        assert attachment.title == 'test_update.txt'
+        assert attachment.metadata['mediaType'] == 'text/plain'
+    finally:
+        c.delete_content(page_id, ContentStatus.CURRENT)
+
+
+def test_update_attachment_move(tmpdir):  # type: (py.path.local) -> None
+    page_id_old = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Update Attachment From Page').id
+    page_id_new = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Update Attachment To Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        attachments = list(c.add_attachment(page_id_old, p.realpath()))
+        _ = c.update_attachment(page_id_old, attachments[0].id, attachments[0].version.number, new_page_id=page_id_new)
+        attachments_old = list(c.get_attachments(page_id_old, filename='test.txt'))
+        attachments_new = list(c.get_attachments(page_id_new, filename='test.txt'))
+        assert len(attachments_old) == 0
+        assert len(attachments_new) == 1
+
+    finally:
+        c.delete_content(page_id_old, ContentStatus.CURRENT)
+        c.delete_content(page_id_new, ContentStatus.CURRENT)
+
+
+def test_update_attachment_data(tmpdir):  # type: (py.path.local) -> None
+    page_id = c.create_content(ContentType.PAGE, space_key=space_key, content='', title='Test Update Attachment Page').id
+
+    try:
+        p = tmpdir.mkdir("attachments").join("test.txt")
+        p.write("test")
+        attachments = list(c.add_attachment(page_id, p.realpath()))
+        p2 = tmpdir.join("attachments", "test2.txt")
+        p2.write("test2")
+        attachment = c.update_attachment_data(page_id, attachments[0].id, attachments[0].version.number + 1, p2.realpath())
+        assert attachment.title == 'test2.txt'
+        assert attachment.id == attachments[0].id
+        assert attachment.version.number == attachments[0].version.number + 1
+    finally:
+        c.delete_content(page_id, ContentStatus.CURRENT)

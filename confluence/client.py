@@ -138,9 +138,9 @@ class Confluence:
 
         return response
 
-    def _post_return_single(self, item_type, path, params, data, expand=None):
-        # type: (Callable, str, Dict[str, str], Any, Optional[List[str]]) -> Any
-        return item_type(self._post(path, params, data, files=None, expand=expand).json())
+    def _post_return_single(self, item_type, path, params, data, files=None, expand=None):
+        # type: (Callable, str, Dict[str, str], Any, Optional[Dict[str, Any]], Optional[List[str]]) -> Any
+        return item_type(self._post(path, params, data, files=files, expand=expand).json())
 
     def _post_return_multiple(self, item_type, path, params, data, files, expand=None):
         # type: (Callable, str, Dict[str, str], Any, Dict[str, Any], Optional[List[str]]) -> Any
@@ -219,7 +219,7 @@ class Confluence:
                 'id': parent_content_id
             }]
 
-        return self._post_return_single(Content, 'content', {}, data, expand)
+        return self._post_return_single(Content, 'content', {}, data, expand=expand)
 
     def update_content(self,
                        content_id,  # type: int
@@ -514,6 +514,106 @@ class Confluence:
                                               params=params,
                                               files={'file': (file_name, f)},
                                               data={})
+
+    def update_attachment(self,
+                          page_id,  # type: int
+                          attachment_id,  # type: int
+                          version,  # type: int
+                          new_filename=None,  # type: Optional[str]
+                          new_comment=None,  # type: Optional[str]
+                          new_media_type=None,  # type: Optional[str]
+                          new_page_id=None,  # type: Optional[int]
+                          new_status=None,  # type: Optional[ContentStatus]
+                          expand=None,  # type: Optional[List[str]]
+                          ):  # type: (...) -> Content
+        """
+        Update the information about an attachment in confluence.
+        This can be used to update filename, media type, comment
+        or status.
+
+        :param page_id: The parent page of the attachment.
+        :param attachment_id: Id of attachment to be updated
+        :param version: This should be the current version.
+        :param new_filename: The new filename to be used.
+        :param new_comment: The new comment to be used, optional.
+        :param new_media_type: The new comment to be used, optional.
+        :param new_page_id: The new page id for this attachment, optional.
+        :param new_status: The new content status, optional.
+        :param expand: An optional list of properties to be expanded on the resulting attachment object.
+
+        :return: The updated attachment object.
+        """
+        content = {
+            'id': attachment_id,
+            'type': ContentType.ATTACHMENT.value,
+            'version': {
+                'number': version,
+            },
+            'metadata': {}
+        }
+
+        if new_filename:
+            content['title'] = new_filename
+
+        if new_comment:
+            content['metadata']['comment'] = new_comment
+
+        if new_media_type:
+            content['metadata']['mediaType'] = new_media_type
+
+        if new_page_id:
+            content['container'] = {}
+            content['container']['id'] = new_page_id
+            content['container']['type'] = ContentType.ATTACHMENT.value
+
+        if new_status:
+            content['status'] = new_status.value
+
+        path = 'content/{}/child/attachment/{}'.format(page_id, attachment_id)
+        return self._put_return_single(Content, path, {}, data=content, expand=expand)
+
+    def update_attachment_data(self,
+                               page_id,  # type; int
+                               attachment_id,  # type: int
+                               new_version,  # type: int
+                               file_path,  # type: str
+                               file_name=None,  # type: Optional[str]
+                               minor_edit=False,  # type: Optional[bool]
+                               expand=None  # type: Optional[List[str]]
+                               ):  # type: (...) -> Content
+        """
+        Updates an attachments contents to a new file.
+
+        :param page_id: The parent page of the attachment.
+        :param attachment_id: the confluence content to add the attachment to.
+        :param new_version: The new version number of the attachmnet. it must be current_version+1
+        :param file_path: The full location of the file on the local system.
+        :param file_name: Optionally the name to give the attachment in confluence.
+        :param status: Optionally the status of the attachment after upload.
+            Must be one of current or draft, defaults to current.
+        :param minor_edit: Defaults to False. Set to true to make this update
+            a minor edit.
+        :param expand: An optional list of properties to be expanded on the resulting attachment object.
+
+        :return: A Content object containing details of the attachment.
+        """
+        if not file_name:
+            file_name = os.path.basename(file_path)
+
+        files = {}  # type: Dict[str, Any]
+
+        if minor_edit:
+            files['minorEdit'] = 'true'
+
+        with open(file_path, 'rb') as f:
+            files['file'] = (file_name, f)
+
+            return self._post_return_single(Content,
+                                            'content/{}/child/attachment/{}/data'.format(page_id, attachment_id),
+                                            params={},
+                                            data={},
+                                            files=files,
+                                            expand=expand)
 
     def get_labels(self, content_id, prefix=None):  # type: (int, Optional[LabelPrefix]) -> Iterable[Label]
         """
