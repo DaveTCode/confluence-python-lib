@@ -124,7 +124,7 @@ class Confluence:
                 params.clear()
             else:
                 # No more pages of results
-                url = None
+                path = None
 
             for result in search_results['results']:
                 yield item_type(result)
