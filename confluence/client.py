@@ -41,7 +41,6 @@ class Confluence:
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
-        self._api_base = '{}/rest/api'.format(self._base_url)
         self._client = None  # type: Optional[requests.Session]
 
     def __enter__(self):  # type: () -> Confluence
@@ -83,9 +82,17 @@ class Confluence:
         elif response.status_code == 413:
             raise ConfluenceValueTooLong(path, params, response)
 
+    def _make_url(self, path):
+        # type: (str) -> str
+        if path.startswith('/'):
+            format_string = '{}{}'
+        else:
+            format_string = '{}/rest/api/{}'
+        return format_string.format(self._base_url, path)
+
     def _get(self, path, params, expand):
         # type: (str, Dict[str, str], Optional[List[str]]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
 
         if expand:
             params['expand'] = ','.join(expand)
@@ -100,33 +107,30 @@ class Confluence:
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Any
         return item_type(self._get(path, params, expand).json())
 
-    # TODO - Need to refactor this to make use of _get function.
     def _get_paged_results(self, item_type, path, params, expand):
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Iterable[Any]
-        url = '{}/{}'.format(self._api_base, path)  # type: Optional[str]
-
         if expand:
             params['expand'] = ','.join(expand)
 
-        while url is not None:
-            response = self.client.get(url, params=params, auth=self._basic_auth)
+        while path != "":
+            response = self._get(path, params, [])
             Confluence._handle_response_errors(path, params, response)
             search_results = response.json()
 
             if 'next' in search_results['_links']:
                 # We have another page of results
-                url = '{}{}'.format(self._base_url, search_results['_links']['next'])
+                path = search_results['_links']['next']
                 params.clear()
             else:
                 # No more pages of results
-                url = None
+                path = ""
 
             for result in search_results['results']:
                 yield item_type(result)
 
     def _post(self, path, params, data, files=None, expand=None):
         # type: (str, Dict[str, str], Any, Optional[Any], Optional[List[str]]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
         if expand:
@@ -150,7 +154,7 @@ class Confluence:
 
     def _put(self, path, params, data, expand):
         # type: (str, Dict[str, str], Any, Optional[List[str]]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
         if expand:
@@ -168,7 +172,7 @@ class Confluence:
 
     def _delete(self, path, params):
         # type: (str, Dict[str, str]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
         response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth)
@@ -467,7 +471,6 @@ class Confluence:
         # type: (Content) -> bytes
         """
         Downloads an attachment. To be used in conjunction with get_attachments.
-        Note: This method accesses get directly rather than via _get method
 
         :param attachment: A content record for the attachment to be downloaded
 
@@ -477,9 +480,8 @@ class Confluence:
             raise ValueError('Parameter must be an Attachment Content object')
 
         path = attachment.links['download']
-        url = '{}{}'.format(self._base_url, path)
 
-        response = self.client.get(url, auth=self._basic_auth)
+        response = self._get(path, {}, [])
 
         Confluence._handle_response_errors(path, {}, response)
         return response.content
@@ -1351,4 +1353,4 @@ class Confluence:
         return self._get('user/watch/space/{}'.format(space_key), params, None).json()['watching']
 
     def __str__(self):
-        return self._api_base
+        return self._base_url
