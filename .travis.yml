@@ -5,7 +5,8 @@ install:
   - pip install bandit codecov mypy pycodestyle safety typing
   - python setup.py install
 script:
-  - pip freeze
+  - pip install pipdeptree
+  - pipdeptree
   - pycodestyle --first --exclude venv,.eggs
   - safety check
   - bandit -r confluence
