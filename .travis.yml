@@ -1,6 +1,5 @@
-dist: xenial
 language: python
-python: 3.7
+python: 3.6
 install:
   - pip uninstall numpy -y
   - pip install bandit codecov mypy pycodestyle safety typing
