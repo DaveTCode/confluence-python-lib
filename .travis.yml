@@ -6,7 +6,7 @@ install:
 script:
   - pycodestyle --first --exclude venv,.eggs
   - safety check
-  - bandit -r . -x venv,tests,docs,.eggs
+  - bandit -r confluence
   - mypy --py2 . --ignore-missing-imports
   - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
   - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
