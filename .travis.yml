@@ -2,11 +2,10 @@ dist: xenial
 language: python
 python: 3.7
 install:
+  - pip uninstall numpy -y
   - pip install bandit codecov mypy pycodestyle safety typing
   - python setup.py install
 script:
-  - pip install pipdeptree
-  - pipdeptree
   - pycodestyle --first --exclude venv,.eggs
   - safety check
   - bandit -r confluence
