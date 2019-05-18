@@ -32,7 +32,8 @@ class Confluence:
     ```with Confluence(...) as c:```
     """
 
-    def __init__(self, base_url, basic_auth):  # type: (str, Tuple[str, str]) -> None
+    def __init__(self, base_url, basic_auth, verify_confluence_certificate=True):
+        # type: (str, Tuple[str, str], bool) -> None
         """
         :param base_url: The URL where the confluence web app is located.
             e.g. https://mysite.mydomain/confluence.
@@ -42,6 +43,7 @@ class Confluence:
         self._base_url = base_url
         self._basic_auth = basic_auth
         self._client = None  # type: Optional[requests.Session]
+        self._verify_confluence_certificate = verify_confluence_certificate
 
     def __enter__(self):  # type: () -> Confluence
         self._client = requests.session()
@@ -97,7 +99,8 @@ class Confluence:
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.get(url, params=params, auth=self._basic_auth)
+        response = self.client.get(url, params=params, auth=self._basic_auth,
+                                   verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -136,7 +139,8 @@ class Confluence:
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth)
+        response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth,
+                                    verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -160,7 +164,8 @@ class Confluence:
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth)
+        response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth,
+                                   verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -175,7 +180,8 @@ class Confluence:
         url = self._make_url(path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
-        response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth)
+        response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth,
+                                      verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 

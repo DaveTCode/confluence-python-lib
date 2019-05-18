@@ -19,6 +19,14 @@ Changed
 
 -  Nothing
 
+`1.2.2`_ - 2019-05-18
+----------------------
+
+Added
+~~~~~
+
+-  Allow passing through a flag to not validate Confluence SSL certificate
+
 `1.2.1`_ - 2019-02-26
 ----------------------
 
