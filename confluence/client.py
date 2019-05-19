@@ -33,12 +33,19 @@ class Confluence:
     """
 
     def __init__(self, base_url, basic_auth, verify_confluence_certificate=True):
-        # type: (str, Tuple[str, str], bool) -> None
+        # type: (str, Tuple[str, str], Union[bool, str]) -> None
         """
         :param base_url: The URL where the confluence web app is located.
             e.g. https://mysite.mydomain/confluence.
         :param basic_auth: A tuple containing a username/password pair that
             can log into confluence.
+        :param verify_confluence_certificate: Maps to the requests library
+            "verify" property. Defaults to True indicating that the SSL
+            certificate on the confluence server must be valid but can be
+            set to False to allow invalid certs or to a file path of a CA
+            bundle file.
+            c.f. https://2.python-requests.org/en/master/user/advanced/ for
+            more details.
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
@@ -558,7 +565,7 @@ class Confluence:
                 'number': version,
             },
             'metadata': {}
-        }
+        }  # type: Dict[str, Any]
 
         if new_filename:
             content['title'] = new_filename
@@ -583,7 +590,6 @@ class Confluence:
     def update_attachment_data(self,
                                page_id,  # type; int
                                attachment_id,  # type: int
-                               new_version,  # type: int
                                file_path,  # type: str
                                file_name=None,  # type: Optional[str]
                                minor_edit=False,  # type: Optional[bool]
@@ -594,11 +600,8 @@ class Confluence:
 
         :param page_id: The parent page of the attachment.
         :param attachment_id: the confluence content to add the attachment to.
-        :param new_version: The new version number of the attachmnet. it must be current_version+1
         :param file_path: The full location of the file on the local system.
         :param file_name: Optionally the name to give the attachment in confluence.
-        :param status: Optionally the status of the attachment after upload.
-            Must be one of current or draft, defaults to current.
         :param minor_edit: Defaults to False. Set to true to make this update
             a minor edit.
         :param expand: An optional list of properties to be expanded on the resulting attachment object.
