@@ -19,6 +19,14 @@ Changed
 
 -  Nothing
 
+`2.0.0`_ - 2019-09-19
+----------------------
+
+API Change
+~~~~~
+
+-  The title of a content object can now be unset
+
 `1.2.2`_ - 2019-05-18
 ----------------------
 
@@ -312,7 +320,8 @@ Changed
 
 .. _Keep a Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: http://semver.org/
-.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/1.2.2...HEAD
+.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/2.0.0...HEAD
+.. _2.0.0: https://github.com/DaveTCode/confluence-python-lib/compare/1.2.2...2.0.0
 .. _1.2.2: https://github.com/DaveTCode/confluence-python-lib/compare/1.2.1...1.2.2
 .. _1.2.1: https://github.com/DaveTCode/confluence-python-lib/compare/1.1.1...1.2.1
 .. _1.1.1: https://github.com/DaveTCode/confluence-python-lib/compare/1.0.1...1.1.1
