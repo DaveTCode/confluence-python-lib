@@ -9,8 +9,12 @@ script:
   - safety check
   - bandit -r confluence
   - mypy --py2 . --ignore-missing-imports
-  - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
-  - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
+  - sudo sh -c 'echo "deb https://packages.atlassian.com/debian/atlassian-sdk-deb/ stable contrib" >>/etc/apt/sources.list'
+  - wget https://packages.atlassian.com/api/gpg/key/public
+  - sudo apt-key add public
+  - sudo apt-get update
+  - sudo apt-get install atlassian-plugin-sdk
+  - atlas-version
   - yes n | atlas-run-standalone --product confluence --version 6.6.0 --server localhost &>/dev/null &
   - CONFLUENCE_PID=$!
   - >
