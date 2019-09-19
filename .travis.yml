@@ -1,12 +1,13 @@
 language: python
 python: 3.6
 install:
+  - pip uninstall numpy -y
   - pip install bandit codecov mypy pycodestyle safety typing
   - python setup.py install
 script:
   - pycodestyle --first --exclude venv,.eggs
   - safety check
-  - bandit -r . -x venv,tests,docs,.eggs
+  - bandit -r confluence
   - mypy --py2 . --ignore-missing-imports
   - wget https://packages.atlassian.com/list/atlassian-sdk-deb/deb-archive/atlassian-plugin-sdk_6.3.10_all.deb
   - sudo dpkg -i atlassian-plugin-sdk_6.3.10_all.deb
@@ -19,6 +20,7 @@ script:
   - curl --fail http://localhost:1990/confluence/rest/api/space
   - python setup.py test --addopts "tests integration_tests --cov confluence"
   - kill -9 $CONFLUENCE_PID
+  - rm -rf amps-standalone-confluence-6.6.0
 after_success:
   - codecov
 deploy:

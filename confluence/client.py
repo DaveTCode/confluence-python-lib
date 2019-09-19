@@ -32,17 +32,25 @@ class Confluence:
     ```with Confluence(...) as c:```
     """
 
-    def __init__(self, base_url, basic_auth):  # type: (str, Tuple[str, str]) -> None
+    def __init__(self, base_url, basic_auth, verify_confluence_certificate=True):
+        # type: (str, Tuple[str, str], Union[bool, str]) -> None
         """
         :param base_url: The URL where the confluence web app is located.
             e.g. https://mysite.mydomain/confluence.
         :param basic_auth: A tuple containing a username/password pair that
             can log into confluence.
+        :param verify_confluence_certificate: Maps to the requests library
+            "verify" property. Defaults to True indicating that the SSL
+            certificate on the confluence server must be valid but can be
+            set to False to allow invalid certs or to a file path of a CA
+            bundle file.
+            c.f. https://2.python-requests.org/en/master/user/advanced/ for
+            more details.
         """
         self._base_url = base_url
         self._basic_auth = basic_auth
-        self._api_base = '{}/rest/api'.format(self._base_url)
         self._client = None  # type: Optional[requests.Session]
+        self._verify_confluence_certificate = verify_confluence_certificate
 
     def __enter__(self):  # type: () -> Confluence
         self._client = requests.session()
@@ -83,14 +91,23 @@ class Confluence:
         elif response.status_code == 413:
             raise ConfluenceValueTooLong(path, params, response)
 
+    def _make_url(self, path):
+        # type: (str) -> str
+        if path.startswith('/'):
+            format_string = '{}{}'
+        else:
+            format_string = '{}/rest/api/{}'
+        return format_string.format(self._base_url, path)
+
     def _get(self, path, params, expand):
         # type: (str, Dict[str, str], Optional[List[str]]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
 
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.get(url, params=params, auth=self._basic_auth)
+        response = self.client.get(url, params=params, auth=self._basic_auth,
+                                   verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -100,39 +117,37 @@ class Confluence:
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Any
         return item_type(self._get(path, params, expand).json())
 
-    # TODO - Need to refactor this to make use of _get function.
     def _get_paged_results(self, item_type, path, params, expand):
         # type: (Callable, str, Dict[str, str], Optional[List[str]]) -> Iterable[Any]
-        url = '{}/{}'.format(self._api_base, path)  # type: Optional[str]
-
         if expand:
             params['expand'] = ','.join(expand)
 
-        while url is not None:
-            response = self.client.get(url, params=params, auth=self._basic_auth)
+        while path != "":
+            response = self._get(path, params, [])
             Confluence._handle_response_errors(path, params, response)
             search_results = response.json()
 
             if 'next' in search_results['_links']:
                 # We have another page of results
-                url = '{}{}'.format(self._base_url, search_results['_links']['next'])
+                path = search_results['_links']['next']
                 params.clear()
             else:
                 # No more pages of results
-                url = None
+                path = ""
 
             for result in search_results['results']:
                 yield item_type(result)
 
     def _post(self, path, params, data, files=None, expand=None):
         # type: (str, Dict[str, str], Any, Optional[Any], Optional[List[str]]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth)
+        response = self.client.post(url, params=params, json=data, headers=headers, files=files, auth=self._basic_auth,
+                                    verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -150,13 +165,14 @@ class Confluence:
 
     def _put(self, path, params, data, expand):
         # type: (str, Dict[str, str], Any, Optional[List[str]]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
         if expand:
             params['expand'] = ','.join(expand)
 
-        response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth)
+        response = self.client.put(url, json=data, params=params, headers=headers, auth=self._basic_auth,
+                                   verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -168,10 +184,11 @@ class Confluence:
 
     def _delete(self, path, params):
         # type: (str, Dict[str, str]) -> requests.Response
-        url = '{}/{}'.format(self._api_base, path)
+        url = self._make_url(path)
         headers = {"X-Atlassian-Token": "nocheck"}
 
-        response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth)
+        response = self.client.delete(url, params=params, headers=headers, auth=self._basic_auth,
+                                      verify=self._verify_confluence_certificate)
 
         Confluence._handle_response_errors(path, params, response)
 
@@ -467,7 +484,6 @@ class Confluence:
         # type: (Content) -> bytes
         """
         Downloads an attachment. To be used in conjunction with get_attachments.
-        Note: This method accesses get directly rather than via _get method
 
         :param attachment: A content record for the attachment to be downloaded
 
@@ -477,9 +493,8 @@ class Confluence:
             raise ValueError('Parameter must be an Attachment Content object')
 
         path = attachment.links['download']
-        url = '{}{}'.format(self._base_url, path)
 
-        response = self.client.get(url, auth=self._basic_auth)
+        response = self._get(path, {}, [])
 
         Confluence._handle_response_errors(path, {}, response)
         return response.content
@@ -550,7 +565,7 @@ class Confluence:
                 'number': version,
             },
             'metadata': {}
-        }
+        }  # type: Dict[str, Any]
 
         if new_filename:
             content['title'] = new_filename
@@ -575,7 +590,6 @@ class Confluence:
     def update_attachment_data(self,
                                page_id,  # type; int
                                attachment_id,  # type: int
-                               new_version,  # type: int
                                file_path,  # type: str
                                file_name=None,  # type: Optional[str]
                                minor_edit=False,  # type: Optional[bool]
@@ -586,11 +600,8 @@ class Confluence:
 
         :param page_id: The parent page of the attachment.
         :param attachment_id: the confluence content to add the attachment to.
-        :param new_version: The new version number of the attachmnet. it must be current_version+1
         :param file_path: The full location of the file on the local system.
         :param file_name: Optionally the name to give the attachment in confluence.
-        :param status: Optionally the status of the attachment after upload.
-            Must be one of current or draft, defaults to current.
         :param minor_edit: Defaults to False. Set to true to make this update
             a minor edit.
         :param expand: An optional list of properties to be expanded on the resulting attachment object.
@@ -1351,4 +1362,4 @@ class Confluence:
         return self._get('user/watch/space/{}'.format(space_key), params, None).json()['watching']
 
     def __str__(self):
-        return self._api_base
+        return self._base_url

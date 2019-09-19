@@ -19,6 +19,14 @@ Changed
 
 -  Nothing
 
+`1.2.2`_ - 2019-05-18
+----------------------
+
+Added
+~~~~~
+
+-  Allow passing through a flag to not validate Confluence SSL certificate
+
 `1.2.1`_ - 2019-02-26
 ----------------------
 
@@ -304,7 +312,11 @@ Changed
 
 .. _Keep a Changelog: http://keepachangelog.com/
 .. _Semantic Versioning: http://semver.org/
-.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/1.0.0...HEAD
+.. _Unreleased: https://github.com/DaveTCode/confluence-python-lib/compare/1.2.2...HEAD
+.. _1.2.2: https://github.com/DaveTCode/confluence-python-lib/compare/1.2.1...1.2.2
+.. _1.2.1: https://github.com/DaveTCode/confluence-python-lib/compare/1.1.1...1.2.1
+.. _1.1.1: https://github.com/DaveTCode/confluence-python-lib/compare/1.0.1...1.1.1
+.. _1.0.1: https://github.com/DaveTCode/confluence-python-lib/compare/1.0.0...1.0.1
 .. _1.0.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.15.0...1.0.0
 .. _0.15.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.14.0...0.15.0
 .. _0.14.0: https://github.com/DaveTCode/confluence-python-lib/compare/0.13.1...0.14.0

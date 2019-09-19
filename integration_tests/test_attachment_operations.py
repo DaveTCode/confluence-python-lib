@@ -109,7 +109,7 @@ def test_update_attachment_data(tmpdir):  # type: (py.path.local) -> None
         attachments = list(c.add_attachment(page_id, p.realpath()))
         p2 = tmpdir.join("attachments", "test2.txt")
         p2.write("test2")
-        attachment = c.update_attachment_data(page_id, attachments[0].id, attachments[0].version.number + 1, p2.realpath())
+        attachment = c.update_attachment_data(page_id, attachments[0].id, p2.realpath())
         assert attachment.title == 'test2.txt'
         assert attachment.id == attachments[0].id
         assert attachment.version.number == attachments[0].version.number + 1
