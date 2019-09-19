@@ -66,9 +66,11 @@ class Content:
         if id.startswith('att'):
             id = id[3:]
         self.id = int(id)
-        self.title = json['title']  # type: str
         self.status = ContentStatus(json['status'])  # type: ContentStatus
         self.type = ContentType(json['type'])  # type: ContentType
+
+        if 'title' in json:
+            self.title = json['title']  # type: str
 
         if 'metadata' in json:
             self.metadata = json['metadata']  # type: Dict[str, Any]
