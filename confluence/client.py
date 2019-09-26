@@ -194,8 +194,8 @@ class Confluence:
 
         return response
 
-    def create_content(self, content_type, title, space_key, content, parent_content_id=None, expand=None):
-        # type: (ContentType, str, str, str, Optional[int], Optional[List[str]]) -> Content
+    def create_content(self, content_type, title, space_key, content, parent_content_id=None, expand=None, representation='storage'):
+        # type: (ContentType, str, str, str, Optional[int], Optional[List[str]], Optional[str]) -> Content
         """
         Create a new piece of content, used for creating blog entries & pages.
 
@@ -204,13 +204,14 @@ class Confluence:
             routes.
         :param title: The title of the content.
         :param space_key: The space to put the content in.
-        :param content: The storage format of the new piece of content.
+        :param content: The value of the new piece of content.
         :param parent_content_id: An optional parent page id to put as the
             ancestor for this piece of content.
         :param expand: The confluence REST API utilised expansion to avoid
             returning all fields on all requests. This optional parameter
             allows the user to select which fields that they want to expand on
             the returning piece of content.
+        :param representation: The storage format of the new piece of content.
 
         :return: A fully populated content object.
         """
@@ -226,7 +227,7 @@ class Confluence:
             'body': {
                 'storage': {
                     'value': content,
-                    'representation': 'storage'
+                    'representation': representation
                 }
             }
         }
@@ -250,6 +251,7 @@ class Confluence:
                        minor_edit=False,  # type: Optional[bool]
                        edit_message=None,  # type: Optional[str]
                        expand=None,    # type: Optional[List[str]]
+                       representation='storage'  # type: Optional[str]
                        ):  # type: (...) -> Content
         """
         Replace a piece of content in confluence. This can be used to update
@@ -267,6 +269,7 @@ class Confluence:
             a minor edit.
         :param edit_message: Edit message, optional.
         :param expand: An optional list of properties to be expanded on the resulting content object.
+        :param representation: The storage format of the new content.
 
         :return: The updated content object.
         """
@@ -280,7 +283,7 @@ class Confluence:
             'body': {
                 'storage': {
                     'value': new_content,
-                    'representation': 'storage'
+                    'representation': representation
                 }
             }
         }
