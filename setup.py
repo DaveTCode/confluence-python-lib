@@ -9,7 +9,7 @@ with open(readme, encoding='utf-8') as f:
 
 setup(
     name='confluence-rest-library',
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    packages=find_packages(exclude=['contrib', 'docs', 'tests', 'integration_tests']),
     version='2.0.0',
     description='A simple wrapper around the Confluence REST API.',
     long_description=long_description,
