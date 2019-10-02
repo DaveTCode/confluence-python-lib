@@ -15,7 +15,7 @@ script:
   - sudo apt-get update
   - sudo apt-get install atlassian-plugin-sdk
   - atlas-version
-  - yes n | ATLAS_OPTS="-Dallow.google.tracking=false" atlas-run-standalone --product confluence --version 6.15.0 --server localhost &>/dev/null &
+  - ATLAS_OPTS="-Dallow.google.tracking=false" atlas-run-standalone --product confluence --version 6.15.0 --server localhost &>/dev/null &
   - CONFLUENCE_PID=$!
   - >
     until $(curl --fail http://localhost:1990/confluence); do
@@ -24,7 +24,7 @@ script:
   - curl --fail http://localhost:1990/confluence/rest/api/space
   - python setup.py test --addopts "tests integration_tests --cov confluence"
   - kill -9 $CONFLUENCE_PID
-  - rm -rf amps-standalone-confluence-6.6.0
+  - rm -rf amps-standalone-confluence-6.15.0
 after_success:
   - codecov
 deploy:
