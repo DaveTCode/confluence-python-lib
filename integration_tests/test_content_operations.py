@@ -146,3 +146,18 @@ def test_create_page_in_nonexistent_space():
 def test_get_content_with_bad_content_type():
     with pytest.raises(ValueError):
         c.get_content(ContentType.ATTACHMENT)
+
+def test_ancestors():
+    # Create test parent page
+    title = 'A Parent Page'
+    content = 'This is a full piece of content'
+    parent = c.create_content(ContentType.PAGE, title, space_key, content=content, expand=[])
+
+    # Create test child page
+    title = 'A Child Page'
+    content = 'This is another full piece of content'
+    child = c.create_content(ContentType.PAGE, title, space_key, content=content, parent_content_id=parent.id, expand=['ancestors'])
+    assert child.ancestors[-1] == parent.id
+
+    c.delete_content(parent.id, ContentStatus.CURRENT)
+    c.delete_content(child.id, ContentStatus.CURRENT)
