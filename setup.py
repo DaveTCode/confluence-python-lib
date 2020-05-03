@@ -29,5 +29,5 @@ setup(
     python_requires='>=2.7,!=3.0,!=3.1,!=3.2,!=3.3,!=3.4',
     setup_requires=['pytest-runner', 'typing', 'pycodestyle', 'bandit', 'mypy'],
     install_requires=['requests >= 2.19.1, < 3.0.0a0'],
-    tests_require=['pytest >= 4.3.0, < 5.0.0a0', 'pytest-cov >= 2.5.0, < 3.0.0a0']
+    tests_require=['pytest >= 4.3.0, < 6.0.0', 'pytest-cov >= 2.5.0, < 3.0.0a0']
 )
